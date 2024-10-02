@@ -3,13 +3,14 @@ import {
   Textarea,
   Typography,
   Select,
-  Option,
+  Option
 } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { useDropzone } from "react-dropzone";
+import FetchContext from "../../context/FetchContext";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -22,12 +23,29 @@ const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [files, setFiles] = useState([]);
+  const { request } = useContext(FetchContext);
+  const author = "google@gmail.com";
 
   const handleDrop = (acceptedFiles) => {
     setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   };
 
-  const handleUpload = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const body = new FormData(e.target);
+    if (!body.has("color")) body.append("color", "#000000");
+    if (!body.has("author")) body.append("author", author);
+    try {
+      await request("products", {
+        method: "POST",
+        body
+      });
+      navigate("/products");
+    } catch (error) {
+      console.error("Failed to add product",error);
+    }
+    return;
+
     const existingData = JSON.parse(localStorage.getItem("productsData")) || [];
     const products = [...existingData];
     const newEntry = {
@@ -41,7 +59,7 @@ const AddProduct = () => {
       quantity,
       date,
       author: "Admin",
-      images: files,
+      images: files
     };
 
     console.log(newEntry);
@@ -54,9 +72,9 @@ const AddProduct = () => {
       const response = await fetch("/api/products", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(newEntry),
+        body: JSON.stringify(newEntry)
       });
       const data = await response.json();
       console.log(data);
@@ -72,7 +90,7 @@ const AddProduct = () => {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
+      theme: "light"
     });
 
     navigate("/products");
@@ -107,228 +125,234 @@ const AddProduct = () => {
         </div>
       </div>
 
-      {/* Three Column Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Left Column */}
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Name
-          </Typography>
-          <Input
-            type="text"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+      <form className="" onSubmit={onSubmit}>
+        {/* Three Column Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Left Column */}
+          <div>
+            <Typography variant="h6" color="gray" className="mb-1 font-normal">
+              Name
+            </Typography>
+            <Input
+              type="text"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+              value={name}
+              name="name"
+              onChange={(e) => setName(e.target.value)}
+            />
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Brand
-          </Typography>
-          <Input
-            type="text"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-          />
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-4"
+            >
+              Brand
+            </Typography>
+            <Input
+              type="text"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+              value={brand}
+              name="brand"
+              onChange={(e) => setBrand(e.target.value)}
+            />
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Price
-          </Typography>
-          <Input
-            type="number"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-4"
+            >
+              Price
+            </Typography>
+            <Input
+              type="number"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+              value={price}
+              name="price"
+              onChange={(e) => setPrice(e.target.value)}
+            />
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Quantity
-          </Typography>
-          <Input
-            type="number"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-        </div>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-4"
+            >
+              Quantity
+            </Typography>
+            <Input
+              type="number"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+              value={quantity}
+              name="quantity"
+              onChange={(e) => setQuantity(e.target.value)}
+            />
+          </div>
 
-        {/* Middle Column */}
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Category
-          </Typography>
-          <Select
-            value={category}
-            onChange={(value) => setCategory(value)}
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          >
-            <Option value="" disabled>
-              Select category
-            </Option>
-            <Option value="Electronics">Electronics</Option>
-            <Option value="Fashion">Fashion</Option>
-            <Option value="Home & Garden">Home & Garden</Option>
-            <Option value="Sports">Sports</Option>
-            <Option value="Toys">Toys</Option>
-            <Option value="Books">Books</Option>
-          </Select>
+          {/* Middle Column */}
+          <div>
+            <Typography variant="h6" color="gray" className="mb-1 font-normal">
+              Category
+            </Typography>
+            <Select
+              value={category}
+              onChange={(value) => setCategory(value)}
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+              name="category"
+            >
+              <Option value="" disabled>
+                Select category
+              </Option>
+              <Option value="Electronics">Electronics</Option>
+              <Option value="Fashion">Fashion</Option>
+              <Option value="Home & Garden">Home & Garden</Option>
+              <Option value="Sports">Sports</Option>
+              <Option value="Toys">Toys</Option>
+              <Option value="Books">Books</Option>
+            </Select>
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mt-4 mb-1 font-normal"
-          >
-            Color
-          </Typography>
-          <Select
-            value={color}
-            onChange={(value) => setColor(value)}
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          >
-            <Option value="" disabled>
-              Select color
-            </Option>
-            <Option value="Red">Red</Option>
-            <Option value="Blue">Blue</Option>
-            <Option value="Green">Green</Option>
-            <Option value="Black">Black</Option>
-            <Option value="White">White</Option>
-            <Option value="Yellow">Yellow</Option>
-            <Option value="Orange">Orange</Option>
-            <Option value="Purple">Purple</Option>
-          </Select>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mt-4 mb-1 font-normal"
+            >
+              Color
+            </Typography>
+            <Select
+              value={color}
+              name="color"
+              onChange={(value) => setColor(value)}
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+            >
+              <Option value="" disabled>
+                Select color
+              </Option>
+              <Option value="Red">Red</Option>
+              <Option value="Blue">Blue</Option>
+              <Option value="Green">Green</Option>
+              <Option value="Black">Black</Option>
+              <Option value="White">White</Option>
+              <Option value="Yellow">Yellow</Option>
+              <Option value="Orange">Orange</Option>
+              <Option value="Purple">Purple</Option>
+            </Select>
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Description
-          </Typography>
-          <Textarea
-            value={description}
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={5}
-          />
-        </div>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-4"
+            >
+              Description
+            </Typography>
+            <Textarea
+              value={description}
+              name="description"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none"
+              }}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={5}
+            />
+          </div>
 
-        {/* Right Column */}
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Product Image
-          </Typography>
-          {/* Dropzone for Images */}
-          <div
-            {...getRootProps({
-              className:
-                "dropzone border-2 border-dashed border-[#6CB93B] rounded-md p-4 text-center cursor-pointer",
-            })}
-          >
-            <input {...getInputProps()} />
-            <div>
-              <lord-icon
-                src="https://cdn.lordicon.com/smwmetfi.json"
-                trigger="loop"
-                colors="primary:#545454"
-                style={{ width: "50px", height: "50px" }}
-              ></lord-icon>
-              <p className="text-2xl text-gray-600">
-                Drop files here or click to upload.
-              </p>
+          {/* Right Column */}
+          <div>
+            <Typography variant="h6" color="gray" className="mb-1 font-normal">
+              Product Image
+            </Typography>
+            {/* Dropzone for Images */}
+            <div
+              {...getRootProps({
+                className:
+                  "dropzone border-2 border-dashed border-[#6CB93B] rounded-md p-4 text-center cursor-pointer"
+              })}
+            >
+              <input {...getInputProps()} />
               <div>
-                {files.length > 0 && (
-                  <div className="mt-2">
-                    {files.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center border-b py-2"
-                      >
-                        <span>{file.name}</span>
-                        <button
-                          className="text-red-600"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the dropzone
-                            setFiles(files.filter((_, i) => i !== index));
-                          }}
+                <lord-icon
+                  src="https://cdn.lordicon.com/smwmetfi.json"
+                  trigger="loop"
+                  colors="primary:#545454"
+                  style={{ width: "50px", height: "50px" }}
+                ></lord-icon>
+                <p className="text-2xl text-gray-600">
+                  Drop files here or click to upload.
+                </p>
+                <div>
+                  {files.length > 0 && (
+                    <div className="mt-2">
+                      {files.map((file, index) => (
+                        <div
+                          key={index}
+                          className="flex justify-between items-center border-b py-2"
                         >
-                          Delete
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                          <span>{file.name}</span>
+                          <button
+                            className="text-red-600"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering the dropzone
+                              setFiles(files.filter((_, i) => i !== index));
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Preview Images */}
-          <div className="grid grid-cols-5 gap-4 mt-4">
-            {files.map((file, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className="w-full h-16 object-cover rounded-md"
-                />
-                <button
-                  className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded p-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setFiles(files.filter((_, i) => i !== index));
-                  }}
-                >
-                  X
-                </button>
-              </div>
-            ))}
+            {/* Preview Images */}
+            <div className="grid grid-cols-5 gap-4 mt-4">
+              {files.map((file, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    className="w-full h-16 object-cover rounded-md"
+                  />
+                  <button
+                    className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded p-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFiles(files.filter((_, i) => i !== index));
+                    }}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
+          <input type="file" multiple accept="image/*" name="images" />
         </div>
-      </div>
-
-      <button
-        onClick={handleUpload}
-        className="mt-5 bg-green-500 text-white px-4 py-2 rounded"
-      >
-        Submit
-      </button>
+        <button className="mt-5 bg-green-500 text-white px-4 py-2 rounded">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../../loader/Loader";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Pagination from "../../components/pagination/Pagination";
+import FetchContext from "../../context/FetchContext";
+import { UPLOADS_URL } from "../../utils/API";
 
 const Products = () => {
   const [open, setOpen] = useState(false);
@@ -11,37 +13,53 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const { request } = useContext(FetchContext);
+  const [response, setResponse] = useState({ data: [], filtered: [] });
 
-  // Pagination states
+  const fetchProducts = async () => {
+    try {
+      const response = await request("products");
+      const json = await response.json();
+      const { data, count } = json;
+      if (!data) return;
+      setResponse((prev) => ({ ...prev, data, count }));
+    } catch (error) {
+      console.error();
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Items per page for pagination
 
   const handleOpen = () => setOpen(!open);
 
-  useEffect(() => {
-    const storedProducts = localStorage.getItem("productsData");
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedProducts = localStorage.getItem("productsData");
+  //   if (storedProducts) {
+  //     setProducts(JSON.parse(storedProducts));
+  //   }
+  // }, []);
 
-  // Update filtered products when searchText changes
-  useEffect(() => {
-    const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to first page when products are filtered
-  }, [searchText, products]);
+  // // Update filtered products when searchText changes
+  // useEffect(() => {
+  //   const filtered = products.filter((product) =>
+  //     product.name.toLowerCase().includes(searchText.toLowerCase())
+  //   );
+  //   setFilteredProducts(filtered);
+  //   setCurrentPage(1); // Reset to first page when products are filtered
+  // }, [searchText, products]);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProducts.slice(
+  const currentItems = filteredProducts?.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts?.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const nextPage = () =>
@@ -55,16 +73,14 @@ const Products = () => {
     setFilteredProducts(storedProducts); // Update filtered products on deletion
   };
 
+  const rows = response?.data || [];
+
   return (
     <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Products</h1>
-          <p className="text-sm text-gray-500">
-            products are{" "}
-            {products.length > 0 && filteredProducts.length > 0 ? "" : "not"}{" "}
-            available here.
-          </p>
+          <p className="text-sm text-gray-500"></p>
         </div>
         <div className="flex items-center gap-3">
           {/* Reusable SearchBar Component */}
@@ -77,8 +93,7 @@ const Products = () => {
           </Link>
         </div>
       </div>
-
-      {filteredProducts.length > 0 ? (
+      {response?.count ? (
         <>
           <div className="mt-5 overflow-x-auto">
             <table className="min-w-full bg-white border">
@@ -114,52 +129,51 @@ const Products = () => {
                   </th>
                 </tr>
               </thead>
-
-              {/* Table Body */}
               <tbody>
-                {currentItems.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">
-                      {product.images && product.images.length < 0 ? (
-                        <img
-                          src={product.images[0].path}
-                          alt={product.name}
-                          className="h-12 w-12 object-cover"
-                        />
-                      ) : (
-                        <img
-                          src="https://via.placeholder.com/150"
-                          alt={product.name}
-                          className="h-12 w-12 object-cover"
-                        />
-                      )}
-                    </td>
-                    <td className="px-6 py-4 border-b">{product.name}</td>
-                    <td className="px-6 py-4 border-b">{product.brand}</td>
-                    <td className="px-6 py-4 border-b">{product.color}</td>
-                    <td className="px-6 py-4 border-b">{product.category}</td>
-                    <td className="px-6 py-4 border-b">{product.price}</td>
-                    <td className="px-6 py-4 border-b">{product.quantity}</td>
-                    <td className="px-6 py-4 border-b">{product.date}</td>
-                    <td className="px-6 py-4 border-b">
-                      <Link
-                        to={`/products/edit-product/${product.id}`}
-                        className="text-orange-500 hover:text-orange-700"
-                      >
-                        <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          setSelectedItemId(product.id);
-                          handleOpen();
-                        }}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <i className="fa-solid fa-trash-can text-xl"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {rows.map((product) => {
+                  const { images } = product;
+                  const image = images[0];
+                  console.log(images);
+                  return (
+                    <tr key={product.id} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 border-b">
+                        {image ? (
+                          <>
+                            <img
+                              src={`${UPLOADS_URL + image}`}
+                              alt={image}
+                              className="h-12 w-12 object-cover border"
+                            />
+                          </>
+                        ) : null}
+                      </td>
+                      <td className="px-6 py-4 border-b">{product.name}</td>
+                      <td className="px-6 py-4 border-b">{product.brand}</td>
+                      <td className="px-6 py-4 border-b">{product.color}</td>
+                      <td className="px-6 py-4 border-b">{product.category}</td>
+                      <td className="px-6 py-4 border-b">{product.price}</td>
+                      <td className="px-6 py-4 border-b">{product.quantity}</td>
+                      <td className="px-6 py-4 border-b">{product.date}</td>
+                      <td className="px-6 py-4 border-b">
+                        <Link
+                          to={`/products/edit-product/${product.id}`}
+                          className="text-orange-500 hover:text-orange-700"
+                        >
+                          <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setSelectedItemId(product.id);
+                            handleOpen();
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <i className="fa-solid fa-trash-can text-xl"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -184,7 +198,7 @@ const Products = () => {
           />
         </>
       ) : (
-        <Loader />
+        <>{/* <Loader /> */}</>
       )}
     </>
   );

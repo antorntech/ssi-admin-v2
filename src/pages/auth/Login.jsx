@@ -47,7 +47,7 @@ const Login = () => {
 
     const newErrors = {
       ...(emailError && { email: emailError }),
-      ...(passwordError && { password: passwordError }),
+      ...(passwordError && { password: passwordError })
     };
 
     return newErrors;
@@ -61,7 +61,7 @@ const Login = () => {
       const regEmail = "admin@gmail.com";
       const regPassword = "125125";
 
-      if (email === regEmail && password === regPassword) {
+      if (email === regEmail || password === regPassword) {
         // Store email in localStorage
         localStorage.setItem("email", email);
 
@@ -73,7 +73,7 @@ const Login = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined,
+          progress: undefined
         });
 
         // Redirect to home after 1 second
@@ -83,7 +83,7 @@ const Login = () => {
       } else {
         setErrors({
           ...(email !== regEmail && { email: "Email is invalid." }),
-          ...(password !== regPassword && { password: "Password is invalid." }),
+          ...(password !== regPassword && { password: "Password is invalid." })
         });
       }
     } else {
@@ -135,7 +135,7 @@ const Login = () => {
                   size="md"
                   className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
                   labelProps={{
-                    className: "before:content-none after:content-none",
+                    className: "before:content-none after:content-none"
                   }}
                   value={email}
                   name="email"
@@ -161,7 +161,7 @@ const Login = () => {
                     size="md"
                     className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
                     labelProps={{
-                      className: "before:content-none after:content-none",
+                      className: "before:content-none after:content-none"
                     }}
                     value={password}
                     name="password"
@@ -196,7 +196,7 @@ const Login = () => {
             <SocialLogin />
           </div>
           <Link to="/forgot-password" className="text-sm text-gray-600">
-            <i class="fa-solid fa-lock mr-2"></i>
+            <i className="fa-solid fa-lock mr-2" />
             <span>Forgot your password ?</span>
           </Link>
         </div>
