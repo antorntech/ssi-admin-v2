@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 /* custom shadow */
+.content-shadow {
+  box-shadow: rgba(204, 219, 232, 0.137) 3px 3px 6px 0px inset,
+    rgba(255, 255, 255, 0.171) -3px -3px 6px 1px inset;
+}
+
 .custom-shadow {
   box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
 }
@@ -81,6 +86,21 @@
 .slider-main:nth-child(2) {
   background-color: #199bff;
   margin: 15px;
+}
+
+/* dropzone style */
+.dropzone {
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: #cbd5e1;
+  background-color: #f9fafb;
+  transition: border-color 0.2s;
+}
+
+.dropzone:hover {
+  border-color: #6cb93b; /* Blue border on hover */
 }
 
 @media screen and (max-width: 768px) {

@@ -11,40 +11,14 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const [searchText, setSearchText] = React.useState("");
-  const onChange = ({ target }) => setSearchText(target.value);
-
   const handleLogOut = () => {
     localStorage.clear();
     window.location.href = "/login";
   };
   return (
-    <div className="px-5 min-h-[70px] bg-white header-shadow flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
+    <div className="px-5 min-h-[70px] bg-white flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
       <div className="w-full hidden md:flex items-center justify-between bg-whtie">
-        <div>
-          <div className="hidden relative md:flex w-full max-w-[24rem]">
-            <Input
-              type="text"
-              label="Search"
-              value={searchText}
-              onChange={onChange}
-              className="pr-20"
-              containerProps={{
-                className: "min-w-0",
-              }}
-            />
-            <Button
-              size="sm"
-              disabled={!searchText}
-              className={`!absolute right-1 top-1 rounded transition-all duration-300 ${
-                searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
-              }`}
-            >
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </div>
-        </div>
-        <div className="flex items-center gap-5">
+        <div className="w-full flex items-center justify-end gap-5">
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-calendar-days text-[30px]"></i>
             <div>
@@ -107,7 +81,7 @@ const Header = () => {
       </div>
       <div className="w-full min-h-[70px] md:hidden fixed top-0 left-0 z-40 bg-white flex justify-end">
         <button className="me-4" onClick={handleLogOut}>
-          <span className="px-4 py-2 bg-[#050828] text-white rounded-md">
+          <span className="px-4 py-3 bg-[#050828] text-white rounded-md">
             Logout
           </span>
         </button>

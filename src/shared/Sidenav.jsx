@@ -8,9 +8,9 @@ const menuItems = [
     icon: "/img/icons/dashboard",
   },
   {
-    title: "Sliders",
-    link: "/sliders",
-    icon: "/img/icons/slider",
+    title: "Products",
+    link: "/products",
+    icon: "/img/icons/products",
   },
   {
     title: "About",
@@ -101,7 +101,7 @@ const Sidenav = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        <div className="bg-[#050828] px-3 min-h-[70px] flex items-center justify-center">
+        <div className="bg-white px-3 min-h-[70px] flex items-center justify-center">
           <Link to={"/"}>
             <img
               src="/img/logo.png"
@@ -110,7 +110,7 @@ const Sidenav = () => {
             />
           </Link>
         </div>
-        <div className="p-3 flex flex-col h-full sidenav-shadow">
+        <div className=" flex flex-col h-full">
           <ul className="w-full flex flex-col">
             {menuItems.map((item, index) => (
               <li key={index} className="mb-1">
@@ -118,9 +118,9 @@ const Sidenav = () => {
                   <>
                     <div className="group">
                       <div
-                        className={`rounded-md flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828] transition-all duration-500 ${
+                        className={`flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828] transition-all duration-500 ${
                           activeMenu === index
-                            ? "bg-[#199bff] text-white hover:text-white"
+                            ? "bg-[#6CB93B] text-white hover:text-white"
                             : ""
                         }`}
                         onClick={() => handleMenuClick(index)}
@@ -133,7 +133,7 @@ const Sidenav = () => {
                                 : item.icon + "-dark.png"
                             }
                             alt=""
-                            className="mr-2"
+                            className="mx-2"
                           />
                           <p>{item.title}</p>
                         </div>
@@ -143,7 +143,6 @@ const Sidenav = () => {
                           }`}
                         ></i>
                       </div>
-                      <div className="h-[1px] w-full bg-gray-200"></div>
                     </div>
                     {activeMenu === index && (
                       <ul className="pl-5 mt-1">
@@ -151,14 +150,14 @@ const Sidenav = () => {
                           <li key={subindex}>
                             <Link
                               to={subitem.link}
-                              className={`block p-2 rounded-md  ${
+                              className={`block p-2 ${
                                 currentPath === subitem.link
                                   ? "bg-[#050828] text-white"
                                   : ""
                               }`}
                               onClick={toggleSidebar}
                             >
-                              <i class="fa-solid fa-minus mr-2"></i>
+                              <i class="fa-solid fa-minus mx-2"></i>
                               {subitem.text}
                             </Link>
                           </li>
@@ -170,9 +169,9 @@ const Sidenav = () => {
                   <div className="group">
                     <Link
                       to={item.link}
-                      className={`flex items-center p-2 rounded-md hover:text-[#050828] transition-all duration-500 ${
+                      className={`flex items-center p-2 hover:text-[#050828] transition-all duration-500 ${
                         currentPath === item.link
-                          ? "bg-[#199bff] text-white hover:text-white"
+                          ? "bg-[#6CB93B] text-white hover:text-white"
                           : ""
                       }`}
                       onClick={toggleSidebar}
@@ -184,11 +183,10 @@ const Sidenav = () => {
                             : item.icon + "-dark.png"
                         }
                         alt=""
-                        className="mr-2"
+                        className="mx-2"
                       />
                       <span className="text-[17px]">{item.title}</span>
                     </Link>
-                    <div className="h-[1px] w-full bg-gray-200 rounded-md"></div>
                   </div>
                 )}
               </li>

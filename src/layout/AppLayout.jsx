@@ -18,7 +18,7 @@ const AppLayout = () => {
             <div className="min-h-[70px] w-full float-right">
               <Header />
             </div>
-            <div className="bg-[#F8F8FB] min-h-[calc(100vh-70px)] p-5 mt-[70px]">
+            <div className="content-shadow bg-[#F8F8FB] min-h-[calc(100vh-70px)] p-5 md:p-7 mt-[70px]">
               <AppRoutes />
             </div>
           </div>

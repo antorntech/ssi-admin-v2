@@ -43,6 +43,8 @@ import EditModule from "../pages/EditModule";
 import Login from "../pages/auth/Login";
 import SignUp from "../pages/auth/SignUp";
 import ForgotPassword from "../pages/auth/ForgotPassword";
+import Products from "../pages/products/Products";
+import AddProduct from "../pages/products/AddProduct";
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
 
@@ -51,8 +53,8 @@ const AppRoutes = () => {
       {user ? (
         <>
           <Route path="/" element={<Home />} />
-          <Route path="/sliders" element={<Slider />} />
-          <Route path="/sliders/add-slider" element={<AddSlider />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/add-product" element={<AddProduct />} />
           <Route path="/sliders/edit-slider/:id" element={<EditSlider />} />
           <Route path="/main-about" element={<MainAbout />} />
           <Route path="/home-about" element={<HomeAbout />} />
