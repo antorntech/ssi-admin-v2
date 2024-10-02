@@ -10,69 +10,12 @@ const menuItems = [
   {
     title: "Products",
     link: "/products",
-    icon: "/img/icons/products",
+    icon: "/img/icons/product",
   },
   {
     title: "Gifts",
     link: "/gifts",
-    icon: "/img/icons/products",
-  },
-  {
-    title: "About",
-    icon: "/img/icons/about",
-    submenu: [
-      { text: "Main About", link: "/main-about" },
-      { text: "Home About", link: "/home-about" },
-      { text: "Road Map", link: "/road-maps" },
-    ],
-  },
-  {
-    title: "Contact",
-    icon: "/img/icons/contact",
-    submenu: [
-      { text: "Main Contact", link: "/main-contact" },
-      { text: "Home Contact", link: "/home-contact" },
-    ],
-  },
-  {
-    title: "Sponsors",
-    link: "/sponsors",
-    icon: "/img/icons/sponsor",
-  },
-  {
-    title: "Faqs",
-    link: "/faqs",
-    icon: "/img/icons/faq",
-  },
-  {
-    title: "Promotion",
-    link: "/promotion",
-    icon: "/img/icons/promotion",
-  },
-  {
-    title: "Services",
-    link: "/services",
-    icon: "/img/icons/service",
-  },
-  {
-    title: "Softwares",
-    link: "/softwares",
-    icon: "/img/icons/software",
-  },
-  {
-    title: "Trainings",
-    link: "/trainings",
-    icon: "/img/icons/training",
-  },
-  {
-    title: "Blogs",
-    link: "/blogs",
-    icon: "/img/icons/blog",
-  },
-  {
-    title: "Reviews",
-    link: "/reviews",
-    icon: "/img/icons/review",
+    icon: "/img/icons/gift",
   },
 ];
 

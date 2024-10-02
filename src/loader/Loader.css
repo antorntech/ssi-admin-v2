@@ -28,7 +28,7 @@
 }
 
 .loader::before {
-  border-color: #199bff #0000;
+  border-color: #6cb93b #0000;
   animation: inherit;
   animation-duration: 0.5s;
   animation-direction: reverse;
