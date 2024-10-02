@@ -4,7 +4,7 @@ import {
   Input,
   Popover,
   PopoverContent,
-  PopoverHandler,
+  PopoverHandler
 } from "@material-tailwind/react";
 import React from "react";
 import moment from "moment";
@@ -21,7 +21,7 @@ const Header = () => {
         <div className="w-full flex items-center justify-end gap-5">
           <div className="flex items-center ">
             <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-              <i class="fa-solid fa-user-tie text-3xl"></i>
+              <i className="fa-solid fa-user-tie text-3xl" />
             </div>
             <div>
               <Popover placement="bottom-start" className="px-12">

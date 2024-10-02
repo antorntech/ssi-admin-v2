@@ -95,7 +95,7 @@ const Home = () => {
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
-                  <i class="fa-solid fa-cart-shopping text-xl text-white"></i>
+                  <i className="fa-solid fa-cart-shopping text-xl text-white" />
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@ const Home = () => {
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
-                  <i class="fa-solid fa-sack-dollar text-xl text-white"></i>
+                  <i className="fa-solid fa-sack-dollar text-xl text-white" />
                 </div>
               </div>
             </div>
@@ -117,7 +117,7 @@ const Home = () => {
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
-                  <i class="fa-solid fa-filter-circle-dollar text-xl text-white"></i>
+                  <i className="fa-solid fa-filter-circle-dollar text-xl text-white" />
                 </div>
               </div>
             </div>
