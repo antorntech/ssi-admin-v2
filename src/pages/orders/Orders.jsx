@@ -23,8 +23,8 @@ const Orders = () => {
         price: 100,
         quantity: 2,
         status: "pending",
-        createdAt: "2nd October, 2024",
-        updatedAt: "2nd October, 2024",
+        createdAt: "2nd Oct, 2024",
+        updatedAt: "2nd Oct, 2024",
       },
       {
         id: 2,
@@ -33,8 +33,8 @@ const Orders = () => {
         price: 150,
         quantity: 1,
         status: "pending",
-        createdAt: "2nd October, 2024",
-        updatedAt: "2nd October, 2024",
+        createdAt: "2nd Oct, 2024",
+        updatedAt: "2nd Oct, 2024",
       },
       // Add more fake orders as needed
       {
@@ -44,8 +44,8 @@ const Orders = () => {
         price: 200,
         quantity: 3,
         status: "pending",
-        createdAt: "2nd October, 2024",
-        updatedAt: "2nd October, 2024",
+        createdAt: "2nd Oct, 2024",
+        updatedAt: "2nd Oct, 2024",
       },
       {
         id: 4,
@@ -54,8 +54,8 @@ const Orders = () => {
         price: 250,
         quantity: 4,
         status: "pending",
-        createdAt: "2nd October, 2024",
-        updatedAt: "2nd October, 2024",
+        createdAt: "2nd Oct, 2024",
+        updatedAt: "2nd Oct, 2024",
       },
       {
         id: 5,
@@ -64,8 +64,8 @@ const Orders = () => {
         price: 300,
         quantity: 5,
         status: "pending",
-        createdAt: "2nd October, 2024",
-        updatedAt: "2nd October, 2024",
+        createdAt: "2nd Oct, 2024",
+        updatedAt: "2nd Oct, 2024",
       },
       {
         id: 6,
@@ -74,8 +74,8 @@ const Orders = () => {
         price: 350,
         quantity: 6,
         status: "pending",
-        createdAt: "2nd October, 2024",
-        updatedAt: "2nd October, 2024",
+        createdAt: "2nd Oct, 2024",
+        updatedAt: "2nd Oct, 2024",
       },
     ];
 

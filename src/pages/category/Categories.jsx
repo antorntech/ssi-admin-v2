@@ -1,72 +1,77 @@
 import React, { useState, useEffect } from "react";
-import AddGift from "./AddGift";
-import EditGift from "./EditGift";
+import AddCategory from "./AddCategory";
+import EditCategory from "./EditCategory";
 import Pagination from "../../components/pagination/Pagination"; // Import the Pagination component
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal"; // Import the DeleteConfirmModal component
 
-const Gifts = () => {
-  const [gifts, setGifts] = useState(
-    JSON.parse(localStorage.getItem("giftsData")) || []
+const Categories = () => {
+  const [categories, setCategories] = useState(
+    JSON.parse(localStorage.getItem("categoriesData")) || []
   );
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedGift, setSelectedGift] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [open, setOpen] = useState(false); // State for delete confirmation modal
-  const [selectedGiftId, setSelectedGiftId] = useState(null); // ID of the gift to be deleted
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // ID of the category to be deleted
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Items per page for pagination
   const [totalPages, setTotalPages] = useState(0);
 
-  const handleAddGift = (newGift) => {
-    setGifts([...gifts, newGift]);
+  const handleAddCategory = (newCategory) => {
+    setCategories([...categories, newCategory]);
   };
 
-  const handleEditGift = (updatedGift) => {
-    const updatedGifts = gifts.map((gift) =>
-      gift.id === updatedGift.id ? updatedGift : gift
+  const handleEditCategory = (updatedCategory) => {
+    const updatedCategories = categories.map((category) =>
+      category.id === updatedCategory.id ? updatedCategory : category
     );
-    setGifts(updatedGifts);
+    setCategories(updatedCategories);
     setIsEditing(false);
   };
 
-  const handleDeleteGift = (id) => {
-    const filteredGifts = gifts.filter((gift) => gift.id !== id);
-    setGifts(filteredGifts);
-    localStorage.setItem("giftsData", JSON.stringify(filteredGifts));
+  const handleDeleteCategory = (id) => {
+    const filteredCategories = categories.filter(
+      (category) => category.id !== id
+    );
+    setCategories(filteredCategories);
+    localStorage.setItem("categoriesData", JSON.stringify(filteredCategories));
   };
 
-  const handleEditClick = (gift) => {
-    setSelectedGift(gift);
+  const handleEditClick = (category) => {
+    setSelectedCategory(category);
     setIsEditing(true);
   };
 
   const handleOpen = () => setOpen(!open); // Toggle modal open/close
 
-  // Confirm deletion of the selected gift
-  const confirmDeleteGift = () => {
-    handleDeleteGift(selectedGiftId);
+  // Confirm deletion of the selected category
+  const confirmDeleteCategory = () => {
+    handleDeleteCategory(selectedCategoryId);
     handleOpen(); // Close the modal after deletion
   };
 
-  // Calculate the current gifts for the current page
-  const indexOfLastGift = currentPage * itemsPerPage;
-  const indexOfFirstGift = indexOfLastGift - itemsPerPage;
-  const currentGifts = gifts.slice(indexOfFirstGift, indexOfLastGift);
+  // Calculate the current categories for the current page
+  const indexOfLastCategory = currentPage * itemsPerPage;
+  const indexOfFirstCategory = indexOfLastCategory - itemsPerPage;
+  const currentCategories = categories.slice(
+    indexOfFirstCategory,
+    indexOfLastCategory
+  );
 
-  // Set total pages whenever gifts change
+  // Set total pages whenever categories change
   useEffect(() => {
-    setTotalPages(Math.ceil(gifts.length / itemsPerPage));
-  }, [gifts]);
+    setTotalPages(Math.ceil(categories.length / itemsPerPage));
+  }, [categories]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Column 1: Table */}
-      <div className="gifts-table">
+      <div className="categories-table">
         <div className="mb-4">
-          <h1 className="text-xl font-bold">Gifts</h1>
+          <h1 className="text-xl font-bold">Categories</h1>
           <p className="text-sm text-gray-500">
-            gifts are {gifts.length > 0 ? "" : "not"} available here.
+            categories are {categories.length > 0 ? "" : "not"} available here.
           </p>
         </div>
         <table className="w-full min-w-full bg-white border">
@@ -76,7 +81,7 @@ const Gifts = () => {
                 Banner
               </th>
               <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Price
+                Name
               </th>
               <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                 CreatedAt
@@ -90,13 +95,13 @@ const Gifts = () => {
             </tr>
           </thead>
           <tbody>
-            {currentGifts.map((gift) => (
-              <tr key={gift.id} className="hover:bg-gray-100">
+            {currentCategories.map((category) => (
+              <tr key={category.id} className="hover:bg-gray-100">
                 <td className="px-6 py-4 border-b">
-                  {gift.image ? (
+                  {category.image ? (
                     <img
-                      src={gift.image}
-                      alt={gift.name || "Gift"}
+                      src={category.image}
+                      alt={category.name || "Category"}
                       className="h-12 w-12 object-cover"
                     />
                   ) : (
@@ -107,19 +112,19 @@ const Gifts = () => {
                     />
                   )}
                 </td>
-                <td className="px-6 py-4 border-b">{gift.price}</td>
-                <td className="px-6 py-4 border-b">{gift.createdAt}</td>
-                <td className="px-6 py-4 border-b">{gift.updatedAt}</td>
+                <td className="px-6 py-4 border-b">{category.name}</td>
+                <td className="px-6 py-4 border-b">{category.createdAt}</td>
+                <td className="px-6 py-4 border-b">{category.updatedAt}</td>
                 <td className="px-6 py-4 border-b">
                   <button
-                    onClick={() => handleEditClick(gift)}
+                    onClick={() => handleEditClick(category)}
                     className="text-orange-500 hover:text-orange-700 mr-3"
                   >
                     <i className="fa-solid fa-pen-to-square text-xl"></i>
                   </button>
                   <button
                     onClick={() => {
-                      setSelectedGiftId(gift.id);
+                      setSelectedCategoryId(category.id);
                       handleOpen(); // Open delete confirmation modal
                     }}
                     className="text-red-500 hover:text-red-700"
@@ -147,14 +152,14 @@ const Gifts = () => {
       </div>
 
       {/* Column 2: Conditional Form */}
-      <div className="gift-form">
+      <div className="category-form">
         {isEditing ? (
-          <EditGift
-            selectedGift={selectedGift}
-            handleEditGift={handleEditGift}
+          <EditCategory
+            selectedCategory={selectedCategory}
+            handleEditCategory={handleEditCategory}
           />
         ) : (
-          <AddGift handleAddGift={handleAddGift} />
+          <AddCategory handleAddCategory={handleAddCategory} />
         )}
       </div>
 
@@ -162,12 +167,12 @@ const Gifts = () => {
       <DeleteConfirmModal
         open={open}
         handleOpen={handleOpen}
-        itemId={selectedGiftId}
-        onDelete={confirmDeleteGift} // Confirm deletion function
-        itemName="Gift" // Change to "Gift" for better context
+        itemId={selectedCategoryId}
+        onDelete={confirmDeleteCategory} // Confirm deletion function
+        itemName="Category" // Change to "Category" for better context
       />
     </div>
   );
 };
 
-export default Gifts;
+export default Categories;

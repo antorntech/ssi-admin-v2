@@ -14,7 +14,7 @@ import { useDropzone } from "react-dropzone";
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const date = moment().format("Do MMMM, YYYY");
+  const date = moment().format("Do MMM, YYYY");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [color, setColor] = useState("");

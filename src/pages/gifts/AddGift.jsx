@@ -1,8 +1,10 @@
 import { Input, Typography } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
+import moment from "moment";
 
 const AddGift = ({ handleAddGift }) => {
+  const date = moment().format("Do MMM, YYYY");
   const [price, setPrice] = useState("");
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null); // State to store the selected image
@@ -24,8 +26,8 @@ const AddGift = ({ handleAddGift }) => {
       id: Date.now(),
       image: URL.createObjectURL(image), // Create object URL for the image
       price,
-      createdAt: new Date().toLocaleDateString(),
-      updatedAt: new Date().toLocaleDateString(),
+      createdAt: date,
+      updatedAt: date,
     };
 
     // Store in localStorage
