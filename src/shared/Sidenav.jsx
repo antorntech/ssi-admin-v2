@@ -22,6 +22,11 @@ const menuItems = [
     link: "/orders",
     icon: "/img/icons/order",
   },
+  {
+    title: "Points",
+    link: "/points",
+    icon: "/img/icons/point",
+  },
 ];
 
 const Sidenav = () => {

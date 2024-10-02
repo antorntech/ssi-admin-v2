@@ -66,7 +66,7 @@ const Gifts = () => {
         <div className="mb-4">
           <h1 className="text-xl font-bold">Gifts</h1>
           <p className="text-sm text-gray-500">
-            Gifts are {gifts.length > 0 ? "" : "not"} available here.
+            gifts are {gifts.length > 0 ? "" : "not"} available here.
           </p>
         </div>
         <table className="w-full min-w-full bg-white border">
