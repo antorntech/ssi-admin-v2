@@ -92,9 +92,6 @@ const Products = () => {
                     Name
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Brand
                   </th>
                   <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
@@ -138,9 +135,6 @@ const Products = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 border-b">{product.name}</td>
-                    <td className="px-6 py-4 border-b">
-                      {product.description?.slice(0, 20)}...
-                    </td>
                     <td className="px-6 py-4 border-b">{product.brand}</td>
                     <td className="px-6 py-4 border-b">{product.color}</td>
                     <td className="px-6 py-4 border-b">{product.category}</td>

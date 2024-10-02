@@ -13,6 +13,11 @@ const menuItems = [
     icon: "/img/icons/products",
   },
   {
+    title: "Gifts",
+    link: "/gifts",
+    icon: "/img/icons/products",
+  },
+  {
     title: "About",
     icon: "/img/icons/about",
     submenu: [
