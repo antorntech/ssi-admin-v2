@@ -19,23 +19,10 @@ const Header = () => {
     <div className="px-5 min-h-[70px] bg-white flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
       <div className="w-full hidden md:flex items-center justify-between bg-whtie">
         <div className="w-full flex items-center justify-end gap-5">
-          <div className="flex items-center gap-2">
-            <i className="fa-solid fa-calendar-days text-[30px]"></i>
-            <div>
-              <p className="text-[14px] font-semibold text-black">
-                {moment().format("dddd")}
-              </p>
-              <p className="text-[12px] text-gray-500">
-                {moment().format("Do MMMM, YYYY")}
-              </p>
-            </div>
-          </div>
           <div className="flex items-center ">
-            <Avatar
-              src="https://docs.material-tailwind.com/img/face-2.jpg"
-              alt="avatar"
-              size="sm"
-            />
+            <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+              <i class="fa-solid fa-user-tie text-3xl"></i>
+            </div>
             <div>
               <Popover placement="bottom-start" className="px-12">
                 <PopoverHandler>

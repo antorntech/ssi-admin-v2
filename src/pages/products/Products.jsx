@@ -146,9 +146,7 @@ const Products = () => {
                     <td className="px-6 py-4 border-b">{product.category}</td>
                     <td className="px-6 py-4 border-b">{product.price}</td>
                     <td className="px-6 py-4 border-b">{product.quantity}</td>
-                    <td className="px-6 py-4 border-b">
-                      {new Date(product.date).toLocaleDateString()}
-                    </td>
+                    <td className="px-6 py-4 border-b">{product.date}</td>
                     <td className="px-6 py-4 border-b">
                       <Link
                         to={`/products/edit-product/${product.id}`}
