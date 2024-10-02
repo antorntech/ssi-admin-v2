@@ -112,7 +112,7 @@ const AddProduct = () => {
         {/* Left Column */}
         <div>
           <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Product Name
+            Name
           </Typography>
           <Input
             type="text"

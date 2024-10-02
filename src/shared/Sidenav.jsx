@@ -17,6 +17,11 @@ const menuItems = [
     link: "/gifts",
     icon: "/img/icons/gift",
   },
+  {
+    title: "Orders",
+    link: "/orders",
+    icon: "/img/icons/order",
+  },
 ];
 
 const Sidenav = () => {

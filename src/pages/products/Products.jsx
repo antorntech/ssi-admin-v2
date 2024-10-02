@@ -56,7 +56,7 @@ const Products = () => {
   };
 
   return (
-    <div>
+    <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Products</h1>
@@ -186,7 +186,7 @@ const Products = () => {
       ) : (
         <Loader />
       )}
-    </div>
+    </>
   );
 };
 
