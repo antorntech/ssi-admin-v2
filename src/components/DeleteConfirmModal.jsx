@@ -3,7 +3,7 @@ import {
   Button,
   Dialog,
   DialogBody,
-  DialogFooter,
+  DialogFooter
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 
@@ -12,8 +12,9 @@ export function DeleteConfirmModal({
   handleOpen,
   itemId,
   onDelete,
-  itemName,
+  itemName
 }) {
+  console.log(itemId);
   const handleDelete = () => {
     // Perform deletion from local storage
     let storedItems = JSON.parse(localStorage.getItem(`${itemName}`)) || [];
@@ -27,7 +28,7 @@ export function DeleteConfirmModal({
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
-      draggable: true,
+      draggable: true
     });
 
     // Close modal and trigger a callback to refresh the blog list

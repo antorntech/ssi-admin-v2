@@ -23,6 +23,7 @@ const Products = () => {
       const { data, count } = json;
       if (!data) return;
       setResponse((prev) => ({ ...prev, data, count }));
+      setProducts(json);
     } catch (error) {
       console.error();
     }
@@ -32,25 +33,17 @@ const Products = () => {
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Items per page for pagination
+  const itemsPerPage = 10; // Items per page for pagination
 
   const handleOpen = () => setOpen(!open);
 
-  // useEffect(() => {
-  //   const storedProducts = localStorage.getItem("productsData");
-  //   if (storedProducts) {
-  //     setProducts(JSON.parse(storedProducts));
-  //   }
-  // }, []);
-
-  // // Update filtered products when searchText changes
-  // useEffect(() => {
-  //   const filtered = products.filter((product) =>
-  //     product.name.toLowerCase().includes(searchText.toLowerCase())
-  //   );
-  //   setFilteredProducts(filtered);
-  //   setCurrentPage(1); // Reset to first page when products are filtered
-  // }, [searchText, products]);
+  useEffect(() => {
+    const filtered = products?.data?.filter((product) =>
+      product.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+    setCurrentPage(1); // Reset to first page when products are filtered
+  }, [searchText, products]);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -59,21 +52,22 @@ const Products = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredProducts?.length / itemsPerPage);
+  const totalPages = Math.ceil(products.count / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const nextPage = () =>
     currentPage < totalPages && setCurrentPage(currentPage + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const handleDelete = () => {
-    const storedProducts =
-      JSON.parse(localStorage.getItem("productsData")) || [];
-    setProducts(storedProducts);
-    setFilteredProducts(storedProducts); // Update filtered products on deletion
+  const handleDelete = async (id) => {
+    try {
+      if (!id) throw new Error("Id is not defined");
+      response = await request(`products${id}`, { method: "DELETE" });
+      alert("Deleted");
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  const rows = response?.data || [];
 
   return (
     <>
@@ -130,10 +124,9 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((product) => {
+                {currentItems?.map((product) => {
                   const { images } = product;
                   const image = images[0];
-                  console.log(images);
                   return (
                     <tr key={product.id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 border-b">
@@ -188,14 +181,15 @@ const Products = () => {
               prevPage={prevPage}
             />
           )}
-
-          <DeleteConfirmModal
-            open={open}
-            handleOpen={handleOpen}
-            itemId={selectedItemId}
-            onDelete={handleDelete}
-            itemName="productsData"
-          />
+          {selectedItemId ? (
+            <DeleteConfirmModal
+              open={open}
+              handleOpen={handleOpen}
+              itemId={selectedItemId}
+              onDelete={handleDelete}
+              itemName="productsData"
+            />
+          ) : null}
         </>
       ) : (
         <>{/* <Loader /> */}</>
