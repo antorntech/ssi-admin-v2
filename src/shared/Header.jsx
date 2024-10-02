@@ -39,12 +39,6 @@ const Header = () => {
                   </Button>
                 </PopoverHandler>
                 <PopoverContent className="mt-2 w-[150px]">
-                  <Link to={"/notification"}>
-                    <div className="w-full flex items-center gap-2 hover:text-blue-700 hover:font-bold transition-all duration-300">
-                      <i class="fa-regular fa-bell"></i>
-                      <p>Notification</p>
-                    </div>
-                  </Link>
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <Link to={"/profile"}>
                     <div className="w-full flex items-center gap-2 hover:text-blue-700 hover:font-bold transition-all duration-300">

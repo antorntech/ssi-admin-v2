@@ -53,14 +53,18 @@ const Profile = () => {
         <div>
           <button
             onClick={() => setEditMode(!editMode)}
-            className="bg-[#199bff] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            className={
+              editMode
+                ? "bg-red-500 text-white px-4 py-2 rounded-md"
+                : "bg-[#6CB93B] text-white px-4 py-2 rounded-md"
+            }
           >
             {editMode ? "Cancel" : "Update Profile"}
           </button>
           {editMode && (
             <button
               onClick={saveProfile}
-              className="bg-green-500 text-white px-4 py-2 rounded-md ml-2"
+              className="bg-[#6CB93B] text-white px-4 py-2 rounded-md ml-2"
             >
               Save
             </button>
