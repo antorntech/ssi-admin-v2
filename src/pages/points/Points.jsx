@@ -1,13 +1,92 @@
 import React from "react";
 
 const Points = () => {
-  const points = [];
+  const points = [
+    {
+      id: 1,
+      customer_id: 101,
+      product_id: 501,
+      coins_earned: 20,
+      coins_used: 5,
+      transaction_type: "earned",
+      order_id: 1001,
+      created_at: "2nd October, 2024",
+    },
+    {
+      id: 2,
+      customer_id: 102,
+      product_id: 502,
+      coins_earned: 10,
+      coins_used: 0,
+      transaction_type: "earned",
+      order_id: 1002,
+      created_at: "2nd October, 2024",
+    },
+    {
+      id: 3,
+      customer_id: 103,
+      product_id: 503,
+      coins_earned: 0,
+      coins_used: 15,
+      transaction_type: "spent",
+      order_id: 1003,
+      created_at: "2nd October, 2024",
+    },
+  ];
   return (
     <>
-      <h1 className="text-xl font-bold">Points</h1>
-      <p className="text-sm text-gray-500">
-        points are {points.length > 0 ? "" : "not"} available here.
-      </p>
+      <div>
+        <h1 className="text-xl font-bold">Points</h1>
+        <p className="text-sm text-gray-500">
+          points are {points.length > 0 ? "" : "not"} available here.
+        </p>
+      </div>
+      <div className="mt-5 overflow-x-auto">
+        <table className="min-w-full bg-white border">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                ID
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Customer ID
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Product ID
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Coins Earned
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Coins Used
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Transaction Type
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Order ID
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Created At
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {points.map((point) => (
+              <tr key={point.id}>
+                <td className="px-6 py-4 border-b">{point.id}</td>
+                <td className="px-6 py-4 border-b">{point.customer_id}</td>
+                <td className="px-6 py-4 border-b">{point.product_id}</td>
+                <td className="px-6 py-4 border-b">{point.coins_earned}</td>
+                <td className="px-6 py-4 border-b">{point.coins_used}</td>
+                <td className="px-6 py-4 border-b">{point.transaction_type}</td>
+                <td className="px-6 py-4 border-b">{point.order_id}</td>
+                <td className="px-6 py-4 border-b">{point.created_at}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };

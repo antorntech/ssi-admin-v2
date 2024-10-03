@@ -21,8 +21,9 @@ const App = () => {
           if (endpoint.startsWith("/")) endpoint = endpoint.slice(1);
           if (!options.Headers) options.Headers = {};
           if (token) options.Headers.Authorization = `Bearer ${token}`;
-          return fetch(API_URL + endpoint, { ...options });
-        }
+          const fullPath = API_URL + endpoint;
+          return fetch(fullPath, options);
+        },
       }}
     >
       <AppLayout />
