@@ -276,7 +276,7 @@ const AddProduct = () => {
               rows={8}
             />
             {/* file upload */}
-            <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[22px] text-center w-full flex flex-col items-center relative">
+            <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
               <lord-icon
                 src="https://cdn.lordicon.com/smwmetfi.json"
                 trigger="loop"
@@ -333,7 +333,7 @@ const AddProduct = () => {
             </div>
           </div>
         </div>
-        <button className="mt-5 bg-green-500 text-white px-4 py-2 rounded">
+        <button className="mt-5 bg-[#6CB93B] text-white px-4 py-2 rounded">
           Submit
         </button>
       </form>

@@ -25,6 +25,10 @@ const EditProduct = () => {
   const [files, setFiles] = useState([]);
   const [initialFiles, setInitialFiles] = useState([]);
 
+  const fileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...files]);
+  };
   // Fetch the existing product data when the component loads
   useEffect(() => {
     const existingData = JSON.parse(localStorage.getItem("productsData")) || [];
@@ -50,6 +54,15 @@ const EditProduct = () => {
 
   const handleDrop = (acceptedFiles) => {
     setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await handleUpdate();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleUpdate = async () => {
@@ -131,237 +144,216 @@ const EditProduct = () => {
       </div>
 
       {/* Form Fields (same as AddProduct but pre-filled) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Left Column */}
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Product Name
-          </Typography>
-          <Input
-            type="text"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+      <form className="" onSubmit={onSubmit}>
+        {/* Three Column Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Left Column */}
+          <div className="w-full md:col-span-1">
+            <Typography variant="h6" color="gray" className="mb-1 font-normal">
+              Name
+            </Typography>
+            <Input
+              type="text"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              value={name}
+              name="name"
+              onChange={(e) => setName(e.target.value)}
+            />
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Brand
-          </Typography>
-          <Input
-            type="text"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-          />
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Brand
+            </Typography>
+            <Input
+              type="text"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              value={brand}
+              name="brand"
+              onChange={(e) => setBrand(e.target.value)}
+            />
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Price
-          </Typography>
-          <Input
-            type="number"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Price
+            </Typography>
+            <Input
+              type="number"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              value={price}
+              name="price"
+              onChange={(e) => setPrice(e.target.value)}
+            />
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Quantity
-          </Typography>
-          <Input
-            type="number"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-        </div>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Quantity
+            </Typography>
+            <Input
+              type="number"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              value={quantity}
+              name="quantity"
+              onChange={(e) => setQuantity(e.target.value)}
+            />
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Category
+            </Typography>
+            <Select
+              value={category}
+              onChange={(value) => setCategory(value)}
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              name="category"
+            >
+              <Option value="" disabled>
+                Select category
+              </Option>
+              <Option value="Electronics">Electronics</Option>
+              <Option value="Fashion">Fashion</Option>
+              <Option value="Home & Garden">Home & Garden</Option>
+              <Option value="Sports">Sports</Option>
+              <Option value="Toys">Toys</Option>
+              <Option value="Books">Books</Option>
+            </Select>
 
-        {/* Middle Column */}
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Category
-          </Typography>
-          <Select
-            value={category}
-            onChange={(value) => setCategory(value)}
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          >
-            <Option value="" disabled>
-              Select category
-            </Option>
-            <Option value="Electronics">Electronics</Option>
-            <Option value="Fashion">Fashion</Option>
-            <Option value="Home & Garden">Home & Garden</Option>
-            <Option value="Sports">Sports</Option>
-            <Option value="Toys">Toys</Option>
-            <Option value="Books">Books</Option>
-          </Select>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Color
+            </Typography>
+            <Select
+              value={color}
+              name="color"
+              onChange={(value) => setColor(value)}
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            >
+              <Option value="" disabled>
+                Select color
+              </Option>
+              <Option value="Red">Red</Option>
+              <Option value="Blue">Blue</Option>
+              <Option value="Green">Green</Option>
+              <Option value="Black">Black</Option>
+              <Option value="White">White</Option>
+              <Option value="Yellow">Yellow</Option>
+              <Option value="Orange">Orange</Option>
+              <Option value="Purple">Purple</Option>
+            </Select>
+          </div>
 
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Color
-          </Typography>
-          <Select
-            value={color}
-            onChange={(value) => setColor(value)}
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          >
-            <Option value="" disabled>
-              Select color
-            </Option>
-            <Option value="Red">Red</Option>
-            <Option value="Blue">Blue</Option>
-            <Option value="Green">Green</Option>
-            <Option value="Black">Black</Option>
-            <Option value="White">White</Option>
-            <Option value="Yellow">Yellow</Option>
-            <Option value="Orange">Orange</Option>
-            <Option value="Purple">Purple</Option>
-          </Select>
-
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-4"
-          >
-            Description
-          </Typography>
-          <Textarea
-            value={description}
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={5}
-          />
-        </div>
-
-        {/* Right Column */}
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Product Image
-          </Typography>
-          <div
-            {...getRootProps({
-              className:
-                "dropzone border-2 border-dashed border-[#6CB93B] rounded-md p-4 text-center cursor-pointer",
-            })}
-          >
-            <input {...getInputProps()} />
-            <div>
+          {/* Right Column */}
+          <div className="w-full md:col-span-2">
+            <Typography variant="h6" color="gray" className="mb-1 font-normal">
+              Description
+            </Typography>
+            <Textarea
+              value={description}
+              name="description"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={8}
+            />
+            {/* file upload */}
+            <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
               <lord-icon
                 src="https://cdn.lordicon.com/smwmetfi.json"
                 trigger="loop"
                 colors="primary:#545454"
                 style={{ width: "50px", height: "50px" }}
               ></lord-icon>
-              <p className="text-2xl text-gray-600">
-                Drop files here or click to upload.
-              </p>
-              {files.length > 0 && (
-                <div className="mt-2">
-                  {files.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center border-b py-2"
-                    >
-                      <span>{file.name || `Image ${index + 1}`}</span>
-                      <button
-                        className="text-red-500"
-                        onClick={() => {
-                          setFiles((prevFiles) =>
-                            prevFiles.filter((_, i) => i !== index)
-                          );
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
+              <div className="flex flex-col items-center">
+                <div className="text-lg font-semibold mb-1">
+                  Drag and drop files here
                 </div>
-              )}
+                <div className="text-sm mb-6">File must be image/* format</div>
+                <button
+                  className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
+                  type="button"
+                >
+                  <span className="whitespace-nowrap">Browse files</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <input
+                name="images"
+                type="file"
+                accept="image/*"
+                multiple
+                className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
+                onChange={fileChange}
+              />
+            </label>
+            <div className="flex overflow-x-auto gap-4 mt-2">
+              {files.map((src, i) => {
+                return (
+                  <ImagePreviewWithRemove
+                    key={i}
+                    src={src}
+                    onRemove={() => {
+                      // call remove media api
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
-
-          {/* Display Initial Images */}
-          {initialFiles.length > 0 && (
-            <div className="mt-4">
-              <Typography
-                variant="h6"
-                color="gray"
-                className="mb-2 font-normal"
-              >
-                Existing Images:
-              </Typography>
-              {initialFiles.map((file, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center border-b py-2"
-                >
-                  <span>{file.name || `Image ${index + 1}`}</span>
-                  <button
-                    className="text-red-500"
-                    onClick={() => {
-                      setInitialFiles((prevFiles) =>
-                        prevFiles.filter((_, i) => i !== index)
-                      );
-                    }}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
-      </div>
-
-      {/* Update Button */}
-      <div className="mt-6">
-        <button
-          onClick={handleUpdate}
-          className="bg-[#6CB93B] hover:bg-[#4d8229] text-white py-2 px-6 rounded-lg transition-all duration-300"
-        >
-          Update Product
+        <button className="mt-5 bg-[#6CB93B] text-white px-4 py-2 rounded">
+          Submit
         </button>
-      </div>
+      </form>
     </div>
   );
 };
