@@ -326,6 +326,7 @@ const AddProduct = () => {
                     src={src}
                     onRemove={() => {
                       // call remove media api
+                      setImages((prev) => prev.filter((_, i) => i !== i));
                     }}
                   />
                 );
