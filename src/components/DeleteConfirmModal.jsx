@@ -7,39 +7,9 @@ import {
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 
-export function DeleteConfirmModal({
-  open,
-  handleOpen,
-  itemId,
-  onDelete,
-  itemName
-}) {
-  console.log(itemId);
-  const handleDelete = () => {
-    // Perform deletion from local storage
-    let storedItems = JSON.parse(localStorage.getItem(`${itemName}`)) || [];
-    storedItems = storedItems.filter((item) => item.id !== itemId);
-    localStorage.setItem(`${itemName}`, JSON.stringify(storedItems));
-
-    // Notify user
-    toast.success("Successfully Deleted!", {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
-    });
-
-    // Close modal and trigger a callback to refresh the blog list
-    handleOpen();
-    if (onDelete) {
-      onDelete();
-    }
-  };
-
+export function DeleteConfirmModal({ open, onDelete, onCollapse }) {
   return (
-    <Dialog open={open} handler={handleOpen}>
+    <Dialog open={!!open} handler={onCollapse}>
       <div className="flex items-center gap-1 p-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -64,12 +34,12 @@ export function DeleteConfirmModal({
         <Button
           variant="text"
           color="black"
-          onClick={handleOpen}
+          onClick={onCollapse}
           className="mr-1"
         >
           <span>Cancel</span>
         </Button>
-        <Button variant="gradient" color="red" onClick={handleDelete}>
+        <Button variant="gradient" color="red" onClick={onDelete}>
           <span>Confirm</span>
         </Button>
       </DialogFooter>

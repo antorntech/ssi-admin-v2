@@ -3,129 +3,70 @@ import {
   Textarea,
   Typography,
   Select,
-  Option,
+  Option
 } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import moment from "moment";
-import { useDropzone } from "react-dropzone";
+import FetchContext from "../../context/FetchContext";
+import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
+import { srcBuilder } from "../../utils/src.js";
+
+const initialValues = {
+  name: "",
+  description: "",
+  color: "",
+  brand: "",
+  category: "",
+  price: "",
+  quantity: "",
+  serverImages: null
+};
 
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const date = moment().format("Do MMM, YYYY");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState("");
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [files, setFiles] = useState([]);
-  const [initialFiles, setInitialFiles] = useState([]);
-
-  const fileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...files]);
-  };
-  // Fetch the existing product data when the component loads
-  useEffect(() => {
-    const existingData = JSON.parse(localStorage.getItem("productsData")) || [];
-
-    const productToEdit = existingData.find(
-      (product) => product.id === parseInt(id)
-    );
-
-    console.log(productToEdit);
-
-    if (productToEdit) {
-      setName(productToEdit.name);
-      setDescription(productToEdit.description);
-      setColor(productToEdit.color);
-      setBrand(productToEdit.brand);
-      setCategory(productToEdit.category);
-      setPrice(productToEdit.price);
-      setQuantity(productToEdit.quantity);
-      setFiles(productToEdit.images || []);
-      setInitialFiles(productToEdit.images || []); // Store initial images separately
-    }
-  }, [id]);
-
-  const handleDrop = (acceptedFiles) => {
-    setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-  };
-
-  const onSubmit = async (e) => {
+  const [formState, setFormState] = useState(initialValues);
+  const [images, setImages] = useState([]);
+  const { request } = useContext(FetchContext);
+  const author = "google@gmail.com";
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormState({ ...formState, [name]: value });
+  }
+  function fetchProductById() {
+    if (!id) return;
+    request(`products/${id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data) return;
+        setFormState((prev) => ({
+          ...prev,
+          ...data,
+          serverImages: data.images,
+          images: []
+        }));
+      })
+      .catch(console.error);
+  }
+  useEffect(fetchProductById, [id]);
+  const onSubmit = (e) => {
     e.preventDefault();
-    try {
-      await handleUpdate();
-    } catch (error) {
-      console.error(error);
-    }
+    const body = new FormData(e.target);
+    if (!body.has("color")) body.append("color", "#000000");
+    if (!body.has("author")) body.append("author", author);
+    if (!request) return;
+    request(`products/${id}`, { method: "PATCH", body })
+      .then((r) => r.json())
+      .then(() => {
+        navigate("/products");
+      })
+      .catch(console.error);
   };
-
-  const handleUpdate = async () => {
-    const existingData = JSON.parse(localStorage.getItem("productsData")) || [];
-    const updatedProducts = existingData.map((product) =>
-      product.id === parseInt(id)
-        ? {
-            ...product,
-            name,
-            description,
-            color,
-            brand,
-            category,
-            price,
-            quantity,
-            date,
-            images: files,
-          }
-        : product
-    );
-
-    localStorage.setItem("productsData", JSON.stringify(updatedProducts));
-
-    try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          description,
-          color,
-          brand,
-          category,
-          price,
-          quantity,
-          date,
-          images: files,
-        }),
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-
-    toast.success("Update successful", {
-      position: "top-right",
-      hideProgressBar: false,
-      autoClose: 1000,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-    navigate("/products");
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop: handleDrop });
-
+  const Legend = ({ children }) => (
+    <Typography variant="h6" color="gray" className="mb-1 font-normal">
+      {children}
+    </Typography>
+  );
   return (
     <div className="w-full">
       <div className="flex items-center gap-3 mb-5">
@@ -135,104 +76,67 @@ const EditProduct = () => {
         >
           <i className="fa-solid fa-hand-point-left"></i>
         </button>
-        <div>
-          <h1 className="text-xl font-bold">Edit Product</h1>
-          <p className="text-sm text-gray-500">
-            Update product details from here.
-          </p>
-        </div>
+        <h1 className="text-xl font-bold">Edit Product</h1>
       </div>
 
-      {/* Form Fields (same as AddProduct but pre-filled) */}
       <form className="" onSubmit={onSubmit}>
-        {/* Three Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Left Column */}
-          <div className="w-full md:col-span-1">
-            <Typography variant="h6" color="gray" className="mb-1 font-normal">
-              Name
-            </Typography>
+          <div className="w-full md:col-span-1 space-y-2">
+            <Legend>Name</Legend>
             <Input
               type="text"
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
-              value={name}
+              value={formState.name}
               name="name"
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleChange}
             />
-
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Brand
-            </Typography>
+            <Legend>Brand</Legend>
             <Input
               type="text"
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
-              value={brand}
+              value={formState.brand}
               name="brand"
-              onChange={(e) => setBrand(e.target.value)}
+              onChange={handleChange}
             />
-
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Price
-            </Typography>
+            <Legend>Price</Legend>
             <Input
               type="number"
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
-              value={price}
+              value={formState.price}
               name="price"
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={handleChange}
             />
-
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Quantity
-            </Typography>
+            <Legend>Quantity</Legend>
             <Input
               type="number"
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
-              value={quantity}
+              value={formState.quantity}
               name="quantity"
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={handleChange}
             />
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Category
-            </Typography>
+            <Legend>Category</Legend>
             <Select
-              value={category}
-              onChange={(value) => setCategory(value)}
+              value={formState.category}
+              onChange={handleChange}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
               name="category"
             >
@@ -246,21 +150,14 @@ const EditProduct = () => {
               <Option value="Toys">Toys</Option>
               <Option value="Books">Books</Option>
             </Select>
-
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Color
-            </Typography>
+            <Legend>Color</Legend>
             <Select
-              value={color}
+              value={formState.color}
               name="color"
-              onChange={(value) => setColor(value)}
+              onChange={handleChange}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
             >
               <Option value="" disabled>
@@ -279,17 +176,15 @@ const EditProduct = () => {
 
           {/* Right Column */}
           <div className="w-full md:col-span-2">
-            <Typography variant="h6" color="gray" className="mb-1 font-normal">
-              Description
-            </Typography>
+            <Legend>Description</Legend>
             <Textarea
-              value={description}
+              value={formState.description}
               name="description"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleChange}
               rows={8}
             />
             {/* file upload */}
@@ -332,17 +227,42 @@ const EditProduct = () => {
                 accept="image/*"
                 multiple
                 className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
-                onChange={fileChange}
+                onChange={(e) => {
+                  setImages((prev) => [...prev, ...e.target.files]);
+                }}
               />
             </label>
-            <div className="flex overflow-x-auto gap-4 mt-2">
-              {files.map((src, i) => {
+            <div className="flex overflow-x-auto gap-4 py-2">
+              {formState.serverImages?.map((src, i) => {
+                let path = null;
+                if (typeof src == "string") path = srcBuilder(src);
+                return (
+                  <ImagePreviewWithRemove
+                    key={i}
+                    src={path}
+                    onRemove={() => {
+                      if (!id || !src)
+                        throw new Error("id or src is not defined");
+                      // call remove media api
+                      request(`products/${id}/images/${src}`, {
+                        method: "DELETE"
+                      })
+                        .then((r) => r.json())
+                        .then(() => {
+                          fetchProductById();
+                        })
+                        .catch(console.error);
+                    }}
+                  />
+                );
+              })}
+              {images?.map((src, i) => {
                 return (
                   <ImagePreviewWithRemove
                     key={i}
                     src={src}
                     onRemove={() => {
-                      // call remove media api
+                      setImages((prev) => prev.filter((_, i) => i !== i));
                     }}
                   />
                 );

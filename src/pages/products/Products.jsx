@@ -62,8 +62,9 @@ const Products = () => {
   const handleDelete = async (id) => {
     try {
       if (!id) throw new Error("Id is not defined");
-      response = await request(`products${id}`, { method: "DELETE" });
-      alert("Deleted");
+      const response = await request(`products/${id}`, { method: "DELETE" });
+      setSelectedItemId(null);
+      fetchProducts();
     } catch (error) {
       console.error(error);
     }
@@ -149,7 +150,7 @@ const Products = () => {
                       <td className="px-6 py-4 border-b">{product.date}</td>
                       <td className="px-6 py-4 border-b">
                         <Link
-                          to={`/products/edit-product/${product.id}`}
+                          to={`/products/edit/${product.id}`}
                           className="text-orange-500 hover:text-orange-700"
                         >
                           <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
@@ -183,10 +184,14 @@ const Products = () => {
           )}
           {selectedItemId ? (
             <DeleteConfirmModal
-              open={open}
               handleOpen={handleOpen}
-              itemId={selectedItemId}
-              onDelete={handleDelete}
+              onCollapse={() => {
+                setSelectedItemId(null);
+              }}
+              open={!!selectedItemId}
+              onDelete={() => {
+                handleDelete(selectedItemId);
+              }}
               itemName="productsData"
             />
           ) : null}
