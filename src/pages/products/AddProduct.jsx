@@ -9,7 +9,6 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { useDropzone } from "react-dropzone";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 

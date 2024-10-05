@@ -74,68 +74,70 @@ const Categories = () => {
             categories are {categories.length > 0 ? "" : "not"} available here.
           </p>
         </div>
-        <table className="w-full min-w-full bg-white border">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Banner
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Name
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                CreatedAt
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                UpdatedAt
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCategories.map((category) => (
-              <tr key={category.id} className="hover:bg-gray-100">
-                <td className="px-6 py-4 border-b">
-                  {category.image ? (
-                    <img
-                      src={category.image}
-                      alt={category.name || "Category"}
-                      className="h-12 w-12 object-cover"
-                    />
-                  ) : (
-                    <img
-                      src="https://via.placeholder.com/150"
-                      alt="Placeholder"
-                      className="h-12 w-12 object-cover"
-                    />
-                  )}
-                </td>
-                <td className="px-6 py-4 border-b">{category.name}</td>
-                <td className="px-6 py-4 border-b">{category.createdAt}</td>
-                <td className="px-6 py-4 border-b">{category.updatedAt}</td>
-                <td className="px-6 py-4 border-b">
-                  <button
-                    onClick={() => handleEditClick(category)}
-                    className="text-orange-500 hover:text-orange-700 mr-3"
-                  >
-                    <i className="fa-solid fa-pen-to-square text-xl"></i>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedCategoryId(category.id);
-                      handleOpen(); // Open delete confirmation modal
-                    }}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <i className="fa-solid fa-trash-can text-xl"></i>
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-full bg-white border">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  Banner
+                </th>
+                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  Name
+                </th>
+                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  CreatedAt
+                </th>
+                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  UpdatedAt
+                </th>
+                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  Action
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentCategories.map((category) => (
+                <tr key={category.id} className="hover:bg-gray-100">
+                  <td className="px-6 py-4 border-b">
+                    {category.image ? (
+                      <img
+                        src={category.image}
+                        alt={category.name || "Category"}
+                        className="h-12 w-12 object-cover"
+                      />
+                    ) : (
+                      <img
+                        src="https://via.placeholder.com/150"
+                        alt="Placeholder"
+                        className="h-12 w-12 object-cover"
+                      />
+                    )}
+                  </td>
+                  <td className="px-6 py-4 border-b">{category.name}</td>
+                  <td className="px-6 py-4 border-b">{category.createdAt}</td>
+                  <td className="px-6 py-4 border-b">{category.updatedAt}</td>
+                  <td className="px-6 py-4 border-b">
+                    <button
+                      onClick={() => handleEditClick(category)}
+                      className="text-orange-500 hover:text-orange-700 mr-3"
+                    >
+                      <i className="fa-solid fa-pen-to-square text-xl"></i>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedCategoryId(category.id);
+                        handleOpen(); // Open delete confirmation modal
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <i className="fa-solid fa-trash-can text-xl"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Pagination Controls */}
         {totalPages > 1 && (

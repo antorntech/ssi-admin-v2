@@ -3,7 +3,7 @@ import {
   Textarea,
   Typography,
   Select,
-  Option
+  Option,
 } from "@material-tailwind/react";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,14 +19,14 @@ const initialValues = {
   category: "",
   price: "",
   quantity: "",
-  serverImages: null
+  serverImages: null,
 };
 
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formState, setFormState] = useState(initialValues);
-  const [images, setImages] = useState([]);
+  const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
   function handleChange(e) {
@@ -43,7 +43,7 @@ const EditProduct = () => {
           ...prev,
           ...data,
           serverImages: data.images,
-          images: []
+          images: [],
         }));
       })
       .catch(console.error);
@@ -88,7 +88,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.name}
               name="name"
@@ -100,7 +100,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.brand}
               name="brand"
@@ -112,7 +112,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.price}
               name="price"
@@ -124,7 +124,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.quantity}
               name="quantity"
@@ -136,7 +136,7 @@ const EditProduct = () => {
               onChange={handleChange}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               name="category"
             >
@@ -157,7 +157,7 @@ const EditProduct = () => {
               onChange={handleChange}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
             >
               <Option value="" disabled>
@@ -182,7 +182,7 @@ const EditProduct = () => {
               name="description"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               onChange={handleChange}
               rows={8}
@@ -228,7 +228,7 @@ const EditProduct = () => {
                 multiple
                 className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
                 onChange={(e) => {
-                  setImages((prev) => [...prev, ...e.target.files]);
+                  setFiles((prev) => [...prev, ...e.target.files]);
                 }}
               />
             </label>
@@ -245,7 +245,7 @@ const EditProduct = () => {
                         throw new Error("id or src is not defined");
                       // call remove media api
                       request(`products/${id}/images/${src}`, {
-                        method: "DELETE"
+                        method: "DELETE",
                       })
                         .then((r) => r.json())
                         .then(() => {
@@ -256,13 +256,13 @@ const EditProduct = () => {
                   />
                 );
               })}
-              {images?.map((src, i) => {
+              {files?.map((src, i) => {
                 return (
                   <ImagePreviewWithRemove
                     key={i}
                     src={src}
                     onRemove={() => {
-                      setImages((prev) => prev.filter((_, i) => i !== i));
+                      setFiles((prev) => prev.filter((_, i) => i !== i));
                     }}
                   />
                 );
