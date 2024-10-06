@@ -1,52 +1,46 @@
 import { Input, Typography } from "@material-tailwind/react";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
-import FetchContext from "../../context/FetchContext";
-import { useNavigate } from "react-router-dom"; // Ensure you're importing useNavigate
 
-const AddGift = ({ handleAddGift }) => {
-  const [price, setPrice] = useState("");
+const AddBrand = ({ handleAddBrand }) => {
+  const [name, setName] = useState("");
   const [files, setFiles] = useState([]);
-  const { request } = useContext(FetchContext);
-  const navigate = useNavigate(); // Initialize navigate from react-router-dom
+  const author = "google@gmail.com";
 
   const fileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    const files = Array.from(e.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...files]);
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    const body = new FormData();
-    body.append("price", price); // Add price to FormData
-
-    // Add each file to FormData
-    files.forEach((file) => {
-      body.append("images", file);
-    });
-
-    try {
-      await request("gifts", {
-        method: "POST",
-        body,
-      });
-      navigate("/gifts");
-    } catch (error) {
-      console.error("Failed to add gift", error);
-      alert("Failed to add gift. Please try again.");
-    }
-  };
-
-  const handleRemoveFile = (index) => {
-    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    const body = new FormData(e.target);
+    if (!body.has("color")) body.append("color", "#000000");
+    if (!body.has("author")) body.append("author", author);
+    // try {
+    //   await request("products", {
+    //     method: "POST",
+    //     body,
+    //   });
+    //   navigate("/products");
+    // } catch (error) {
+    //   console.error("Failed to add product", error);
+    // }
+    return;
   };
 
   return (
-    <div>
-      <h1 className="text-xl font-bold">Add Gift</h1>
+    <>
+      <div className="flex items-center gap-3 mb-3">
+        <div>
+          <h1 className="text-xl font-bold">Add Brand</h1>
+          <p className="text-sm text-gray-500">
+            You can add category details from here.
+          </p>
+        </div>
+      </div>
       <form onSubmit={onSubmit} className="form">
-        {/* File Upload Section */}
+        {/* file upload */}
         <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
           <lord-icon
             src="https://cdn.lordicon.com/smwmetfi.json"
@@ -90,44 +84,48 @@ const AddGift = ({ handleAddGift }) => {
           />
         </label>
         <div className="flex overflow-x-auto gap-4 mt-2">
-          {files.map((file, i) => (
-            <ImagePreviewWithRemove
-              key={i}
-              src={URL.createObjectURL(file)} // Use createObjectURL for preview
-              onRemove={() => handleRemoveFile(i)}
-            />
-          ))}
+          {files.map((src, i) => {
+            return (
+              <ImagePreviewWithRemove
+                key={i}
+                src={src}
+                onRemove={() => {
+                  // call remove media api
+                  setFiles((prev) => prev.filter((_, i) => i !== i));
+                }}
+              />
+            );
+          })}
         </div>
-
-        {/* Price Input */}
         <div>
           <Typography
             variant="h6"
             color="gray"
             className="mb-1 font-normal mt-2"
           >
-            Price
+            Name
           </Typography>
-          <input
-            type="number"
+          <Input
+            type="text"
             size="md"
-            className="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
+            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="mt-5 bg-green-500 text-white px-4 py-2 rounded"
         >
-          Add Gift
+          Add Brand
         </button>
       </form>
-    </div>
+    </>
   );
 };
 
-export default AddGift;
+export default AddBrand;

@@ -5,33 +5,38 @@ const menuItems = [
   {
     title: "Dashboard",
     link: "/",
-    icon: "/img/icons/dashboard"
+    icon: "/img/icons/dashboard",
   },
   {
     title: "Products",
     link: "/products",
-    icon: "/img/icons/product"
+    icon: "/img/icons/product",
   },
   {
     title: "Categories",
     link: "/categories",
-    icon: "/img/icons/category"
+    icon: "/img/icons/category",
+  },
+  {
+    title: "Brands",
+    link: "/brands",
+    icon: "/img/icons/brand",
   },
   {
     title: "Gifts",
     link: "/gifts",
-    icon: "/img/icons/gift"
+    icon: "/img/icons/gift",
   },
   {
     title: "Orders",
     link: "/orders",
-    icon: "/img/icons/order"
+    icon: "/img/icons/order",
   },
   {
     title: "Points",
     link: "/points",
-    icon: "/img/icons/point"
-  }
+    icon: "/img/icons/point",
+  },
 ];
 
 const Sidenav = () => {

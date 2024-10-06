@@ -1,97 +1,92 @@
 import React, { useState, useEffect, useContext } from "react";
-import AddCategory from "./AddCategory";
-import EditCategory from "./EditCategory";
+import AddBrand from "./AddBrand";
+import EditBrand from "./EditBrand";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 
-const Categories = () => {
+const Brands = () => {
   const { request } = useContext(FetchContext);
 
-  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [response, setResponse] = useState({ data: [], filtered: [] });
 
-  const fetchCategories = async () => {
+  const fetchBrands = async () => {
     try {
-      const response = await request("categories");
+      const response = await request("brands");
       const json = await response.json();
       const { data, count } = json;
       if (!data) return;
       setResponse((prev) => ({ ...prev, data, count }));
-      setCategories(json.data);
+      setBrands(json.data);
     } catch (error) {
       console.error();
     }
   };
   useEffect(() => {
-    fetchCategories();
+    fetchBrands();
   }, []);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState(null);
   const [open, setOpen] = useState(false); // State for delete confirmation modal
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // ID of the category to be deleted
+  const [selectedBrandId, setSelectedBrandId] = useState(null); // ID of the brand to be deleted
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Items per page for pagination
   const [totalPages, setTotalPages] = useState(0);
 
-  const handleAddCategory = (newCategory) => {
-    setCategories([...categories, newCategory]);
+  const handleAddBrand = (newBrand) => {
+    setBrands([...brands, newBrand]);
   };
 
-  const handleEditCategory = (updatedCategory) => {
-    const updatedCategories = categories.map((category) =>
-      category.id === updatedCategory.id ? updatedCategory : category
+  const handleEditBrand = (updatedBrand) => {
+    const updatedBrands = brands.map((brand) =>
+      brand.id === updatedBrand.id ? updatedBrand : brand
     );
-    setCategories(updatedCategories);
+    setBrands(updatedBrands);
     setIsEditing(false);
   };
 
-  const handleDeleteCategory = (id) => {
-    const filteredCategories = categories.filter(
-      (category) => category.id !== id
-    );
-    setCategories(filteredCategories);
-    localStorage.setItem("categoriesData", JSON.stringify(filteredCategories));
+  const handleDeleteBrand = (id) => {
+    const filteredBrands = brands.filter((brand) => brand.id !== id);
+    setBrands(filteredBrands);
+    localStorage.setItem("brandsData", JSON.stringify(filteredBrands));
   };
 
-  const handleEditClick = (category) => {
-    setSelectedCategory(category);
+  const handleEditClick = (brand) => {
+    setSelectedBrand(brand);
     setIsEditing(true);
   };
 
   const handleOpen = () => setOpen(!open); // Toggle modal open/close
 
-  // Confirm deletion of the selected category
-  const confirmDeleteCategory = () => {
-    handleDeleteCategory(selectedCategoryId);
+  // Confirm deletion of the selected brand
+  const confirmDeleteBrand = () => {
+    handleDeleteBrand(selectedBrandId);
     handleOpen(); // Close the modal after deletion
   };
 
-  // Calculate the current categories for the current page
-  const indexOfLastCategory = currentPage * itemsPerPage;
-  const indexOfFirstCategory = indexOfLastCategory - itemsPerPage;
-  const currentCategories = categories.slice(
-    indexOfFirstCategory,
-    indexOfLastCategory
-  );
+  // Calculate the current brands for the current page
+  const indexOfLastBrand = currentPage * itemsPerPage;
+  const indexOfFirstBrand = indexOfLastBrand - itemsPerPage;
+  const currentBrands = brands.slice(indexOfFirstBrand, indexOfLastBrand);
 
-  // Set total pages whenever categories change
+  // Set total pages whenever brands change
   useEffect(() => {
-    setTotalPages(Math.ceil(categories.length / itemsPerPage));
-  }, [categories]);
+    setTotalPages(Math.ceil(brands.length / itemsPerPage));
+  }, [brands]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Column 1: Table */}
-      <div className="categories-table">
+      <div className="brands-table">
         <div className="mb-4">
-          <h1 className="text-xl font-bold">Categories</h1>
+          <h1 className="text-xl font-bold">Brands</h1>
           <p className="text-sm text-gray-500">
-            categories are {categories.length > 0 ? "" : "not"} available here.
+            brands are {brands.length > 0 ? "" : "not"} available here.
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -116,13 +111,13 @@ const Categories = () => {
               </tr>
             </thead>
             <tbody>
-              {currentCategories.map((category) => (
-                <tr key={category.id} className="hover:bg-gray-100">
+              {currentBrands.map((brand) => (
+                <tr key={brand.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4 border-b">
-                    {category.image ? (
+                    {brand.image ? (
                       <img
-                        src={category.image}
-                        alt={category.name || "Category"}
+                        src={brand.image}
+                        alt={brand.name || "Brand"}
                         className="h-12 w-12 object-cover"
                       />
                     ) : (
@@ -133,23 +128,23 @@ const Categories = () => {
                       />
                     )}
                   </td>
-                  <td className="px-6 py-4 border-b">{category.name}</td>
+                  <td className="px-6 py-4 border-b">{brand.name}</td>
                   <td className="px-6 py-4 border-b">
-                    {moment(category.created_at).format("Do MMM, YYYY")}
+                    {moment(brand.created_at).format("Do MMM, YYYY")}
                   </td>
                   <td className="px-6 py-4 border-b">
-                    {moment(category.updated_at).format("Do MMM, YYYY")}
+                    {moment(brand.updated_at).format("Do MMM, YYYY")}
                   </td>
                   <td className="px-6 py-4 border-b">
                     <button
-                      onClick={() => handleEditClick(category)}
+                      onClick={() => handleEditClick(brand)}
                       className="text-orange-500 hover:text-orange-700 mr-3"
                     >
                       <i className="fa-solid fa-pen-to-square text-xl"></i>
                     </button>
                     <button
                       onClick={() => {
-                        setSelectedCategoryId(category.id);
+                        setSelectedBrandId(brand.id);
                         handleOpen(); // Open delete confirmation modal
                       }}
                       className="text-red-500 hover:text-red-700"
@@ -178,14 +173,14 @@ const Categories = () => {
       </div>
 
       {/* Column 2: Conditional Form */}
-      <div className="category-form">
+      <div className="brand-form">
         {isEditing ? (
-          <EditCategory
-            selectedCategory={selectedCategory}
-            handleEditCategory={handleEditCategory}
+          <EditBrand
+            selectedBrand={selectedBrand}
+            handleEditBrand={handleEditBrand}
           />
         ) : (
-          <AddCategory handleAddCategory={handleAddCategory} />
+          <AddBrand handleAddBrand={handleAddBrand} />
         )}
       </div>
 
@@ -193,12 +188,12 @@ const Categories = () => {
       <DeleteConfirmModal
         open={open}
         handleOpen={handleOpen}
-        itemId={selectedCategoryId}
-        onDelete={confirmDeleteCategory} // Confirm deletion function
-        itemName="Category" // Change to "Category" for better context
+        itemId={selectedBrandId}
+        onDelete={confirmDeleteBrand} // Confirm deletion function
+        itemName="Brand" // Change to "Brand" for better context
       />
     </div>
   );
 };
 
-export default Categories;
+export default Brands;
