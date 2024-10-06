@@ -1,48 +1,50 @@
 import { Input, Typography } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
-import moment from "moment";
+import React, { useState, useEffect, useContext } from "react";
+import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
+import FetchContext from "../../context/FetchContext";
+
+const initialValues = {
+  name: "",
+  serverImages: null,
+};
 
 const EditCategory = ({ selectedCategory, handleEditCategory }) => {
-  const date = moment().format("Do MMM, YYYY");
-  const [name, setName] = useState(selectedCategory.name);
+  const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
-  const [image, setImage] = useState(null); // Separate state for the main image
+  const { request } = useContext(FetchContext);
 
-  useEffect(() => {
-    // Preload the selected category's image in the files array
-    if (selectedCategory.image) {
-      setImage(selectedCategory.image); // Preload the image URL
-    }
-  }, [selectedCategory]);
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormState({ ...formState, [name]: value });
+  }
 
-  const handleDrop = (acceptedFiles) => {
-    setFiles(acceptedFiles);
-    setImage(acceptedFiles[0]); // Set the uploaded file
-  };
-
-  const handleSubmit = (e) => {
+  function fetchCategoryById() {
+    // if (!id) return;
+    // request(`category/${id}`)
+    //   .then((r) => r.json())
+    //   .then((data) => {
+    //     if (!data) return;
+    //     setFormState((prev) => ({
+    //       ...prev,
+    //       ...data,
+    //       serverImages: data.images,
+    //       images: [],
+    //     }));
+    //   })
+    //   .catch(console.error);
+  }
+  useEffect(fetchCategoryById, [selectedCategory]);
+  const onSubmit = (e) => {
     e.preventDefault();
-
-    const updatedCategory = {
-      ...selectedCategory,
-      image: image instanceof File ? URL.createObjectURL(image) : image, // Check if it's a new file or existing URL
-      name,
-      updatedAt: date,
-    };
-
-    // Update localStorage
-    const existingCategories =
-      JSON.parse(localStorage.getItem("categoriesData")) || [];
-    const updatedCategories = existingCategories.map((category) =>
-      category.id === updatedCategory.id ? updatedCategory : category
-    );
-    localStorage.setItem("categoriesData", JSON.stringify(updatedCategories));
-
-    handleEditCategory(updatedCategory);
+    const body = new FormData(e.target);
+    if (!request) return;
+    request(`category/${id}`, { method: "PATCH", body })
+      .then((r) => r.json())
+      .then(() => {
+        navigate("/categories");
+      })
+      .catch(console.error);
   };
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop: handleDrop });
 
   return (
     <>
@@ -54,55 +56,87 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
           </p>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="form">
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Category Image
-          </Typography>
-
-          {/* Dropzone for Images */}
-          <div
-            {...getRootProps({
-              className:
-                "dropzone border-2 border-dashed border-[#6CB93B] rounded-md p-4 text-center cursor-pointer",
-            })}
-          >
-            <input {...getInputProps()} />
-            <div>
-              <lord-icon
-                src="https://cdn.lordicon.com/smwmetfi.json"
-                trigger="loop"
-                colors="primary:#545454"
-                style={{ width: "50px", height: "50px" }}
-              ></lord-icon>
-              <p className="text-2xl text-gray-600">
-                Drop files here or click to upload.
-              </p>
+      <form onSubmit={onSubmit} className="form">
+        {/* file upload */}
+        <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
+          <lord-icon
+            src="https://cdn.lordicon.com/smwmetfi.json"
+            trigger="loop"
+            colors="primary:#545454"
+            style={{ width: "50px", height: "50px" }}
+          ></lord-icon>
+          <div className="flex flex-col items-center">
+            <div className="text-lg font-semibold mb-1">
+              Drag and drop files here
             </div>
-          </div>
-
-          {/* Preview Image */}
-          <div className="grid grid-cols-5 gap-4">
-            {image && (
-              <div className="relative mt-4">
-                <img
-                  src={
-                    image instanceof File ? URL.createObjectURL(image) : image
-                  }
-                  alt="Preview"
-                  className="w-full h-16 object-cover rounded-md"
+            <div className="text-sm mb-6">File must be image/* format</div>
+            <button
+              className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
+              type="button"
+            >
+              <span className="whitespace-nowrap">Browse files</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="h-5 w-5"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
                 />
-                <button
-                  className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded p-1"
-                  onClick={() => setImage(null)} // Remove the image
-                >
-                  X
-                </button>
-              </div>
-            )}
+              </svg>
+            </button>
           </div>
+          <input
+            name="images"
+            type="file"
+            accept="image/*"
+            multiple
+            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
+            onChange={(e) => {
+              setFiles((prev) => [...prev, ...e.target.files]);
+            }}
+          />
+        </label>
+        <div className="flex overflow-x-auto gap-4 py-2">
+          {formState.serverImages?.map((src, i) => {
+            let path = null;
+            if (typeof src == "string") path = srcBuilder(src);
+            return (
+              <ImagePreviewWithRemove
+                key={i}
+                src={path}
+                onRemove={() => {
+                  if (!id || !src) throw new Error("id or src is not defined");
+                  // call remove media api
+                  request(`products/${id}/images/${src}`, {
+                    method: "DELETE",
+                  })
+                    .then((r) => r.json())
+                    .then(() => {
+                      fetchCategoryById();
+                    })
+                    .catch(console.error);
+                }}
+              />
+            );
+          })}
+          {files?.map((src, i) => {
+            return (
+              <ImagePreviewWithRemove
+                key={i}
+                src={src}
+                onRemove={() => {
+                  setFiles((prev) => prev.filter((_, i) => i !== i));
+                }}
+              />
+            );
+          })}
         </div>
-
         <div>
           <Typography
             variant="h6"
@@ -118,8 +152,8 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formState.name}
+            onChange={handleChange}
           />
         </div>
 

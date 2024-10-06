@@ -1,13 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AddGift from "./AddGift";
 import EditGift from "./EditGift";
-import Pagination from "../../components/pagination/Pagination"; // Import the Pagination component
-import { DeleteConfirmModal } from "../../components/DeleteConfirmModal"; // Import the DeleteConfirmModal component
+import Pagination from "../../components/pagination/Pagination";
+import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
+import FetchContext from "../../context/FetchContext";
+import { UPLOADS_URL } from "../../utils/API";
+import moment from "moment";
 
 const Gifts = () => {
-  const [gifts, setGifts] = useState(
-    JSON.parse(localStorage.getItem("giftsData")) || []
-  );
+  const { request } = useContext(FetchContext);
+
+  const [gifts, setGifts] = useState([]);
+  const [response, setResponse] = useState({ data: [], filtered: [] });
+
+  const fetchGifts = async () => {
+    try {
+      const response = await request("gifts");
+      const json = await response.json();
+      const { data, count } = json;
+      if (!data) return;
+      setResponse((prev) => ({ ...prev, data, count }));
+      setGifts(json.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+  useEffect(() => {
+    fetchGifts();
+  }, []);
+
   const [isEditing, setIsEditing] = useState(false);
   const [selectedGift, setSelectedGift] = useState(null);
   const [open, setOpen] = useState(false); // State for delete confirmation modal
@@ -30,24 +51,12 @@ const Gifts = () => {
     setIsEditing(false);
   };
 
-  const handleDeleteGift = (id) => {
-    const filteredGifts = gifts.filter((gift) => gift.id !== id);
-    setGifts(filteredGifts);
-    localStorage.setItem("giftsData", JSON.stringify(filteredGifts));
-  };
-
   const handleEditClick = (gift) => {
     setSelectedGift(gift);
     setIsEditing(true);
   };
 
   const handleOpen = () => setOpen(!open); // Toggle modal open/close
-
-  // Confirm deletion of the selected gift
-  const confirmDeleteGift = () => {
-    handleDeleteGift(selectedGiftId);
-    handleOpen(); // Close the modal after deletion
-  };
 
   // Calculate the current gifts for the current page
   const indexOfLastGift = currentPage * itemsPerPage;
@@ -59,48 +68,73 @@ const Gifts = () => {
     setTotalPages(Math.ceil(gifts.length / itemsPerPage));
   }, [gifts]);
 
-  const TH = ({ children }) => (
-    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-      {children}
-    </th>
-  );
+  const handleDelete = async (id) => {
+    try {
+      if (!id) throw new Error("Id is not defined");
+      const response = await request(`gifts/${id}`, { method: "DELETE" });
+      setSelectedGiftId(null);
+      fetchGifts();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <div className="flex flex-wrap gap-6">
-      <div className="flex-grow">
-        <h1 className="text-xl font-bold">Gifts</h1>
-        <div className="overflow-x-auto w-full">
-          <table className="w-full min-w-full bg-white border">
-            <thead>
-              <tr>
-                <TH>Banner</TH>
-                <TH>Price</TH>
-                <TH>CreatedAt</TH>
-                <TH>UpdatedAt</TH>
-                <TH>Action</TH>
-              </tr>
-            </thead>
-            <tbody>
-              {currentGifts.map((gift) => (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Column 1: Table */}
+      <div className="gifts-table">
+        <div className="mb-4">
+          <h1 className="text-xl font-bold">Gifts</h1>
+          <p className="text-sm text-gray-500">
+            gifts are {gifts.length > 0 ? "" : "not"} available here.
+          </p>
+        </div>
+        <table className="w-full min-w-full bg-white border">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Banner
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Price
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                CreatedAt
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                UpdatedAt
+              </th>
+              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentGifts?.map((gift) => {
+              const { images } = gift;
+              const image = images[0];
+              return (
                 <tr key={gift.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4 border-b">
-                    {gift.image ? (
-                      <img
-                        src={gift.image}
-                        alt={gift.name || "Gift"}
-                        className="h-12 w-12 object-cover"
-                      />
-                    ) : (
-                      <img
-                        src="https://via.placeholder.com/150"
-                        alt="Placeholder"
-                        className="h-12 w-12 object-cover"
-                      />
-                    )}
+                    {image ? (
+                      <>
+                        <img
+                          src={`${UPLOADS_URL + image}`}
+                          alt={image}
+                          className="h-12 w-12 object-cover border"
+                        />
+                      </>
+                    ) : null}
                   </td>
                   <td className="px-6 py-4 border-b">{gift.price}</td>
-                  <td className="px-6 py-4 border-b">{gift.createdAt}</td>
-                  <td className="px-6 py-4 border-b">{gift.updatedAt}</td>
+
+                  <td className="px-6 py-4 border-b">
+                    {moment(gift.created_at).format("Do MMM, YYYY")}
+                  </td>
+
+                  <td className="px-6 py-4 border-b">
+                    {moment(gift.updated_at).format("Do MMM, YYYY")}
+                  </td>
                   <td className="px-6 py-4 border-b">
                     <button
                       onClick={() => handleEditClick(gift)}
@@ -119,17 +153,12 @@ const Gifts = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <DeleteConfirmModal
-          open={open}
-          handleOpen={handleOpen}
-          itemId={selectedGiftId}
-          onDelete={confirmDeleteGift} // Confirm deletion function
-          itemName="Gift" // Change to "Gift" for better context
-        />
+              );
+            })}
+          </tbody>
+        </table>
+
+        {/* Pagination Controls */}
         {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
@@ -152,6 +181,21 @@ const Gifts = () => {
           <AddGift handleAddGift={handleAddGift} />
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {selectedGiftId ? (
+        <DeleteConfirmModal
+          handleOpen={handleOpen}
+          onCollapse={() => {
+            setSelectedItemId(null);
+          }}
+          open={!!selectedGiftId}
+          onDelete={() => {
+            handleDelete(selectedGiftId);
+          }}
+          itemName="Gift"
+        />
+      ) : null}
     </div>
   );
 };

@@ -12,6 +12,7 @@ import Gifts from "../pages/gifts/Gifts";
 import Orders from "../pages/orders/Orders";
 import Points from "../pages/points/Points";
 import Categories from "../pages/category/Categories";
+import Brands from "../pages/brand/Brands";
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
 
@@ -24,6 +25,7 @@ const AppRoutes = () => {
           <Route path="/products/add-product" element={<AddProduct />} />
           <Route path="/products/edit/:id" element={<EditProduct />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/brands" element={<Brands />} />
           <Route path="/gifts" element={<Gifts />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/points" element={<Points />} />

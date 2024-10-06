@@ -4,11 +4,11 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 
 const initialValues = {
-  price: "",
+  name: "",
   serverImages: null,
 };
 
-const EditGift = ({ selectedGift, handleEditGift }) => {
+const EditBrand = ({ selectedBrand, handleEditBrand }) => {
   const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
@@ -18,7 +18,7 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
     setFormState({ ...formState, [name]: value });
   }
 
-  function fetchGiftById() {
+  function fetchBrandById() {
     // if (!id) return;
     // request(`category/${id}`)
     //   .then((r) => r.json())
@@ -33,16 +33,15 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
     //   })
     //   .catch(console.error);
   }
-  useEffect(fetchGiftById, [selectedGift]);
-
+  useEffect(fetchBrandById, [selectedBrand]);
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
     if (!request) return;
-    request(`gifts/${id}`, { method: "PATCH", body })
+    request(`category/${id}`, { method: "PATCH", body })
       .then((r) => r.json())
       .then(() => {
-        navigate("/gifts");
+        navigate("/categories");
       })
       .catch(console.error);
   };
@@ -51,13 +50,14 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
     <>
       <div className="flex items-center gap-3 mb-3">
         <div>
-          <h1 className="text-xl font-bold">Edit Gift</h1>
+          <h1 className="text-xl font-bold">Edit Brand</h1>
           <p className="text-sm text-gray-500">
-            You can edit gift details from here.
+            You can edit category details from here.
           </p>
         </div>
       </div>
       <form onSubmit={onSubmit} className="form">
+        {/* file upload */}
         <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
           <lord-icon
             src="https://cdn.lordicon.com/smwmetfi.json"
@@ -118,7 +118,7 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
                   })
                     .then((r) => r.json())
                     .then(() => {
-                      fetchGiftById();
+                      fetchBrandById();
                     })
                     .catch(console.error);
                 }}
@@ -137,23 +137,22 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
             );
           })}
         </div>
-
         <div>
           <Typography
             variant="h6"
             color="gray"
             className="mb-1 font-normal mt-2"
           >
-            Edit Price
+            Edit Name
           </Typography>
           <Input
-            type="number"
+            type="text"
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
-            value={formState.price}
+            value={formState.name}
             onChange={handleChange}
           />
         </div>
@@ -169,4 +168,4 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
   );
 };
 
-export default EditGift;
+export default EditBrand;

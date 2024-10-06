@@ -1,52 +1,113 @@
 import { Typography } from "@material-tailwind/react";
 import React, { useContext, useState } from "react";
-import FetchContext from "../../context/FetchContext";
-import InputImages from "../../components/common/form/InputImages";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
+import FetchContext from "../../context/FetchContext";
+import { useNavigate } from "react-router-dom"; // Ensure you're importing useNavigate
 
-const AddGift = () => {
-  const [price, setPrice] = useState(null);
-  const [images, setImages] = useState([]); // State to store the selected image
+const AddGift = ({ handleAddGift }) => {
+  const [price, setPrice] = useState("");
+  const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
+  const navigate = useNavigate(); // Initialize navigate from react-router-dom
+
+  const fileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    const body = new FormData();
+    body.append("price", price); // Add price to FormData
+
+    // Add each file to FormData
+    files.forEach((file) => {
+      body.append("images", file);
+    });
+
+    try {
+      await request("gifts", {
+        method: "POST",
+        body,
+      });
+      navigate("/gifts");
+    } catch (error) {
+      console.error("Failed to add gift", error);
+      alert("Failed to add gift. Please try again.");
+    }
+  };
+
+  const handleRemoveFile = (index) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
   return (
-    <div className="space-y-2 max-w-md">
+    <div>
       <h1 className="text-xl font-bold">Add Gift</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const body = new FormData(e.target);
-          request("gifts", { method: "POST", body })
-            .then((r) => r.json())
-            .then((data) => {
-              if (!data) return;
-              console.log(data);
-            })
-            .catch(console.error);
-        }}
-        className="space-y-3"
-      >
-        <div className="block space-y-2">
-          <span className="font-semibold">Gift Images</span>
-          <InputImages
-            onChange={function (ev) {
-              const images = ev.target.files;
-              setImages((prev) => [...prev, ...images]);
-            }}
+      <form onSubmit={onSubmit} className="form">
+        {/* File Upload Section */}
+        <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
+          <lord-icon
+            src="https://cdn.lordicon.com/smwmetfi.json"
+            trigger="loop"
+            colors="primary:#545454"
+            style={{ width: "50px", height: "50px" }}
+          ></lord-icon>
+          <div className="flex flex-col items-center">
+            <div className="text-lg font-semibold mb-1">
+              Drag and drop files here
+            </div>
+            <div className="text-sm mb-6">File must be image/* format</div>
+            <button
+              className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
+              type="button"
+            >
+              <span className="whitespace-nowrap">Browse files</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="h-5 w-5"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                />
+              </svg>
+            </button>
+          </div>
+          <input
+            name="images"
+            type="file"
+            accept="image/*"
+            multiple
+            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
+            onChange={fileChange}
           />
-        </div>
-        <div className="flex gap-4 overflow-x-auto">
-          {images?.map((file, index) => (
+        </label>
+        <div className="flex overflow-x-auto gap-4 mt-2">
+          {files.map((file, i) => (
             <ImagePreviewWithRemove
-              key={index}
-              src={file}
-              onRemove={() =>
-                setImages((prev) => prev.filter((_, i) => i !== index))
-              }
+              key={i}
+              src={URL.createObjectURL(file)} // Use createObjectURL for preview
+              onRemove={() => handleRemoveFile(i)}
             />
           ))}
         </div>
-        <label htmlFor="" className="block space-y-2">
-          <span className="font-semibold">Price</span>
+
+        {/* Price Input */}
+        <div>
+          <Typography
+            variant="h6"
+            color="gray"
+            className="mb-1 font-normal mt-2"
+          >
+            Price
+          </Typography>
           <input
             type="number"
             size="md"
@@ -57,15 +118,15 @@ const AddGift = () => {
             }}
             required
           />
-        </label>
-        <div>
-          <button
-            type="submit"
-            className="mt-5 bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-200 text-white px-4 py-2 rounded-lg"
-          >
-            Submit
-          </button>
         </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="mt-5 bg-green-500 text-white px-4 py-2 rounded"
+        >
+          Add Gift
+        </button>
       </form>
     </div>
   );

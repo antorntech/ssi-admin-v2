@@ -1,50 +1,33 @@
 import { Input, Typography } from "@material-tailwind/react";
 import React, { useState } from "react";
-import { useDropzone } from "react-dropzone";
-import moment from "moment";
+import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 
 const AddCategory = ({ handleAddCategory }) => {
-  const date = moment().format("Do MMM, YYYY");
   const [name, setName] = useState("");
   const [files, setFiles] = useState([]);
-  const [image, setImage] = useState(null); // State to store the selected image
+  const author = "google@gmail.com";
 
-  const handleDrop = (acceptedFiles) => {
-    setFiles(acceptedFiles); // Store the dropped files
-    setImage(acceptedFiles[0]); // Store the first file as the image
+  const fileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...files]);
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-
-    if (!image) {
-      alert("Please upload an image for the category.");
-      return;
-    }
-
-    const newCategory = {
-      id: Date.now(),
-      image: URL.createObjectURL(image), // Create object URL for the image
-      name,
-      createdAt: date,
-      updatedAt: date,
-    };
-
-    // Store in localStorage
-    const existingCategories =
-      JSON.parse(localStorage.getItem("categoriesData")) || [];
-    localStorage.setItem(
-      "categoriesData",
-      JSON.stringify([...existingCategories, newCategory])
-    );
-
-    handleAddCategory(newCategory);
-    setName("");
-    setImage(null);
-    setFiles([]); // Clear the uploaded files after submission
+    const body = new FormData(e.target);
+    if (!body.has("color")) body.append("color", "#000000");
+    if (!body.has("author")) body.append("author", author);
+    // try {
+    //   await request("products", {
+    //     method: "POST",
+    //     body,
+    //   });
+    //   navigate("/products");
+    // } catch (error) {
+    //   console.error("Failed to add product", error);
+    // }
+    return;
   };
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop: handleDrop });
 
   return (
     <>
@@ -56,78 +39,64 @@ const AddCategory = ({ handleAddCategory }) => {
           </p>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="form">
-        <div>
-          <Typography variant="h6" color="gray" className="mb-1 font-normal">
-            Category Image
-          </Typography>
-          {/* Dropzone for Images */}
-          <div
-            {...getRootProps({
-              className:
-                "dropzone border-2 border-dashed border-[#6CB93B] rounded-md p-4 text-center cursor-pointer",
-            })}
-          >
-            <input {...getInputProps()} />
-            <div>
-              <lord-icon
-                src="https://cdn.lordicon.com/smwmetfi.json"
-                trigger="loop"
-                colors="primary:#545454"
-                style={{ width: "50px", height: "50px" }}
-              ></lord-icon>
-              <p className="text-2xl text-gray-600">
-                Drop files here or click to upload.
-              </p>
-              <div>
-                {files.length > 0 && (
-                  <div className="mt-2">
-                    {files.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center border-b py-2"
-                      >
-                        <span>{file.name}</span>
-                        <button
-                          className="text-red-600"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the dropzone
-                            setFiles(files.filter((_, i) => i !== index));
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+      <form onSubmit={onSubmit} className="form">
+        {/* file upload */}
+        <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
+          <lord-icon
+            src="https://cdn.lordicon.com/smwmetfi.json"
+            trigger="loop"
+            colors="primary:#545454"
+            style={{ width: "50px", height: "50px" }}
+          ></lord-icon>
+          <div className="flex flex-col items-center">
+            <div className="text-lg font-semibold mb-1">
+              Drag and drop files here
             </div>
-          </div>
-
-          {/* Preview Images */}
-          <div className="grid grid-cols-5 gap-4">
-            {files.map((file, index) => (
-              <div key={index} className="relative mt-4">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className="w-full h-16 object-cover rounded-md"
+            <div className="text-sm mb-6">File must be image/* format</div>
+            <button
+              className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
+              type="button"
+            >
+              <span className="whitespace-nowrap">Browse files</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="h-5 w-5"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
                 />
-                <button
-                  className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded p-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setFiles(files.filter((_, i) => i !== index));
-                  }}
-                >
-                  X
-                </button>
-              </div>
-            ))}
+              </svg>
+            </button>
           </div>
+          <input
+            name="images"
+            type="file"
+            accept="image/*"
+            multiple
+            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
+            onChange={fileChange}
+          />
+        </label>
+        <div className="flex overflow-x-auto gap-4 mt-2">
+          {files.map((src, i) => {
+            return (
+              <ImagePreviewWithRemove
+                key={i}
+                src={src}
+                onRemove={() => {
+                  // call remove media api
+                  setFiles((prev) => prev.filter((_, i) => i !== i));
+                }}
+              />
+            );
+          })}
         </div>
-
         <div>
           <Typography
             variant="h6"

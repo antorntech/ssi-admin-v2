@@ -1,64 +1,47 @@
 import { Input, Typography } from "@material-tailwind/react";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
-import FetchContext from "../../context/FetchContext";
 
-const initialValues = {
-  price: "",
-  serverImages: null,
-};
-
-const EditGift = ({ selectedGift, handleEditGift }) => {
-  const [formState, setFormState] = useState(initialValues);
+const AddBrand = ({ handleAddBrand }) => {
+  const [name, setName] = useState("");
   const [files, setFiles] = useState([]);
-  const { request } = useContext(FetchContext);
+  const author = "google@gmail.com";
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormState({ ...formState, [name]: value });
-  }
+  const fileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...files]);
+  };
 
-  function fetchGiftById() {
-    // if (!id) return;
-    // request(`category/${id}`)
-    //   .then((r) => r.json())
-    //   .then((data) => {
-    //     if (!data) return;
-    //     setFormState((prev) => ({
-    //       ...prev,
-    //       ...data,
-    //       serverImages: data.images,
-    //       images: [],
-    //     }));
-    //   })
-    //   .catch(console.error);
-  }
-  useEffect(fetchGiftById, [selectedGift]);
-
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
-    if (!request) return;
-    request(`gifts/${id}`, { method: "PATCH", body })
-      .then((r) => r.json())
-      .then(() => {
-        navigate("/gifts");
-      })
-      .catch(console.error);
+    if (!body.has("color")) body.append("color", "#000000");
+    if (!body.has("author")) body.append("author", author);
+    // try {
+    //   await request("products", {
+    //     method: "POST",
+    //     body,
+    //   });
+    //   navigate("/products");
+    // } catch (error) {
+    //   console.error("Failed to add product", error);
+    // }
+    return;
   };
 
   return (
     <>
       <div className="flex items-center gap-3 mb-3">
         <div>
-          <h1 className="text-xl font-bold">Edit Gift</h1>
+          <h1 className="text-xl font-bold">Add Brand</h1>
           <p className="text-sm text-gray-500">
-            You can edit gift details from here.
+            You can add category details from here.
           </p>
         </div>
       </div>
       <form onSubmit={onSubmit} className="form">
-        <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
+        {/* file upload */}
+        <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
           <lord-icon
             src="https://cdn.lordicon.com/smwmetfi.json"
             trigger="loop"
@@ -97,64 +80,40 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
             accept="image/*"
             multiple
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
-            onChange={(e) => {
-              setFiles((prev) => [...prev, ...e.target.files]);
-            }}
+            onChange={fileChange}
           />
         </label>
-        <div className="flex overflow-x-auto gap-4 py-2">
-          {formState.serverImages?.map((src, i) => {
-            let path = null;
-            if (typeof src == "string") path = srcBuilder(src);
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={path}
-                onRemove={() => {
-                  if (!id || !src) throw new Error("id or src is not defined");
-                  // call remove media api
-                  request(`products/${id}/images/${src}`, {
-                    method: "DELETE",
-                  })
-                    .then((r) => r.json())
-                    .then(() => {
-                      fetchGiftById();
-                    })
-                    .catch(console.error);
-                }}
-              />
-            );
-          })}
-          {files?.map((src, i) => {
+        <div className="flex overflow-x-auto gap-4 mt-2">
+          {files.map((src, i) => {
             return (
               <ImagePreviewWithRemove
                 key={i}
                 src={src}
                 onRemove={() => {
+                  // call remove media api
                   setFiles((prev) => prev.filter((_, i) => i !== i));
                 }}
               />
             );
           })}
         </div>
-
         <div>
           <Typography
             variant="h6"
             color="gray"
             className="mb-1 font-normal mt-2"
           >
-            Edit Price
+            Name
           </Typography>
           <Input
-            type="number"
+            type="text"
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
-            value={formState.price}
-            onChange={handleChange}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
 
@@ -162,11 +121,11 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
           type="submit"
           className="mt-5 bg-green-500 text-white px-4 py-2 rounded"
         >
-          Save Changes
+          Add Brand
         </button>
       </form>
     </>
   );
 };
 
-export default EditGift;
+export default AddBrand;
