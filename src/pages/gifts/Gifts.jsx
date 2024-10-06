@@ -59,80 +59,77 @@ const Gifts = () => {
     setTotalPages(Math.ceil(gifts.length / itemsPerPage));
   }, [gifts]);
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {/* Column 1: Table */}
-      <div className="gifts-table">
-        <div className="mb-4">
-          <h1 className="text-xl font-bold">Gifts</h1>
-          <p className="text-sm text-gray-500">
-            gifts are {gifts.length > 0 ? "" : "not"} available here.
-          </p>
-        </div>
-        <table className="w-full min-w-full bg-white border">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Banner
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Price
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                CreatedAt
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                UpdatedAt
-              </th>
-              <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentGifts.map((gift) => (
-              <tr key={gift.id} className="hover:bg-gray-100">
-                <td className="px-6 py-4 border-b">
-                  {gift.image ? (
-                    <img
-                      src={gift.image}
-                      alt={gift.name || "Gift"}
-                      className="h-12 w-12 object-cover"
-                    />
-                  ) : (
-                    <img
-                      src="https://via.placeholder.com/150"
-                      alt="Placeholder"
-                      className="h-12 w-12 object-cover"
-                    />
-                  )}
-                </td>
-                <td className="px-6 py-4 border-b">{gift.price}</td>
-                <td className="px-6 py-4 border-b">{gift.createdAt}</td>
-                <td className="px-6 py-4 border-b">{gift.updatedAt}</td>
-                <td className="px-6 py-4 border-b">
-                  <button
-                    onClick={() => handleEditClick(gift)}
-                    className="text-orange-500 hover:text-orange-700 mr-3"
-                  >
-                    <i className="fa-solid fa-pen-to-square text-xl"></i>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedGiftId(gift.id);
-                      handleOpen(); // Open delete confirmation modal
-                    }}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <i className="fa-solid fa-trash-can text-xl"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  const TH = ({ children }) => (
+    <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+      {children}
+    </th>
+  );
 
-        {/* Pagination Controls */}
+  return (
+    <div className="flex flex-wrap gap-6">
+      <div className="flex-grow">
+        <h1 className="text-xl font-bold">Gifts</h1>
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-full bg-white border">
+            <thead>
+              <tr>
+                <TH>Banner</TH>
+                <TH>Price</TH>
+                <TH>CreatedAt</TH>
+                <TH>UpdatedAt</TH>
+                <TH>Action</TH>
+              </tr>
+            </thead>
+            <tbody>
+              {currentGifts.map((gift) => (
+                <tr key={gift.id} className="hover:bg-gray-100">
+                  <td className="px-6 py-4 border-b">
+                    {gift.image ? (
+                      <img
+                        src={gift.image}
+                        alt={gift.name || "Gift"}
+                        className="h-12 w-12 object-cover"
+                      />
+                    ) : (
+                      <img
+                        src="https://via.placeholder.com/150"
+                        alt="Placeholder"
+                        className="h-12 w-12 object-cover"
+                      />
+                    )}
+                  </td>
+                  <td className="px-6 py-4 border-b">{gift.price}</td>
+                  <td className="px-6 py-4 border-b">{gift.createdAt}</td>
+                  <td className="px-6 py-4 border-b">{gift.updatedAt}</td>
+                  <td className="px-6 py-4 border-b">
+                    <button
+                      onClick={() => handleEditClick(gift)}
+                      className="text-orange-500 hover:text-orange-700 mr-3"
+                    >
+                      <i className="fa-solid fa-pen-to-square text-xl"></i>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedGiftId(gift.id);
+                        handleOpen(); // Open delete confirmation modal
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <i className="fa-solid fa-trash-can text-xl"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <DeleteConfirmModal
+          open={open}
+          handleOpen={handleOpen}
+          itemId={selectedGiftId}
+          onDelete={confirmDeleteGift} // Confirm deletion function
+          itemName="Gift" // Change to "Gift" for better context
+        />
         {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
@@ -145,9 +142,7 @@ const Gifts = () => {
           />
         )}
       </div>
-
-      {/* Column 2: Conditional Form */}
-      <div className="gift-form">
+      <div className="w-full bg-white p-4 lg:p-5 rounded-lg max-w-md">
         {isEditing ? (
           <EditGift
             selectedGift={selectedGift}
@@ -157,15 +152,6 @@ const Gifts = () => {
           <AddGift handleAddGift={handleAddGift} />
         )}
       </div>
-
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmModal
-        open={open}
-        handleOpen={handleOpen}
-        itemId={selectedGiftId}
-        onDelete={confirmDeleteGift} // Confirm deletion function
-        itemName="Gift" // Change to "Gift" for better context
-      />
     </div>
   );
 };
