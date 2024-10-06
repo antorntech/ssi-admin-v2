@@ -175,10 +175,14 @@ const Gifts = () => {
         {isEditing ? (
           <EditGift
             selectedGift={selectedGift}
-            handleEditGift={handleEditGift}
+            fetchGifts={() => {
+              fetchGifts();
+              setSelectedGift(null);
+              setIsEditing(false);
+            }}
           />
         ) : (
-          <AddGift handleAddGift={handleAddGift} />
+          <AddGift fetchGifts={fetchGifts} />
         )}
       </div>
 

@@ -2,47 +2,55 @@ import { Input, Typography } from "@material-tailwind/react";
 import React, { useState, useEffect, useContext } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
+import { srcBuilder } from "../../utils/src.js";
 
 const initialValues = {
   price: "",
-  serverImages: null,
+  serverImages: null
 };
 
-const EditGift = ({ selectedGift, handleEditGift }) => {
+const EditGift = ({ selectedGift, fetchGifts }) => {
   const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
+  const id = selectedGift?.id || null;
+  const author = "author@gmail.com";
 
   function handleChange(e) {
     const { name, value } = e.target;
+    if (!name || !value) throw new Error("name or value is not defined");
     setFormState({ ...formState, [name]: value });
   }
 
   function fetchGiftById() {
-    // if (!id) return;
-    // request(`category/${id}`)
-    //   .then((r) => r.json())
-    //   .then((data) => {
-    //     if (!data) return;
-    //     setFormState((prev) => ({
-    //       ...prev,
-    //       ...data,
-    //       serverImages: data.images,
-    //       images: [],
-    //     }));
-    //   })
-    //   .catch(console.error);
+    if (!id) return;
+    request(`gifts/${id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data) return;
+        setFormState((prev) => ({
+          ...prev,
+          ...data,
+          serverImages: data.images,
+          images: []
+        }));
+      })
+      .catch(console.error);
   }
   useEffect(fetchGiftById, [selectedGift]);
 
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
+    if (!body.has("author")) body.append("author", author);
     if (!request) return;
     request(`gifts/${id}`, { method: "PATCH", body })
       .then((r) => r.json())
       .then(() => {
-        navigate("/gifts");
+        if (fetchGifts) {
+          fetchGifts();
+        }
+        setFormState(initialValues);
       })
       .catch(console.error);
   };
@@ -114,7 +122,7 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
                   if (!id || !src) throw new Error("id or src is not defined");
                   // call remove media api
                   request(`products/${id}/images/${src}`, {
-                    method: "DELETE",
+                    method: "DELETE"
                   })
                     .then((r) => r.json())
                     .then(() => {
@@ -151,10 +159,11 @@ const EditGift = ({ selectedGift, handleEditGift }) => {
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none",
+              className: "before:content-none after:content-none"
             }}
             value={formState.price}
             onChange={handleChange}
+            name="price"
           />
         </div>
 

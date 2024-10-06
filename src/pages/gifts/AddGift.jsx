@@ -4,11 +4,12 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { useNavigate } from "react-router-dom"; // Ensure you're importing useNavigate
 
-const AddGift = ({ handleAddGift }) => {
+const AddGift = ({ fetchGifts }) => {
   const [price, setPrice] = useState("");
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const navigate = useNavigate(); // Initialize navigate from react-router-dom
+  const author = "author@gmail.com";
 
   const fileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -18,20 +19,21 @@ const AddGift = ({ handleAddGift }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const body = new FormData();
-    body.append("price", price); // Add price to FormData
-
-    // Add each file to FormData
-    files.forEach((file) => {
-      body.append("images", file);
-    });
+    const body = new FormData(e.target);
+    if (!body.has("author")) body.append("author", author);
 
     try {
-      await request("gifts", {
+      const response = await request("gifts", {
         method: "POST",
-        body,
+        body
       });
-      navigate("/gifts");
+      if (response.ok) {
+        if (fetchGifts) {
+          fetchGifts();
+        } else {
+          window.location.reload();
+        }
+      }
     } catch (error) {
       console.error("Failed to add gift", error);
       alert("Failed to add gift. Please try again.");
@@ -116,6 +118,7 @@ const AddGift = ({ handleAddGift }) => {
             onChange={(e) => {
               setPrice(e.target.value);
             }}
+            name="price"
             required
           />
         </div>
