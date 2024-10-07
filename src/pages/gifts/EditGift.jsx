@@ -6,7 +6,7 @@ import { srcBuilder } from "../../utils/src.js";
 
 const initialValues = {
   price: "",
-  serverImages: null
+  serverImages: null,
 };
 
 const EditGift = ({ selectedGift, fetchGifts }) => {
@@ -32,7 +32,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
           ...prev,
           ...data,
           serverImages: data.images,
-          images: []
+          images: [],
         }));
       })
       .catch(console.error);
@@ -121,8 +121,8 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
                 onRemove={() => {
                   if (!id || !src) throw new Error("id or src is not defined");
                   // call remove media api
-                  request(`products/${id}/images/${src}`, {
-                    method: "DELETE"
+                  request(`gifts/${id}/images/${src}`, {
+                    method: "DELETE",
                   })
                     .then((r) => r.json())
                     .then(() => {
@@ -159,7 +159,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none"
+              className: "before:content-none after:content-none",
             }}
             value={formState.price}
             onChange={handleChange}
