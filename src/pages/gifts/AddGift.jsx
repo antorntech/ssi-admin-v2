@@ -2,13 +2,10 @@ import { Typography } from "@material-tailwind/react";
 import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
-import { useNavigate } from "react-router-dom"; // Ensure you're importing useNavigate
 
 const AddGift = ({ fetchGifts }) => {
-  const [price, setPrice] = useState("");
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
-  const navigate = useNavigate(); // Initialize navigate from react-router-dom
   const author = "author@gmail.com";
 
   const fileChange = (e) => {
@@ -25,7 +22,7 @@ const AddGift = ({ fetchGifts }) => {
     try {
       const response = await request("gifts", {
         method: "POST",
-        body
+        body,
       });
       if (response.ok) {
         if (fetchGifts) {
@@ -114,10 +111,6 @@ const AddGift = ({ fetchGifts }) => {
             type="number"
             size="md"
             className="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
-            value={price}
-            onChange={(e) => {
-              setPrice(e.target.value);
-            }}
             name="price"
             required
           />

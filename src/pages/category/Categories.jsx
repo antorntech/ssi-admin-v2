@@ -87,7 +87,7 @@ const Categories = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Column 1: Table */}
-      <div className="categories-table">
+      <div className="col-span-1 categories-table">
         <div className="mb-4">
           <h1 className="text-xl font-bold">Categories</h1>
           <p className="text-sm text-gray-500">
@@ -178,7 +178,7 @@ const Categories = () => {
       </div>
 
       {/* Column 2: Conditional Form */}
-      <div className="category-form">
+      <div className="col-span-1 category-form bg-white p-4 lg:p-5 rounded-lg custom-shadow">
         {isEditing ? (
           <EditCategory
             selectedCategory={selectedCategory}

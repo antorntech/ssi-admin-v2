@@ -82,7 +82,7 @@ const Gifts = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Column 1: Table */}
-      <div className="gifts-table">
+      <div className="col-span-1 gifts-table">
         <div className="mb-4">
           <h1 className="text-xl font-bold">Gifts</h1>
           <p className="text-sm text-gray-500">
@@ -171,7 +171,7 @@ const Gifts = () => {
           />
         )}
       </div>
-      <div className="w-full bg-white p-4 lg:p-5 rounded-lg max-w-md">
+      <div className="col-span-1 w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
         {isEditing ? (
           <EditGift
             selectedGift={selectedGift}
@@ -191,7 +191,7 @@ const Gifts = () => {
         <DeleteConfirmModal
           handleOpen={handleOpen}
           onCollapse={() => {
-            setSelectedItemId(null);
+            setSelectedGiftId(null);
           }}
           open={!!selectedGiftId}
           onDelete={() => {

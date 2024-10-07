@@ -1,10 +1,12 @@
 import { Input, Typography } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
+import FetchContext from "../../context/FetchContext";
 
 const AddCategory = ({ handleAddCategory }) => {
   const [name, setName] = useState("");
   const [files, setFiles] = useState([]);
+  const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
 
   const fileChange = (e) => {

@@ -82,7 +82,7 @@ const Brands = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Column 1: Table */}
-      <div className="brands-table">
+      <div className="col-span-1 brands-table">
         <div className="mb-4">
           <h1 className="text-xl font-bold">Brands</h1>
           <p className="text-sm text-gray-500">
@@ -173,14 +173,14 @@ const Brands = () => {
       </div>
 
       {/* Column 2: Conditional Form */}
-      <div className="brand-form">
+      <div className="col-span-1 brand-form bg-white p-4 lg:p-5 rounded-lg custom-shadow">
         {isEditing ? (
           <EditBrand
             selectedBrand={selectedBrand}
             handleEditBrand={handleEditBrand}
           />
         ) : (
-          <AddBrand handleAddBrand={handleAddBrand} />
+          <AddBrand fetchBrands={fetchBrands} />
         )}
       </div>
 

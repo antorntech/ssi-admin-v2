@@ -1,10 +1,11 @@
 import { Input, Typography } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
+import FetchContext from "../../context/FetchContext";
 
-const AddBrand = ({ handleAddBrand }) => {
-  const [name, setName] = useState("");
+const AddBrand = ({ fetchBrands }) => {
   const [files, setFiles] = useState([]);
+  const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
 
   const fileChange = (e) => {
@@ -14,19 +15,25 @@ const AddBrand = ({ handleAddBrand }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
     const body = new FormData(e.target);
-    if (!body.has("color")) body.append("color", "#000000");
-    if (!body.has("author")) body.append("author", author);
-    // try {
-    //   await request("products", {
-    //     method: "POST",
-    //     body,
-    //   });
-    //   navigate("/products");
-    // } catch (error) {
-    //   console.error("Failed to add product", error);
-    // }
-    return;
+
+    try {
+      const response = await request("brands", {
+        method: "POST",
+        body,
+      });
+      if (response.ok) {
+        if (fetchBrands) {
+          fetchBrands();
+        } else {
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      console.error("Failed to add brand", error);
+      alert("Failed to add brand. Please try again.");
+    }
   };
 
   return (
@@ -108,12 +115,11 @@ const AddBrand = ({ handleAddBrand }) => {
           <Input
             type="text"
             size="md"
+            name="name"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
           />
         </div>
 
