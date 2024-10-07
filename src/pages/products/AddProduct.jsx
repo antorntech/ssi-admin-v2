@@ -75,6 +75,12 @@ const AddProduct = () => {
     return;
   };
 
+  const Legend = ({ children }) => (
+    <Typography variant="h6" color="gray" className="mb-1 mt-2 font-normal">
+      {children}
+    </Typography>
+  );
+
   return (
     <div className="w-full">
       <div className="flex items-center gap-3 mb-5">
@@ -97,9 +103,7 @@ const AddProduct = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Left Column */}
           <div className="w-full md:col-span-1">
-            <Typography variant="h6" color="gray" className="mb-1 font-normal">
-              Name
-            </Typography>
+            <Legend>Name</Legend>
             <Input
               type="text"
               size="md"
@@ -110,38 +114,20 @@ const AddProduct = () => {
               name="name"
             />
 
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Brand
-            </Typography>
-            <Select
-              size="md"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+            <Legend>Brand</Legend>
+            <select
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="brand"
             >
-              <Option value="" disabled>
-                Select category
-              </Option>
+              <option value="">Select brand</option>
               {brands.map((brand) => (
-                <Option key={brand._id} value={brand.name}>
+                <option key={brand.id} value={brand?.name}>
                   {brand.name}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
 
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Price
-            </Typography>
+            <Legend>Price</Legend>
             <Input
               type="number"
               size="md"
@@ -152,13 +138,7 @@ const AddProduct = () => {
               name="price"
             />
 
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Quantity
-            </Typography>
+            <Legend>Quantity</Legend>
             <Input
               type="number"
               size="md"
@@ -168,63 +148,41 @@ const AddProduct = () => {
               }}
               name="quantity"
             />
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Category
-            </Typography>
-            <Select
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-              name="category"
-            >
-              <Option value="" disabled>
-                Select category
-              </Option>
-              {categories.map((category) => (
-                <Option key={category._id} value={category.name}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
 
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
+            <Legend>Category</Legend>
+            <select
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="brand"
             >
-              Color
-            </Typography>
-            <Select
+              <option value="">Select category</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category?.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <Legend>Color</Legend>
+            <select
               name="color"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             >
-              <Option value="" disabled>
-                Select color
-              </Option>
-              <Option value="Red">Red</Option>
-              <Option value="Blue">Blue</Option>
-              <Option value="Green">Green</Option>
-              <Option value="Black">Black</Option>
-              <Option value="White">White</Option>
-              <Option value="Yellow">Yellow</Option>
-              <Option value="Orange">Orange</Option>
-              <Option value="Purple">Purple</Option>
-            </Select>
+              <option value="">Select color</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="purple">Purple</option>
+              <option value="orange">Orange</option>
+              <option value="brown">Brown</option>
+              <option value="black">Black</option>
+              <option value="white">White</option>
+            </select>
           </div>
 
           {/* Right Column */}
           <div className="w-full md:col-span-2">
-            <Typography variant="h6" color="gray" className="mb-1 font-normal">
-              Description
-            </Typography>
+            <Legend>Description</Legend>
             <Textarea
               name="description"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
