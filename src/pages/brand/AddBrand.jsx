@@ -18,6 +18,7 @@ const AddBrand = ({ fetchBrands }) => {
 
     const body = new FormData(e.target);
 
+    if (!body.has("author")) body.append("author", author);
     try {
       const response = await request("brands", {
         method: "POST",

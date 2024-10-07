@@ -185,7 +185,7 @@ const Categories = () => {
             handleEditCategory={handleEditCategory}
           />
         ) : (
-          <AddCategory handleAddCategory={handleAddCategory} />
+          <AddCategory fetchCategories={fetchCategories} />
         )}
       </div>
 

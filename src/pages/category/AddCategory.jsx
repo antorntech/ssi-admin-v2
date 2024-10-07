@@ -3,8 +3,7 @@ import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 
-const AddCategory = ({ handleAddCategory }) => {
-  const [name, setName] = useState("");
+const AddCategory = ({ fetchCategories }) => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
@@ -16,18 +15,22 @@ const AddCategory = ({ handleAddCategory }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    console.log(e.target.name.value);
     const body = new FormData(e.target);
-    if (!body.has("color")) body.append("color", "#000000");
-    if (!body.has("author")) body.append("author", author);
-    // try {
-    //   await request("products", {
-    //     method: "POST",
-    //     body,
-    //   });
-    //   navigate("/products");
-    // } catch (error) {
-    //   console.error("Failed to add product", error);
-    // }
+    try {
+      await request("categories", {
+        method: "POST",
+        body,
+      });
+
+      if (fetchCategories) {
+        fetchCategories();
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Failed to add product", error);
+    }
     return;
   };
 
@@ -114,8 +117,7 @@ const AddCategory = ({ handleAddCategory }) => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            name="name"
           />
         </div>
 
