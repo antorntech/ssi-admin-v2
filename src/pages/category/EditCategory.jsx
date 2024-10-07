@@ -113,7 +113,7 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
                 onRemove={() => {
                   if (!id || !src) throw new Error("id or src is not defined");
                   // call remove media api
-                  request(`products/${id}/images/${src}`, {
+                  request(`categories/${id}/images/${src}`, {
                     method: "DELETE",
                   })
                     .then((r) => r.json())

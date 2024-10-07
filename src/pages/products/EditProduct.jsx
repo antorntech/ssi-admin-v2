@@ -25,6 +25,8 @@ const initialValues = {
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
@@ -48,7 +50,38 @@ const EditProduct = () => {
       })
       .catch(console.error);
   }
-  useEffect(fetchProductById, [id]);
+
+  // fetch brands
+  const fetchBrands = async () => {
+    try {
+      const response = await request("brands");
+      const json = await response.json();
+      const { data } = json;
+      if (!data) return;
+      setBrands(json.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  // fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await request("categories");
+      const json = await response.json();
+      const { data } = json;
+      if (!data) return;
+      setCategories(json.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    fetchProductById();
+    fetchBrands();
+    fetchCategories();
+  }, [id]);
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
@@ -94,18 +127,33 @@ const EditProduct = () => {
               name="name"
               onChange={handleChange}
             />
-            <Legend>Brand</Legend>
-            <Input
-              type="text"
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Brand
+            </Typography>
+            <Select
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              value={formState.brand}
               name="brand"
-              onChange={handleChange}
-            />
+            >
+              <Option value="" disabled>
+                Select category
+              </Option>
+              {brands.map((brand) => (
+                <Option
+                  key={brand._id}
+                  value={formState.brand ? formState.brand : brand.name}
+                >
+                  {brand.name}
+                </Option>
+              ))}
+            </Select>
             <Legend>Price</Legend>
             <Input
               type="number"
@@ -132,8 +180,6 @@ const EditProduct = () => {
             />
             <Legend>Category</Legend>
             <Select
-              value={formState.category}
-              onChange={handleChange}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -143,12 +189,16 @@ const EditProduct = () => {
               <Option value="" disabled>
                 Select category
               </Option>
-              <Option value="Electronics">Electronics</Option>
-              <Option value="Fashion">Fashion</Option>
-              <Option value="Home & Garden">Home & Garden</Option>
-              <Option value="Sports">Sports</Option>
-              <Option value="Toys">Toys</Option>
-              <Option value="Books">Books</Option>
+              {categories.map((category) => (
+                <Option
+                  key={category._id}
+                  value={
+                    formState.category ? formState.category : category.name
+                  }
+                >
+                  {category.name}
+                </Option>
+              ))}
             </Select>
             <Legend>Color</Legend>
             <Select

@@ -5,26 +5,50 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import moment from "moment";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const date = moment().format("Do MMM, YYYY");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState("");
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
+
+  // fetch brands
+  const fetchBrands = async () => {
+    try {
+      const response = await request("brands");
+      const json = await response.json();
+      const { data } = json;
+      if (!data) return;
+      setBrands(json.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  // fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await request("categories");
+      const json = await response.json();
+      const { data } = json;
+      if (!data) return;
+      setCategories(json.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    fetchBrands();
+    fetchCategories();
+  }, []);
 
   const fileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -41,73 +65,15 @@ const AddProduct = () => {
         method: "POST",
         body,
       });
+      toast.success("Product added successfully", {
+        autoClose: 1000,
+      });
       navigate("/products");
     } catch (error) {
       console.error("Failed to add product", error);
     }
     return;
-
-    const existingData = JSON.parse(localStorage.getItem("productsData")) || [];
-    const products = [...existingData];
-    const newEntry = {
-      id: Date.now(),
-      name,
-      description,
-      color,
-      brand,
-      category,
-      price,
-      quantity,
-      date,
-      author: "Admin",
-      images: files,
-    };
-
-    console.log(newEntry);
-    localStorage.setItem(
-      "productsData",
-      JSON.stringify([...products, newEntry])
-    );
-
-    try {
-      const response = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newEntry),
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-
-    toast.success("Upload successful", {
-      position: "top-right",
-      hideProgressBar: false,
-      autoClose: 1000,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-    navigate("/products");
-
-    // Reset the form
-    setName("");
-    setDescription("");
-    setColor("");
-    setBrand("");
-    setCategory("");
-    setPrice("");
-    setQuantity("");
-    setFiles([]);
   };
-
-  // const { getRootProps, getInputProps } = useDropzone({ onDrop: handleDrop });
 
   return (
     <div className="w-full">
@@ -141,9 +107,7 @@ const AddProduct = () => {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              value={name}
               name="name"
-              onChange={(e) => setName(e.target.value)}
             />
 
             <Typography
@@ -153,17 +117,23 @@ const AddProduct = () => {
             >
               Brand
             </Typography>
-            <Input
-              type="text"
+            <Select
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              value={brand}
               name="brand"
-              onChange={(e) => setBrand(e.target.value)}
-            />
+            >
+              <Option value="" disabled>
+                Select category
+              </Option>
+              {brands.map((brand) => (
+                <Option key={brand._id} value={brand.name}>
+                  {brand.name}
+                </Option>
+              ))}
+            </Select>
 
             <Typography
               variant="h6"
@@ -179,9 +149,7 @@ const AddProduct = () => {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              value={price}
               name="price"
-              onChange={(e) => setPrice(e.target.value)}
             />
 
             <Typography
@@ -198,9 +166,7 @@ const AddProduct = () => {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              value={quantity}
               name="quantity"
-              onChange={(e) => setQuantity(e.target.value)}
             />
             <Typography
               variant="h6"
@@ -210,8 +176,6 @@ const AddProduct = () => {
               Category
             </Typography>
             <Select
-              value={category}
-              onChange={(value) => setCategory(value)}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -221,12 +185,11 @@ const AddProduct = () => {
               <Option value="" disabled>
                 Select category
               </Option>
-              <Option value="Electronics">Electronics</Option>
-              <Option value="Fashion">Fashion</Option>
-              <Option value="Home & Garden">Home & Garden</Option>
-              <Option value="Sports">Sports</Option>
-              <Option value="Toys">Toys</Option>
-              <Option value="Books">Books</Option>
+              {categories.map((category) => (
+                <Option key={category._id} value={category.name}>
+                  {category.name}
+                </Option>
+              ))}
             </Select>
 
             <Typography
@@ -237,9 +200,7 @@ const AddProduct = () => {
               Color
             </Typography>
             <Select
-              value={color}
               name="color"
-              onChange={(value) => setColor(value)}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -265,13 +226,11 @@ const AddProduct = () => {
               Description
             </Typography>
             <Textarea
-              value={description}
               name="description"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
-              onChange={(e) => setDescription(e.target.value)}
               rows={8}
             />
             {/* file upload */}
