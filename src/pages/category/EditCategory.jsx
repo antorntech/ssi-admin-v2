@@ -5,7 +5,7 @@ import FetchContext from "../../context/FetchContext";
 
 const initialValues = {
   name: "",
-  serverImages: null,
+  serverImage: null
 };
 
 const EditCategory = ({ selectedCategory, handleEditCategory }) => {
@@ -13,38 +13,41 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormState({ ...formState, [name]: value });
+  function fetchCategoryById() {
+    if (!selectedCategory.id) return;
+    request(`categories/${selectedCategory.id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data) return;
+        setFormState((prev) => ({
+          ...prev,
+          ...data,
+          serverImage: data.image,
+          image: []
+        }));
+      })
+      .catch(console.error);
   }
 
-  function fetchCategoryById() {
-    // if (!id) return;
-    // request(`category/${id}`)
-    //   .then((r) => r.json())
-    //   .then((data) => {
-    //     if (!data) return;
-    //     setFormState((prev) => ({
-    //       ...prev,
-    //       ...data,
-    //       serverImages: data.images,
-    //       images: [],
-    //     }));
-    //   })
-    //   .catch(console.error);
-  }
   useEffect(fetchCategoryById, [selectedCategory]);
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
     if (!request) return;
-    request(`category/${id}`, { method: "PATCH", body })
+    request(`categories/${selectedCategory.id}`, { method: "PATCH", body })
       .then((r) => r.json())
       .then(() => {
         navigate("/categories");
       })
       .catch(console.error);
   };
+
+  if (!selectedCategory.id) return;
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormState({ ...formState, [name]: value });
+  }
 
   return (
     <>
@@ -92,7 +95,7 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
             </button>
           </div>
           <input
-            name="images"
+            name="image"
             type="file"
             accept="image/*"
             multiple
@@ -103,7 +106,7 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
           />
         </label>
         <div className="flex overflow-x-auto gap-4 py-2">
-          {formState.serverImages?.map((src, i) => {
+          {formState.serverImage?.map((src, i) => {
             let path = null;
             if (typeof src == "string") path = srcBuilder(src);
             return (
@@ -111,10 +114,11 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
                 key={i}
                 src={path}
                 onRemove={() => {
-                  if (!id || !src) throw new Error("id or src is not defined");
+                  if (!selectedCategory.id || !src)
+                    throw new Error("id or src is not defined");
                   // call remove media api
-                  request(`categories/${id}/images/${src}`, {
-                    method: "DELETE",
+                  request(`categories/${selectedCategory.id}/images/${src}`, {
+                    method: "DELETE"
                   })
                     .then((r) => r.json())
                     .then(() => {
@@ -150,10 +154,12 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none",
+              className: "before:content-none after:content-none"
             }}
             value={formState.name}
             onChange={handleChange}
+            name="name"
+            required
           />
         </div>
 

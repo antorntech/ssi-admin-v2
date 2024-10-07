@@ -80,7 +80,7 @@ const AddCategory = ({ fetchCategories }) => {
             </button>
           </div>
           <input
-            name="images"
+            name="image"
             type="file"
             accept="image/*"
             multiple

@@ -5,6 +5,7 @@ import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
+import { UPLOADS_URL } from "../../utils/API";
 
 const Brands = () => {
   const { request } = useContext(FetchContext);
@@ -116,7 +117,7 @@ const Brands = () => {
                   <td className="px-6 py-4 border-b">
                     {brand.image ? (
                       <img
-                        src={brand.image}
+                        src={`${UPLOADS_URL}brands/${brand.image}`}
                         alt={brand.name || "Brand"}
                         className="h-12 w-12 object-cover"
                       />

@@ -5,6 +5,7 @@ import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
+import { UPLOADS_URL } from "../../utils/API";
 
 const Categories = () => {
   const { request } = useContext(FetchContext);
@@ -121,7 +122,7 @@ const Categories = () => {
                   <td className="px-6 py-4 border-b">
                     {category.image ? (
                       <img
-                        src={category.image}
+                        src={`${UPLOADS_URL}categories/${category.image}`}
                         alt={category.name || "Category"}
                         className="h-12 w-12 object-cover"
                       />

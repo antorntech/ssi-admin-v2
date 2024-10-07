@@ -3,13 +3,14 @@ import {
   Textarea,
   Typography,
   Select,
-  Option,
+  Option
 } from "@material-tailwind/react";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 import { srcBuilder } from "../../utils/src.js";
+import filterImages from "../../utils/filter.js";
 
 const initialValues = {
   name: "",
@@ -19,7 +20,7 @@ const initialValues = {
   category: "",
   price: "",
   quantity: "",
-  serverImages: null,
+  serverImages: null
 };
 
 const EditProduct = () => {
@@ -44,8 +45,8 @@ const EditProduct = () => {
         setFormState((prev) => ({
           ...prev,
           ...data,
-          serverImages: data.images,
-          images: [],
+          serverImages: filterImages(data.images),
+          images: []
         }));
       })
       .catch(console.error);
@@ -71,6 +72,7 @@ const EditProduct = () => {
       const json = await response.json();
       const { data } = json;
       if (!data) return;
+      console.log(data);
       setCategories(json.data);
     } catch (error) {
       console.error();
@@ -121,7 +123,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
               value={formState.name}
               name="name"
@@ -129,33 +131,29 @@ const EditProduct = () => {
             />
 
             <Legend>Brand</Legend>
-            <Select
-              size="md"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+            <select
               name="brand"
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              onChange={handleChange}
+              value={formState.brand}
             >
-              <Option value="" disabled>
-                Select brand
-              </Option>
-              {brands.map((brand) => (
-                <Option
-                  key={brand._id}
+              <option value="" disabled></option>
+              {brands.map((brand, i) => (
+                <option
+                  key={brand.id || i}
                   value={formState.brand ? formState.brand : brand.name}
                 >
                   {brand.name}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
             <Legend>Price</Legend>
             <Input
               type="number"
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
               value={formState.price}
               name="price"
@@ -167,34 +165,32 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
               value={formState.quantity}
               name="quantity"
               onChange={handleChange}
             />
             <Legend>Category</Legend>
-            <Select
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+            <select
               name="category"
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              onChange={handleChange}
+              value={formState.category}
             >
-              <Option value="" disabled>
-                Select category
-              </Option>
-              {categories.map((category) => (
-                <Option
-                  key={category._id}
+              <option value="" disabled></option>
+              {categories.map((category, i) => (
+                <option
+                  key={category.id || i}
                   value={
                     formState.category ? formState.category : category.name
                   }
+                  className="capitalize"
                 >
                   {category.name}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
             <Legend>Color</Legend>
             <Select
               value={formState.color}
@@ -202,7 +198,7 @@ const EditProduct = () => {
               onChange={handleChange}
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
             >
               <Option value="" disabled>
@@ -227,7 +223,7 @@ const EditProduct = () => {
               name="description"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: "before:content-none after:content-none"
               }}
               onChange={handleChange}
               rows={8}
@@ -290,7 +286,7 @@ const EditProduct = () => {
                         throw new Error("id or src is not defined");
                       // call remove media api
                       request(`products/${id}/images/${src}`, {
-                        method: "DELETE",
+                        method: "DELETE"
                       })
                         .then((r) => r.json())
                         .then(() => {
