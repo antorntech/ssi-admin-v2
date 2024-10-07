@@ -127,13 +127,8 @@ const EditProduct = () => {
               name="name"
               onChange={handleChange}
             />
-            <Typography
-              variant="h6"
-              color="gray"
-              className="mb-1 font-normal mt-2"
-            >
-              Brand
-            </Typography>
+
+            <Legend>Brand</Legend>
             <Select
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
@@ -143,7 +138,7 @@ const EditProduct = () => {
               name="brand"
             >
               <Option value="" disabled>
-                Select category
+                Select brand
               </Option>
               {brands.map((brand) => (
                 <Option
