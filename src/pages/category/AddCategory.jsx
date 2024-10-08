@@ -10,8 +10,7 @@ const AddCategory = ({ fetchCategories }) => {
 
   // Handle file input change
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
+    setFile(e.target.files[0]);
   };
 
   // Handle form submission
@@ -23,7 +22,7 @@ const AddCategory = ({ fetchCategories }) => {
     try {
       await request("categories", {
         method: "POST",
-        body: formData,
+        body: formData
       });
 
       // Reset form and state after successful submission
