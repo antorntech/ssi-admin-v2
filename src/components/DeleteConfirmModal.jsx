@@ -3,7 +3,7 @@ import {
   Button,
   Dialog,
   DialogBody,
-  DialogFooter
+  DialogFooter,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 

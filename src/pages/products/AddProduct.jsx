@@ -75,6 +75,26 @@ const AddProduct = () => {
     return;
   };
 
+  const colors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple",
+    "pink",
+    "brown",
+    "gray",
+    "black",
+    "white",
+    "violet",
+    "indigo",
+    "cyan",
+    "teal",
+    "lime",
+    "amber",
+  ];
+
   const Legend = ({ children }) => (
     <Typography variant="h6" color="gray" className="mb-1 mt-2 font-normal">
       {children}
@@ -116,10 +136,12 @@ const AddProduct = () => {
 
             <Legend>Brand</Legend>
             <select
-              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="brand"
             >
-              <option value="">Select brand</option>
+              <option value="" disabled>
+                Select brand
+              </option>
               {brands.map((brand) => (
                 <option key={brand.id} value={brand?.name}>
                   {brand.name}
@@ -151,10 +173,10 @@ const AddProduct = () => {
 
             <Legend>Category</Legend>
             <select
-              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="brand"
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="category"
             >
-              <option value="">Select category</option>
+              <option value="Select category" disabled></option>
               {categories.map((category) => (
                 <option key={category._id} value={category?.name}>
                   {category.name}
@@ -165,18 +187,16 @@ const AddProduct = () => {
             <Legend>Color</Legend>
             <select
               name="color"
-              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             >
-              <option value="">Select color</option>
-              <option value="red">Red</option>
-              <option value="blue">Blue</option>
-              <option value="green">Green</option>
-              <option value="yellow">Yellow</option>
-              <option value="purple">Purple</option>
-              <option value="orange">Orange</option>
-              <option value="brown">Brown</option>
-              <option value="black">Black</option>
-              <option value="white">White</option>
+              <option value="" disabled>
+                Select color
+              </option>
+              {colors.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -232,6 +252,7 @@ const AddProduct = () => {
                 multiple
                 className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
                 onChange={fileChange}
+                required
               />
             </label>
             <div className="flex overflow-x-auto gap-4 mt-2">

@@ -3,14 +3,14 @@ import {
   Textarea,
   Typography,
   Select,
-  Option
+  Option,
 } from "@material-tailwind/react";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
-import { srcBuilder } from "../../utils/src.js";
 import filterImages from "../../utils/filter.js";
+import { srcBuilder } from "../../utils/src.js";
 
 const initialValues = {
   name: "",
@@ -20,7 +20,7 @@ const initialValues = {
   category: "",
   price: "",
   quantity: "",
-  serverImages: null
+  serverImages: null,
 };
 
 const EditProduct = () => {
@@ -46,7 +46,7 @@ const EditProduct = () => {
           ...prev,
           ...data,
           serverImages: filterImages(data.images),
-          images: []
+          images: [],
         }));
       })
       .catch(console.error);
@@ -97,6 +97,26 @@ const EditProduct = () => {
       })
       .catch(console.error);
   };
+
+  const colors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple",
+    "pink",
+    "brown",
+    "gray",
+    "black",
+    "white",
+    "violet",
+    "indigo",
+    "cyan",
+    "teal",
+    "lime",
+    "amber",
+  ];
   const Legend = ({ children }) => (
     <Typography variant="h6" color="gray" className="mb-1 font-normal">
       {children}
@@ -123,7 +143,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.name}
               name="name"
@@ -133,16 +153,13 @@ const EditProduct = () => {
             <Legend>Brand</Legend>
             <select
               name="brand"
-              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               onChange={handleChange}
               value={formState.brand}
             >
-              <option value="" disabled></option>
+              <option value="Select" disabled></option>
               {brands.map((brand, i) => (
-                <option
-                  key={brand.id || i}
-                  value={formState.brand ? formState.brand : brand.name}
-                >
+                <option key={brand.id || i} value={brand.name}>
                   {brand.name}
                 </option>
               ))}
@@ -153,7 +170,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.price}
               name="price"
@@ -165,7 +182,7 @@ const EditProduct = () => {
               size="md"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               value={formState.quantity}
               name="quantity"
@@ -174,45 +191,33 @@ const EditProduct = () => {
             <Legend>Category</Legend>
             <select
               name="category"
-              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               onChange={handleChange}
               value={formState.category}
             >
-              <option value="" disabled></option>
+              <option value="Select" disabled></option>
               {categories.map((category, i) => (
-                <option
-                  key={category.id || i}
-                  value={
-                    formState.category ? formState.category : category.name
-                  }
-                  className="capitalize"
-                >
+                <option key={category.id || i} value={category.name}>
                   {category.name}
                 </option>
               ))}
             </select>
             <Legend>Color</Legend>
-            <Select
+            <select
               value={formState.color}
               name="color"
               onChange={handleChange}
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none"
-              }}
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             >
-              <Option value="" disabled>
+              <option value="Select" disabled>
                 Select color
-              </Option>
-              <Option value="Red">Red</Option>
-              <Option value="Blue">Blue</Option>
-              <Option value="Green">Green</Option>
-              <Option value="Black">Black</Option>
-              <Option value="White">White</Option>
-              <Option value="Yellow">Yellow</Option>
-              <Option value="Orange">Orange</Option>
-              <Option value="Purple">Purple</Option>
-            </Select>
+              </option>
+              {colors.map((color, i) => (
+                <option key={i} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Right Column */}
@@ -223,7 +228,7 @@ const EditProduct = () => {
               name="description"
               className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               labelProps={{
-                className: "before:content-none after:content-none"
+                className: "before:content-none after:content-none",
               }}
               onChange={handleChange}
               rows={8}
@@ -286,7 +291,7 @@ const EditProduct = () => {
                         throw new Error("id or src is not defined");
                       // call remove media api
                       request(`products/${id}/images/${src}`, {
-                        method: "DELETE"
+                        method: "DELETE",
                       })
                         .then((r) => r.json())
                         .then(() => {

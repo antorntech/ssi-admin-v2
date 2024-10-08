@@ -32,16 +32,24 @@ const Categories = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [open, setOpen] = useState(false); // State for delete confirmation modal
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // ID of the category to be deleted
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+
+  const handleDelete = async (id) => {
+    try {
+      if (!id) throw new Error("Id is not defined");
+      const response = await request(`categories/${id}`, { method: "DELETE" });
+      setSelectedCategoryId(null);
+      fetchCategories();
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Items per page for pagination
   const [totalPages, setTotalPages] = useState(0);
-
-  const handleAddCategory = (newCategory) => {
-    setCategories([...categories, newCategory]);
-  };
 
   const handleEditCategory = (updatedCategory) => {
     const updatedCategories = categories.map((category) =>
@@ -51,26 +59,12 @@ const Categories = () => {
     setIsEditing(false);
   };
 
-  const handleDeleteCategory = (id) => {
-    const filteredCategories = categories.filter(
-      (category) => category.id !== id
-    );
-    setCategories(filteredCategories);
-    localStorage.setItem("categoriesData", JSON.stringify(filteredCategories));
-  };
-
   const handleEditClick = (category) => {
     setSelectedCategory(category);
     setIsEditing(true);
   };
 
-  const handleOpen = () => setOpen(!open); // Toggle modal open/close
-
-  // Confirm deletion of the selected category
-  const confirmDeleteCategory = () => {
-    handleDeleteCategory(selectedCategoryId);
-    handleOpen(); // Close the modal after deletion
-  };
+  const handleOpen = () => setOpen(!open);
 
   // Calculate the current categories for the current page
   const indexOfLastCategory = currentPage * itemsPerPage;
@@ -134,7 +128,9 @@ const Categories = () => {
                       />
                     )}
                   </td>
-                  <td className="px-6 py-4 border-b">{category.name}</td>
+                  <td className="px-6 py-4 border-b capitalize">
+                    {category.name}
+                  </td>
                   <td className="px-6 py-4 border-b">
                     {moment(category.created_at).format("Do MMM, YYYY")}
                   </td>
@@ -183,7 +179,7 @@ const Categories = () => {
         {isEditing ? (
           <EditCategory
             selectedCategory={selectedCategory}
-            handleEditCategory={handleEditCategory}
+            fetchCategories={fetchCategories}
           />
         ) : (
           <AddCategory fetchCategories={fetchCategories} />
@@ -194,9 +190,10 @@ const Categories = () => {
       <DeleteConfirmModal
         open={open}
         handleOpen={handleOpen}
+        onCollapse={() => setOpen(false)}
         itemId={selectedCategoryId}
-        onDelete={confirmDeleteCategory} // Confirm deletion function
-        itemName="Category" // Change to "Category" for better context
+        onDelete={() => handleDelete(selectedCategoryId)}
+        itemName="Category"
       />
     </div>
   );

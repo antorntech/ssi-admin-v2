@@ -2,13 +2,14 @@ import { Input, Typography } from "@material-tailwind/react";
 import React, { useState, useEffect, useContext } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
+import { srcBuilder } from "../../utils/src";
 
 const initialValues = {
   name: "",
-  serverImage: null
+  serverImage: null,
 };
 
-const EditCategory = ({ selectedCategory, handleEditCategory }) => {
+const EditCategory = ({ selectedCategory, fetchCategories }) => {
   const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
@@ -22,14 +23,15 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
         setFormState((prev) => ({
           ...prev,
           ...data,
-          serverImage: data.image,
-          image: []
+          serverImage: Array.isArray(data.image) ? data.image : [data.image], // Ensure it's an array
+          image: [],
         }));
       })
       .catch(console.error);
   }
 
   useEffect(fetchCategoryById, [selectedCategory]);
+
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
@@ -37,7 +39,11 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
     request(`categories/${selectedCategory.id}`, { method: "PATCH", body })
       .then((r) => r.json())
       .then(() => {
-        navigate("/categories");
+        if (fetchCategories) {
+          fetchCategories();
+        } else {
+          window.location.reload();
+        }
       })
       .catch(console.error);
   };
@@ -106,9 +112,10 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
           />
         </label>
         <div className="flex overflow-x-auto gap-4 py-2">
+          {/* Handle single or multiple images */}
           {formState.serverImage?.map((src, i) => {
             let path = null;
-            if (typeof src == "string") path = srcBuilder(src);
+            if (typeof src === "string") path = srcBuilder(`categories/${src}`);
             return (
               <ImagePreviewWithRemove
                 key={i}
@@ -118,7 +125,7 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
                     throw new Error("id or src is not defined");
                   // call remove media api
                   request(`categories/${selectedCategory.id}/images/${src}`, {
-                    method: "DELETE"
+                    method: "DELETE",
                   })
                     .then((r) => r.json())
                     .then(() => {
@@ -129,17 +136,15 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
               />
             );
           })}
-          {files?.map((src, i) => {
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={src}
-                onRemove={() => {
-                  setFiles((prev) => prev.filter((_, i) => i !== i));
-                }}
-              />
-            );
-          })}
+          {files?.map((src, i) => (
+            <ImagePreviewWithRemove
+              key={i}
+              src={src}
+              onRemove={() => {
+                setFiles((prev) => prev.filter((_, idx) => idx !== i));
+              }}
+            />
+          ))}
         </div>
         <div>
           <Typography
@@ -154,12 +159,11 @@ const EditCategory = ({ selectedCategory, handleEditCategory }) => {
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none"
+              className: "before:content-none after:content-none",
             }}
             value={formState.name}
             onChange={handleChange}
             name="name"
-            required
           />
         </div>
 

@@ -28,6 +28,9 @@ const AddCategory = ({ fetchCategories }) => {
       } else {
         window.location.reload();
       }
+
+      setFiles([]);
+      e.target.reset();
     } catch (error) {
       console.error("Failed to add product", error);
     }
@@ -86,6 +89,7 @@ const AddCategory = ({ fetchCategories }) => {
             multiple
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
             onChange={fileChange}
+            required
           />
         </label>
         <div className="flex overflow-x-auto gap-4 mt-2">

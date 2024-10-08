@@ -6,6 +6,7 @@ import SearchBar from "../../components/searchbar/SearchBar";
 import Pagination from "../../components/pagination/Pagination";
 import FetchContext from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
+import moment from "moment";
 
 const Products = () => {
   const [open, setOpen] = useState(false);
@@ -65,6 +66,7 @@ const Products = () => {
       const response = await request(`products/${id}`, { method: "DELETE" });
       setSelectedItemId(null);
       fetchProducts();
+      setOpen(false);
     } catch (error) {
       console.error(error);
     }
@@ -141,13 +143,23 @@ const Products = () => {
                           </>
                         ) : null}
                       </td>
-                      <td className="px-6 py-4 border-b">{product.name}</td>
-                      <td className="px-6 py-4 border-b">{product.brand}</td>
-                      <td className="px-6 py-4 border-b">{product.color}</td>
-                      <td className="px-6 py-4 border-b">{product.category}</td>
+                      <td className="px-6 py-4 border-b capitalize">
+                        {product.name}
+                      </td>
+                      <td className="px-6 py-4 border-b capitalize">
+                        {product.brand}
+                      </td>
+                      <td className="px-6 py-4 border-b capitalize">
+                        {product.color}
+                      </td>
+                      <td className="px-6 py-4 border-b capitalize">
+                        {product.category}
+                      </td>
                       <td className="px-6 py-4 border-b">{product.price}</td>
                       <td className="px-6 py-4 border-b">{product.quantity}</td>
-                      <td className="px-6 py-4 border-b">{product.date}</td>
+                      <td className="px-6 py-4 border-b">
+                        {moment(product.created_at).format("Do MMM, YYYY")}
+                      </td>
                       <td className="px-6 py-4 border-b">
                         <Link
                           to={`/products/edit/${product.id}`}
@@ -182,19 +194,16 @@ const Products = () => {
               prevPage={prevPage}
             />
           )}
-          {selectedItemId ? (
-            <DeleteConfirmModal
-              handleOpen={handleOpen}
-              onCollapse={() => {
-                setSelectedItemId(null);
-              }}
-              open={!!selectedItemId}
-              onDelete={() => {
-                handleDelete(selectedItemId);
-              }}
-              itemName="productsData"
-            />
-          ) : null}
+
+          {/* Delete Confirmation Modal */}
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={handleOpen}
+            onCollapse={() => setOpen(false)}
+            itemId={selectedItemId}
+            onDelete={() => handleDelete(selectedItemId)}
+            itemName="Product"
+          />
         </>
       ) : (
         <>{/* <Loader /> */}</>
