@@ -7,6 +7,9 @@ const AddGift = ({ fetchGifts }) => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "author@gmail.com";
+  const [formState, setFormState] = useState({
+    price: 0
+  });
 
   const fileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -22,7 +25,7 @@ const AddGift = ({ fetchGifts }) => {
     try {
       const response = await request("gifts", {
         method: "POST",
-        body,
+        body
       });
       if (response.ok) {
         if (fetchGifts) {

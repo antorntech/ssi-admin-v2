@@ -6,12 +6,12 @@ import { srcBuilder } from "../../utils/src";
 
 const initialValues = {
   name: "",
-  serverImage: null,
+  serverImage: null
 };
 
 const EditCategory = ({ selectedCategory, fetchCategories }) => {
   const [formState, setFormState] = useState(initialValues);
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState(null);
   const { request } = useContext(FetchContext);
 
   function fetchCategoryById() {
@@ -24,7 +24,7 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
           ...prev,
           ...data,
           serverImage: Array.isArray(data.image) ? data.image : [data.image], // Ensure it's an array
-          image: [],
+          image: []
         }));
       })
       .catch(console.error);
@@ -39,6 +39,8 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
     request(`categories/${selectedCategory.id}`, { method: "PATCH", body })
       .then((r) => r.json())
       .then(() => {
+        e.target.reset();
+        setFile(null);
         if (fetchCategories) {
           fetchCategories();
         } else {
@@ -54,6 +56,8 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
   }
+
+  const filesExists = file.length > 0;
 
   return (
     <>
@@ -104,47 +108,56 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
             name="image"
             type="file"
             accept="image/*"
-            multiple
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
             onChange={(e) => {
-              setFiles((prev) => [...prev, ...e.target.files]);
+              setFile((prev) => [...prev, ...e.target.files]);
             }}
           />
         </label>
         <div className="flex overflow-x-auto gap-4 py-2">
-          {/* Handle single or multiple images */}
-          {formState.serverImage?.map((src, i) => {
-            let path = null;
-            if (typeof src === "string") path = srcBuilder(`categories/${src}`);
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={path}
-                onRemove={() => {
-                  if (!selectedCategory.id || !src)
-                    throw new Error("id or src is not defined");
-                  // call remove media api
-                  request(`categories/${selectedCategory.id}/images/${src}`, {
-                    method: "DELETE",
-                  })
-                    .then((r) => r.json())
-                    .then(() => {
-                      fetchCategoryById();
-                    })
-                    .catch(console.error);
-                }}
-              />
-            );
-          })}
-          {files?.map((src, i) => (
-            <ImagePreviewWithRemove
-              key={i}
-              src={src}
-              onRemove={() => {
-                setFiles((prev) => prev.filter((_, idx) => idx !== i));
-              }}
-            />
-          ))}
+          {filesExists ? (
+            <>
+              {file?.map((src, i) => (
+                <ImagePreviewWithRemove
+                  key={i}
+                  src={src}
+                  onRemove={() => {
+                    setFile((prev) => prev.filter((_, idx) => idx !== i));
+                  }}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              {formState.serverImage?.map((src, i) => {
+                let path = null;
+                if (typeof src === "string")
+                  path = srcBuilder(`categories/${src}`);
+                return (
+                  <ImagePreviewWithRemove
+                    key={i}
+                    src={path}
+                    onRemove={() => {
+                      if (!selectedCategory.id || !src)
+                        throw new Error("id or src is not defined");
+                      // call remove media api
+                      request(
+                        `categories/${selectedCategory.id}/images/${src}`,
+                        {
+                          method: "DELETE"
+                        }
+                      )
+                        .then((r) => r.json())
+                        .then(() => {
+                          fetchCategoryById();
+                        })
+                        .catch(console.error);
+                    }}
+                  />
+                );
+              })}
+            </>
+          )}
         </div>
         <div>
           <Typography
@@ -159,7 +172,7 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
             size="md"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none",
+              className: "before:content-none after:content-none"
             }}
             value={formState.name}
             onChange={handleChange}

@@ -4,13 +4,13 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 
 const AddCategory = ({ fetchCategories }) => {
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
 
   const fileChange = (e) => {
     const files = Array.from(e.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...files]);
+    setFile(files[0]);
   };
 
   const onSubmit = async (e) => {
@@ -29,7 +29,7 @@ const AddCategory = ({ fetchCategories }) => {
         window.location.reload();
       }
 
-      setFiles([]);
+      setFile(null);
       e.target.reset();
     } catch (error) {
       console.error("Failed to add product", error);
@@ -93,14 +93,14 @@ const AddCategory = ({ fetchCategories }) => {
           />
         </label>
         <div className="flex overflow-x-auto gap-4 mt-2">
-          {files.map((src, i) => {
+          {file.map((src, i) => {
             return (
               <ImagePreviewWithRemove
                 key={i}
                 src={src}
                 onRemove={() => {
                   // call remove media api
-                  setFiles((prev) => prev.filter((_, i) => i !== i));
+                  setFile((prev) => prev.filter((_, i) => i !== i));
                 }}
               />
             );

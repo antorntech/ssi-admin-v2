@@ -120,7 +120,7 @@ const Gifts = () => {
                       {image ? (
                         <>
                           <img
-                            src={`${UPLOADS_URL + image}`}
+                            src={`${UPLOADS_URL + "gifts/" + image}`}
                             alt={image}
                             className="h-12 w-12 object-cover border"
                           />
@@ -173,19 +173,21 @@ const Gifts = () => {
           />
         )}
       </div>
-      <div className="col-span-1 w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
-        {isEditing ? (
-          <EditGift
-            selectedGift={selectedGift}
-            fetchGifts={() => {
-              fetchGifts();
-              setSelectedGift(null);
-              setIsEditing(false);
-            }}
-          />
-        ) : (
-          <AddGift fetchGifts={fetchGifts} />
-        )}
+      <div className="col-span-1">
+        <div className=" w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
+          {isEditing ? (
+            <EditGift
+              selectedGift={selectedGift}
+              fetchGifts={() => {
+                fetchGifts();
+                setSelectedGift(null);
+                setIsEditing(false);
+              }}
+            />
+          ) : (
+            <AddGift fetchGifts={fetchGifts} />
+          )}
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}

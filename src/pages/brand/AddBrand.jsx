@@ -4,13 +4,13 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 
 const AddBrand = ({ fetchBrands }) => {
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState(null);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
 
   const fileChange = (e) => {
     const files = Array.from(e.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...files]);
+    setFile(files[0]);
   };
 
   const onSubmit = async (e) => {
@@ -22,12 +22,12 @@ const AddBrand = ({ fetchBrands }) => {
     try {
       const response = await request("brands", {
         method: "POST",
-        body,
+        body
       });
       if (response.ok) {
+        setFile(null);
+        e.target.reset();
         if (fetchBrands) {
-          setFiles([]);
-          e.target.reset();
           fetchBrands();
         } else {
           window.location.reload();
@@ -85,27 +85,21 @@ const AddBrand = ({ fetchBrands }) => {
             </button>
           </div>
           <input
-            name="images"
+            name="image"
             type="file"
             accept="image/*"
-            multiple
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
             onChange={fileChange}
           />
         </label>
         <div className="flex overflow-x-auto gap-4 mt-2">
-          {files.map((src, i) => {
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={src}
-                onRemove={() => {
-                  // call remove media api
-                  setFiles((prev) => prev.filter((_, i) => i !== i));
-                }}
-              />
-            );
-          })}
+          <ImagePreviewWithRemove
+            src={file || ""}
+            onRemove={() => {
+              // call remove media api
+              setFile((prev) => prev.filter((_, i) => i !== i));
+            }}
+          />
         </div>
         <div>
           <Typography
@@ -121,7 +115,7 @@ const AddBrand = ({ fetchBrands }) => {
             name="name"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none",
+              className: "before:content-none after:content-none"
             }}
           />
         </div>

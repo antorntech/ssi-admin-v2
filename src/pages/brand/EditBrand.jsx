@@ -11,7 +11,7 @@ const initialValues = {
 
 const EditBrand = ({ selectedBrand, fetchBrands }) => {
   const [formState, setFormState] = useState(initialValues);
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState([]);
   const { request } = useContext(FetchContext);
 
   function handleChange(e) {
@@ -103,7 +103,7 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
             multiple
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
             onChange={(e) => {
-              setFiles((prev) => [...prev, ...e.target.files]);
+              setFile((prev) => [...prev, ...e.target.files]);
             }}
           />
         </label>
@@ -132,12 +132,12 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
               />
             );
           })}
-          {files?.map((src, i) => (
+          {file?.map((src, i) => (
             <ImagePreviewWithRemove
               key={i}
               src={src}
               onRemove={() => {
-                setFiles((prev) => prev.filter((_, idx) => idx !== i));
+                setFile((prev) => prev.filter((_, idx) => idx !== i));
               }}
             />
           ))}
