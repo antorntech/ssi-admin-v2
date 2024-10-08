@@ -77,7 +77,7 @@ const Brands = () => {
   }, [brands]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
       {/* Column 1: Table */}
       <div className="col-span-1 brands-table">
         <div className="mb-4">
