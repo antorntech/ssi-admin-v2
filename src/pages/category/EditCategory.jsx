@@ -3,16 +3,17 @@ import React, { useState, useEffect, useContext } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src";
+import { UPLOADS_URL } from "../../utils/API";
 
 // Initial form values
 const initialValues = {
   name: "",
-  serverImage: null,
+  serverImage: null
 };
 
 const EditCategory = ({ selectedCategory, fetchCategories }) => {
   const [formState, setFormState] = useState(initialValues);
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(null);
   const { request } = useContext(FetchContext);
 
   // Fetch category data by ID
@@ -26,8 +27,7 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
         setFormState((prevState) => ({
           ...prevState,
           ...data,
-          serverImage: Array.isArray(data.image) ? data.image : [data.image], // Ensure it's an array
-          image: [],
+          serverImage: data.image || null // Ensure it's an array
         }));
       })
       .catch(console.error);
@@ -39,23 +39,16 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
   // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", formState.name);
+    const formData = new FormData(e.target);
 
-    // Append file data if exists
-    if (file.length > 0) {
-      file.forEach((fileItem) => formData.append("image", fileItem));
-    }
-
-    // Send the PATCH request
     request(`categories/${selectedCategory.id}`, {
       method: "PATCH",
-      body: formData,
+      body: formData
     })
       .then((res) => res.json())
       .then(() => {
         e.target.reset();
-        setFile([]);
+        setFile(null);
         fetchCategories ? fetchCategories() : window.location.reload();
       })
       .catch(console.error);
@@ -66,9 +59,6 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
   };
-
-  // Check if new files exist
-  const filesExist = file.length > 0;
 
   if (!selectedCategory.id) return null;
 
@@ -123,46 +113,29 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
             type="file"
             accept="image/*"
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1]"
-            onChange={(e) => setFile((prev) => [...prev, ...e.target.files])}
+            onChange={(e) => setFile(e.target.files[0])}
           />
         </label>
 
-        {/* Image preview section */}
         <div className="flex overflow-x-auto gap-4 py-2">
-          {filesExist
-            ? file.map((src, i) => (
-                <ImagePreviewWithRemove
-                  key={i}
-                  src={URL.createObjectURL(src)}
-                  onRemove={() =>
-                    setFile((prev) => prev.filter((_, idx) => idx !== i))
-                  }
-                />
-              ))
-            : formState.serverImage?.map((src, i) => {
-                const imagePath =
-                  typeof src === "string"
-                    ? srcBuilder(`categories/${src}`)
-                    : null;
-                return (
-                  <ImagePreviewWithRemove
-                    key={i}
-                    src={imagePath}
-                    onRemove={() => {
-                      if (!selectedCategory.id || !src)
-                        throw new Error("ID or image source is not defined.");
-                      // Call remove image API
-                      request(
-                        `categories/${selectedCategory.id}/images/${src}`,
-                        { method: "DELETE" }
-                      )
-                        .then((res) => res.json())
-                        .then(fetchCategoryById)
-                        .catch(console.error);
-                    }}
-                  />
-                );
-              })}
+          {file ? (
+            <ImagePreviewWithRemove
+              src={file}
+              onRemove={() => setFile(null)}
+            />
+          ) : formState.serverImage ? (
+            <ImagePreviewWithRemove
+              src={srcBuilder(formState.serverImage, "categories")}
+              onRemove={() => {
+                request(`categories/${selectedCategory.id}/images/${formState.serverImage}`, {
+                  method: "DELETE"
+                })
+                  .then((res) => res.json())
+                  .then(fetchCategoryById)
+                  .catch(console.error);
+              }}
+            />
+          ) : null}
         </div>
 
         {/* Edit name input */}
