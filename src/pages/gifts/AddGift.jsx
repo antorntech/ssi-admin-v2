@@ -26,6 +26,8 @@ const AddGift = ({ fetchGifts }) => {
       });
       if (response.ok) {
         if (fetchGifts) {
+          setFiles([]);
+          e.target.reset();
           fetchGifts();
         } else {
           window.location.reload();

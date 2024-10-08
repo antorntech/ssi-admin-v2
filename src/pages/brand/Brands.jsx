@@ -39,10 +39,6 @@ const Brands = () => {
   const itemsPerPage = 5; // Items per page for pagination
   const [totalPages, setTotalPages] = useState(0);
 
-  const handleAddBrand = (newBrand) => {
-    setBrands([...brands, newBrand]);
-  };
-
   const handleEditBrand = (updatedBrand) => {
     const updatedBrands = brands.map((brand) =>
       brand.id === updatedBrand.id ? updatedBrand : brand
@@ -51,10 +47,16 @@ const Brands = () => {
     setIsEditing(false);
   };
 
-  const handleDeleteBrand = (id) => {
-    const filteredBrands = brands.filter((brand) => brand.id !== id);
-    setBrands(filteredBrands);
-    localStorage.setItem("brandsData", JSON.stringify(filteredBrands));
+  const handleDelete = async (id) => {
+    try {
+      if (!id) throw new Error("Id is not defined");
+      const response = await request(`brands/${id}`, { method: "DELETE" });
+      setSelectedBrandId(null);
+      fetchBrands();
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleEditClick = (brand) => {
@@ -63,12 +65,6 @@ const Brands = () => {
   };
 
   const handleOpen = () => setOpen(!open); // Toggle modal open/close
-
-  // Confirm deletion of the selected brand
-  const confirmDeleteBrand = () => {
-    handleDeleteBrand(selectedBrandId);
-    handleOpen(); // Close the modal after deletion
-  };
 
   // Calculate the current brands for the current page
   const indexOfLastBrand = currentPage * itemsPerPage;
@@ -176,10 +172,7 @@ const Brands = () => {
       {/* Column 2: Conditional Form */}
       <div className="col-span-1 brand-form bg-white p-4 lg:p-5 rounded-lg custom-shadow">
         {isEditing ? (
-          <EditBrand
-            selectedBrand={selectedBrand}
-            handleEditBrand={handleEditBrand}
-          />
+          <EditBrand selectedBrand={selectedBrand} fetchBrands={fetchBrands} />
         ) : (
           <AddBrand fetchBrands={fetchBrands} />
         )}
@@ -189,9 +182,10 @@ const Brands = () => {
       <DeleteConfirmModal
         open={open}
         handleOpen={handleOpen}
+        onCollapse={() => setOpen(false)}
         itemId={selectedBrandId}
-        onDelete={confirmDeleteBrand} // Confirm deletion function
-        itemName="Brand" // Change to "Brand" for better context
+        onDelete={() => handleDelete(selectedBrandId)}
+        itemName="brand"
       />
     </div>
   );

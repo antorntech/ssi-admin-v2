@@ -26,6 +26,8 @@ const AddBrand = ({ fetchBrands }) => {
       });
       if (response.ok) {
         if (fetchBrands) {
+          setFiles([]);
+          e.target.reset();
           fetchBrands();
         } else {
           window.location.reload();

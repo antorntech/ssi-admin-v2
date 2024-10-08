@@ -2,13 +2,14 @@ import { Input, Typography } from "@material-tailwind/react";
 import React, { useState, useEffect, useContext } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
+import { srcBuilder } from "../../utils/src";
 
 const initialValues = {
   name: "",
-  serverImages: null,
+  serverImage: null,
 };
 
-const EditBrand = ({ selectedBrand, handleEditBrand }) => {
+const EditBrand = ({ selectedBrand, fetchBrands }) => {
   const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
@@ -19,29 +20,33 @@ const EditBrand = ({ selectedBrand, handleEditBrand }) => {
   }
 
   function fetchBrandById() {
-    // if (!id) return;
-    // request(`category/${id}`)
-    //   .then((r) => r.json())
-    //   .then((data) => {
-    //     if (!data) return;
-    //     setFormState((prev) => ({
-    //       ...prev,
-    //       ...data,
-    //       serverImages: data.images,
-    //       images: [],
-    //     }));
-    //   })
-    //   .catch(console.error);
+    if (!selectedBrand.id) return;
+    request(`brands/${selectedBrand.id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data) return;
+        setFormState((prev) => ({
+          ...prev,
+          ...data,
+          serverImage: Array.isArray(data.image) ? data.image : [data.image], // Ensure it's an array
+          image: [],
+        }));
+      })
+      .catch(console.error);
   }
   useEffect(fetchBrandById, [selectedBrand]);
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
     if (!request) return;
-    request(`category/${id}`, { method: "PATCH", body })
+    request(`brands/${selectedBrand.id}`, { method: "PATCH", body })
       .then((r) => r.json())
       .then(() => {
-        navigate("/categories");
+        if (fetchBrands) {
+          fetchBrands();
+        } else {
+          window.location.reload();
+        }
       })
       .catch(console.error);
   };
@@ -92,7 +97,7 @@ const EditBrand = ({ selectedBrand, handleEditBrand }) => {
             </button>
           </div>
           <input
-            name="images"
+            name="image"
             type="file"
             accept="image/*"
             multiple
@@ -103,39 +108,39 @@ const EditBrand = ({ selectedBrand, handleEditBrand }) => {
           />
         </label>
         <div className="flex overflow-x-auto gap-4 py-2">
-          {formState.serverImages?.map((src, i) => {
+          {/* Handle single or multiple images */}
+          {formState.serverImage?.map((src, i) => {
             let path = null;
-            if (typeof src == "string") path = srcBuilder(src);
+            if (typeof src === "string") path = srcBuilder(`brands/${src}`);
             return (
               <ImagePreviewWithRemove
                 key={i}
                 src={path}
                 onRemove={() => {
-                  if (!id || !src) throw new Error("id or src is not defined");
+                  if (!selectedBrand.id || !src)
+                    throw new Error("id or src is not defined");
                   // call remove media api
-                  request(`products/${id}/images/${src}`, {
+                  request(`brands/${selectedBrand.id}/images/${src}`, {
                     method: "DELETE",
                   })
                     .then((r) => r.json())
                     .then(() => {
-                      fetchBrandById();
+                      fetchCategoryById();
                     })
                     .catch(console.error);
                 }}
               />
             );
           })}
-          {files?.map((src, i) => {
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={src}
-                onRemove={() => {
-                  setFiles((prev) => prev.filter((_, i) => i !== i));
-                }}
-              />
-            );
-          })}
+          {files?.map((src, i) => (
+            <ImagePreviewWithRemove
+              key={i}
+              src={src}
+              onRemove={() => {
+                setFiles((prev) => prev.filter((_, idx) => idx !== i));
+              }}
+            />
+          ))}
         </div>
         <div>
           <Typography
@@ -154,6 +159,7 @@ const EditBrand = ({ selectedBrand, handleEditBrand }) => {
             }}
             value={formState.name}
             onChange={handleChange}
+            name="name"
           />
         </div>
 
