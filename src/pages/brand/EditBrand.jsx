@@ -7,12 +7,12 @@ import { srcBuilder } from "../../utils/src";
 // Initial values for the form
 const initialValues = {
   name: "",
-  serverImage: [],
+  serverImage: []
 };
 
 const EditBrand = ({ selectedBrand, fetchBrands }) => {
   const [formState, setFormState] = useState(initialValues);
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(null);
   const { request } = useContext(FetchContext);
 
   // Fetch the brand data by ID
@@ -26,7 +26,7 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
         setFormState({
           ...formState,
           name: data.name || "",
-          serverImage: Array.isArray(data.image) ? data.image : [data.image], // Handle image as array
+          serverImage: data.image || null // Handle image as array
         });
       })
       .catch(console.error);
@@ -38,7 +38,7 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
 
   // Handle file selection
   const handleFileChange = (e) => {
-    setFile((prev) => [...prev, ...e.target.files]);
+    setFile(e.target.files[0]);
   };
 
   // Handle form input changes
@@ -50,20 +50,10 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
   // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    // Append form data
-    formData.append("name", formState.name);
-
-    // Append new files if any
-    if (file.length > 0) {
-      file.forEach((fileItem) => formData.append("image", fileItem));
-    }
-
-    // Send the PATCH request
+    const formData = new FormData(e.target);
     request(`brands/${selectedBrand.id}`, {
       method: "PATCH",
-      body: formData,
+      body: formData
     })
       .then((res) => {
         if (!res.ok) {
@@ -72,7 +62,7 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
         return res.json();
       })
       .then(() => {
-        setFile([]); // Clear file input after successful upload
+        setFile(null); // Clear file input after successful upload
         if (fetchBrands) {
           fetchBrands();
         }
@@ -80,23 +70,6 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
       .catch((error) => {
         console.error("Error submitting form:", error);
       });
-  };
-
-  // Remove image on click (both new and server images)
-  const handleRemoveImage = (index, isServerImage = false) => {
-    if (isServerImage) {
-      const image = formState.serverImage[index];
-      if (image && selectedBrand.id) {
-        request(`brands/${selectedBrand.id}/images/${image}`, {
-          method: "DELETE",
-        })
-          .then((res) => res.json())
-          .then(() => fetchBrandById()) // Refresh brand data after image deletion
-          .catch(console.error);
-      }
-    } else {
-      setFile((prev) => prev.filter((_, idx) => idx !== index));
-    }
   };
 
   return (
@@ -139,33 +112,24 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
             onChange={handleFileChange}
           />
         </label>
-
-        {/* Image Preview Section */}
         <div className="flex overflow-x-auto gap-4 py-2">
-          {/* Server images */}
-          {formState.serverImage?.map((src, i) => {
-            const imageUrl =
-              typeof src === "string" ? srcBuilder(`brands/${src}`) : null;
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={imageUrl}
-                onRemove={() => handleRemoveImage(i, true)}
-              />
-            );
-          })}
-
-          {/* New files */}
-          {file.map((fileItem, i) => (
+          {file ? (
+            <ImagePreviewWithRemove src={file} onRemove={() => setFile(null)} />
+          ) : formState.serverImage ? (
             <ImagePreviewWithRemove
-              key={i}
-              src={URL.createObjectURL(fileItem)}
-              onRemove={() => handleRemoveImage(i)}
+              src={srcBuilder(formState.serverImage, "brands")}
+              onRemove={() => {
+                request(
+                  `brands/${selectedBrand.id}/images/${formState.serverImage}`,
+                  { method: "DELETE" }
+                )
+                  .then((res) => res.json())
+                  .then(fetchBrandById)
+                  .catch(console.error);
+              }}
             />
-          ))}
+          ) : null}
         </div>
-
-        {/* Name Input */}
         <div className="mt-4">
           <Typography variant="h6" color="gray" className="mb-1">
             Edit Name
@@ -178,8 +142,6 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
             className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
           />
         </div>
-
-        {/* Submit Button */}
         <button
           type="submit"
           className="mt-5 bg-green-500 text-white px-4 py-2 rounded"

@@ -9,8 +9,7 @@ const AddBrand = ({ fetchBrands }) => {
   const author = "google@gmail.com";
 
   const fileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFile(files[0]);
+    setFile(e.target.files[0]);
   };
 
   const onSubmit = async (e) => {
@@ -96,8 +95,7 @@ const AddBrand = ({ fetchBrands }) => {
           <ImagePreviewWithRemove
             src={file || ""}
             onRemove={() => {
-              // call remove media api
-              setFile((prev) => prev.filter((_, i) => i !== i));
+              setFile(null);
             }}
           />
         </div>
