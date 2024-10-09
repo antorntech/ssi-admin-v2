@@ -11,12 +11,12 @@ import { useParams } from "react-router-dom";
 const Brands = () => {
   const { request } = useContext(FetchContext);
   const params = useParams();
+  const page = params?.page || 1;
   const [brands, setBrands] = useState([]);
   const [response, setResponse] = useState({ data: [], filtered: [] });
 
   const fetchBrands = async () => {
     try {
-      const page = params?.page || 1;
       const response = await request(`brands?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
       const { data, count } = json;
@@ -29,7 +29,7 @@ const Brands = () => {
   };
   useEffect(() => {
     fetchBrands();
-  }, [params?.page]);
+  }, [page]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -149,7 +149,7 @@ const Brands = () => {
 
         {/* Pagination Controls */}
         <Pagination
-          currentPage={params?.page}
+          currentPage={page}
           totalPages={response.count ? Math.ceil(response.count / 5) : 0}
         />
       </div>
