@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
@@ -13,17 +13,21 @@ const Orders = () => {
     try {
       const response = await request("orders");
       const json = await response.json();
-      const { data, count } = json;
+      const { data } = json;
 
       if (!data) return;
 
       const statusOrder = {
         pending: 1,
         completed: 2,
+        canceled: 3,
       };
 
       const sortedOrders = data.sort((a, b) => {
-        return statusOrder[a.status] - statusOrder[b.status];
+        return (
+          statusOrder[a.status.toLowerCase()] -
+          statusOrder[b.status.toLowerCase()]
+        );
       });
       setOrders(sortedOrders);
       console.log(sortedOrders);
@@ -37,10 +41,8 @@ const Orders = () => {
   }, []);
 
   const onCompleted = (id) => {
-    e.preventDefault();
-    request(`orders/completed/${id}`, {
+    request(`orders/${id}/completed`, {
       method: "PATCH",
-      body: formData,
     })
       .then((res) => {
         if (!res.ok) {
@@ -57,10 +59,8 @@ const Orders = () => {
   };
 
   const onCanceled = (id) => {
-    e.preventDefault();
-    request(`orders/canceled /${id}`, {
+    request(`orders/${id}/canceled`, {
       method: "PATCH",
-      body: formData,
     })
       .then((res) => {
         if (!res.ok) {
@@ -69,7 +69,7 @@ const Orders = () => {
         return res.json();
       })
       .then(() => {
-        toast.success("Order Completed Successfully!");
+        toast.success("Order Canceled Successfully!");
       })
       .catch((error) => {
         console.error("Error updating order:", error);
@@ -129,21 +129,29 @@ const Orders = () => {
                     <td className="px-6 py-4 border-b">{order.customer_id}</td>
                     <td className="px-6 py-4 border-b">${order.price}</td>
                     <td className="px-6 py-4 border-b">{order.quantity}</td>
-                    <td className="px-6 py-4 border-b">{order.status}</td>
+                    <td className="px-6 py-4 border-b">
+                      <span
+                        className={`capitalize status ${order?.status?.toLowerCase()}`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 border-b">
                       {moment(order.created_at).format("Do MMM, YYYY")}
                     </td>
                     <td className="px-6 py-4 border-b">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
-                    <td className="px-6 py-4 border-b flex items-center gap-3">
-                      <button onClick={() => onCompleted(order.id)}>
-                        <i className="fa-regular fa-square-check text-2xl text-green-500"></i>
-                      </button>
-                      <button onClick={() => onCanceled(order.id)}>
-                        <i className="fa-regular fa-rectangle-xmark text-2xl text-red-500"></i>
-                      </button>
-                    </td>
+                    {order?.status == "pending" ? (
+                      <td className="px-6 py-4 border-b flex items-center gap-3">
+                        <button onClick={() => onCompleted(order.id)}>
+                          <i className="fa-regular fa-square-check text-2xl text-green-700"></i>
+                        </button>
+                        <button onClick={() => onCanceled(order.id)}>
+                          <i className="fa-regular fa-rectangle-xmark text-2xl text-red-700"></i>
+                        </button>
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>

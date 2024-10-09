@@ -100,11 +100,25 @@
 }
 
 .dropzone:hover {
-  border-color: #6cb93b; /* Blue border on hover */
+  border-color: #6cb93b;
+  /* Blue border on hover */
 }
 
 @media screen and (max-width: 768px) {
   .next-arrow {
     left: 9%;
+  }
+}
+
+@layer utilities {
+  .status.pending {
+    @apply text-cyan-700;
+  }
+  .status.completed {
+    @apply text-green-700;
+  }
+  .status.canceled,
+  .status.cancelled {
+    @apply text-red-700;
   }
 }

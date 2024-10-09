@@ -26,6 +26,7 @@ const AppRoutes = () => {
           <Route path="/products/edit/:id" element={<EditProduct />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/brands" element={<Brands />} />
+          <Route path="/brands/:page" element={<Brands />} />
           <Route path="/gifts" element={<Gifts />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/points" element={<Points />} />

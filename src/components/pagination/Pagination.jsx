@@ -1,51 +1,51 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const Pagination = ({
-  currentPage,
-  totalPages,
-  paginate,
-  prevPage,
-  nextPage,
-}) => {
+const Pagination = ({ currentPage, totalPages }) => {
+  const pages = [...Array(totalPages).keys()];
+  currentPage = parseInt(currentPage);
   return (
     <div className="flex justify-center mt-5">
-      <button
-        onClick={prevPage}
-        disabled={currentPage === 1}
+      <Link
+        to={`/brands/${currentPage - 1}`}
+        disabled={currentPage == 1}
         className={`mx-1 px-3 py-1 rounded ${
-          currentPage === 1
+          currentPage == 1
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-[#6CB93B] text-white"
         }`}
       >
         <i className="fa-solid fa-angle-left"></i>
-      </button>
+      </Link>
 
-      {Array.from({ length: totalPages }, (_, index) => (
-        <button
-          key={index + 1}
-          onClick={() => paginate(index + 1)}
-          className={`mx-1 px-3 py-1 rounded ${
-            currentPage === index + 1
-              ? "bg-[#6CB93B] text-white"
-              : "bg-gray-300 text-gray-700"
-          }`}
-        >
-          {index + 1}
-        </button>
-      ))}
+      {pages.map((e, index) => {
+        const page = e + 1;
+        return (
+          <Link
+            key={index}
+            to={`/brands/${page}`}
+            className={`mx-1 px-3 py-1 rounded ${
+              currentPage == page
+                ? "bg-[#6CB93B] text-white"
+                : "bg-gray-300 text-gray-700"
+            }`}
+          >
+            {page}
+          </Link>
+        );
+      })}
 
-      <button
-        onClick={nextPage}
+      <Link
+        to={`/brands/${currentPage + 1}`}
         disabled={currentPage === totalPages}
         className={`mx-1 px-3 py-1 rounded ${
-          currentPage === totalPages
+          currentPage == totalPages
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-[#6CB93B] text-white"
         }`}
       >
         <i className="fa-solid fa-angle-right"></i>
-      </button>
+      </Link>
     </div>
   );
 };

@@ -6,16 +6,18 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import { UPLOADS_URL } from "../../utils/API";
+import { useParams } from "react-router-dom";
 
 const Brands = () => {
   const { request } = useContext(FetchContext);
-
+  const params = useParams();
   const [brands, setBrands] = useState([]);
   const [response, setResponse] = useState({ data: [], filtered: [] });
 
   const fetchBrands = async () => {
     try {
-      const response = await request("brands");
+      const page = params?.page || 1;
+      const response = await request(`brands?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
       const { data, count } = json;
       if (!data) return;
@@ -27,7 +29,7 @@ const Brands = () => {
   };
   useEffect(() => {
     fetchBrands();
-  }, []);
+  }, [params?.page]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -36,8 +38,6 @@ const Brands = () => {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Items per page for pagination
-  const [totalPages, setTotalPages] = useState(0);
 
   const handleEditBrand = (updatedBrand) => {
     const updatedBrands = brands.map((brand) =>
@@ -65,16 +65,6 @@ const Brands = () => {
   };
 
   const handleOpen = () => setOpen(!open); // Toggle modal open/close
-
-  // Calculate the current brands for the current page
-  const indexOfLastBrand = currentPage * itemsPerPage;
-  const indexOfFirstBrand = indexOfLastBrand - itemsPerPage;
-  const currentBrands = brands.slice(indexOfFirstBrand, indexOfLastBrand);
-
-  // Set total pages whenever brands change
-  useEffect(() => {
-    setTotalPages(Math.ceil(brands.length / itemsPerPage));
-  }, [brands]);
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -108,7 +98,7 @@ const Brands = () => {
               </tr>
             </thead>
             <tbody>
-              {currentBrands.map((brand) => (
+              {brands.map((brand) => (
                 <tr key={brand.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4 border-b">
                     {brand.image ? (
@@ -158,17 +148,10 @@ const Brands = () => {
         </div>
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            paginate={setCurrentPage}
-            nextPage={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            prevPage={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          />
-        )}
+        <Pagination
+          currentPage={params?.page}
+          totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+        />
       </div>
 
       {/* Column 2: Conditional Form */}
