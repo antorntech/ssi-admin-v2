@@ -106,7 +106,8 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
             multiple
             className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
             onChange={(e) => {
-              setFiles((prev) => [...prev, ...e.target.files]);
+              const files = Array.from(e.target.files);
+              setFiles((prev) => [...prev, ...files]);
             }}
           />
         </label>
