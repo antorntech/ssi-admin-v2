@@ -3,7 +3,7 @@ import {
   Textarea,
   Typography,
   Select,
-  Option
+  Option,
 } from "@material-tailwind/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ const initialValues = {
   brand: "",
   category: "",
   price: "",
-  quantity: ""
+  quantity: "",
 };
 
 const AddProduct = () => {
@@ -80,10 +80,10 @@ const AddProduct = () => {
     try {
       await request("products", {
         method: "POST",
-        body
+        body,
       });
       toast.success("Product added successfully", {
-        autoClose: 1000
+        autoClose: 1000,
       });
       navigate("/products");
     } catch (error) {
@@ -109,7 +109,7 @@ const AddProduct = () => {
     "cyan",
     "teal",
     "lime",
-    "amber"
+    "amber",
   ];
 
   const Legend = ({ children }) => (
@@ -141,16 +141,14 @@ const AddProduct = () => {
           {/* Left Column */}
           <div className="w-full md:col-span-1">
             <Legend>Name</Legend>
-            <Input
+            <input
               type="text"
               size="md"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none"
-              }}
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="name"
               value={formState.name}
               onChange={onChange}
+              required
             />
 
             <Legend>Brand</Legend>
@@ -159,6 +157,7 @@ const AddProduct = () => {
               name="brand"
               value={formState.brand}
               onChange={onChange}
+              required
             >
               <option value="" disabled></option>
               {brands.map((brand) => (
@@ -169,36 +168,34 @@ const AddProduct = () => {
             </select>
 
             <Legend>Price</Legend>
-            <Input
+            <input
               type="number"
               size="md"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none"
-              }}
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="price"
               value={formState.price}
               onChange={onChange}
+              required
             />
 
             <Legend>Quantity</Legend>
-            <Input
+            <input
               type="number"
               size="md"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none"
-              }}
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="quantity"
               value={formState.quantity}
               onChange={onChange}
+              required
             />
+
             <Legend>Category</Legend>
             <select
               className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="category"
               value={formState.category}
               onChange={onChange}
+              required
             >
               <option value="" disabled></option>
               {categories.map((category) => (
@@ -209,10 +206,11 @@ const AddProduct = () => {
             </select>
             <Legend>Color</Legend>
             <select
+              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="color"
               onChange={onChange}
               value={formState.color}
-              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              required
             >
               <option value="" disabled></option>
               {colors.map((color) => (
@@ -226,15 +224,13 @@ const AddProduct = () => {
           {/* Right Column */}
           <div className="w-full md:col-span-2">
             <Legend>Description</Legend>
-            <Textarea
+            <textarea
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="description"
               value={formState.description}
               onChange={onChange}
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none"
-              }}
-              rows={8}
+              rows={7}
+              required
             />
             {/* file upload */}
             <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">

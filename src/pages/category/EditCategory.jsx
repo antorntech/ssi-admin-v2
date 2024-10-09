@@ -4,60 +4,73 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src";
 
+// Initial form values
 const initialValues = {
   name: "",
-  serverImage: null
+  serverImage: null,
 };
 
 const EditCategory = ({ selectedCategory, fetchCategories }) => {
   const [formState, setFormState] = useState(initialValues);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
   const { request } = useContext(FetchContext);
 
-  function fetchCategoryById() {
+  // Fetch category data by ID
+  const fetchCategoryById = () => {
     if (!selectedCategory.id) return;
+
     request(`categories/${selectedCategory.id}`)
-      .then((r) => r.json())
+      .then((res) => res.json())
       .then((data) => {
         if (!data) return;
-        setFormState((prev) => ({
-          ...prev,
+        setFormState((prevState) => ({
+          ...prevState,
           ...data,
           serverImage: Array.isArray(data.image) ? data.image : [data.image], // Ensure it's an array
-          image: []
+          image: [],
         }));
-      })
-      .catch(console.error);
-  }
-
-  useEffect(fetchCategoryById, [selectedCategory]);
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const body = new FormData(e.target);
-    if (!request) return;
-    request(`categories/${selectedCategory.id}`, { method: "PATCH", body })
-      .then((r) => r.json())
-      .then(() => {
-        e.target.reset();
-        setFile(null);
-        if (fetchCategories) {
-          fetchCategories();
-        } else {
-          window.location.reload();
-        }
       })
       .catch(console.error);
   };
 
-  if (!selectedCategory.id) return;
+  // Fetch category data when selectedCategory changes
+  useEffect(fetchCategoryById, [selectedCategory]);
 
-  function handleChange(e) {
+  // Handle form submission
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", formState.name);
+
+    // Append file data if exists
+    if (file.length > 0) {
+      file.forEach((fileItem) => formData.append("image", fileItem));
+    }
+
+    // Send the PATCH request
+    request(`categories/${selectedCategory.id}`, {
+      method: "PATCH",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then(() => {
+        e.target.reset();
+        setFile([]);
+        fetchCategories ? fetchCategories() : window.location.reload();
+      })
+      .catch(console.error);
+  };
+
+  // Handle input change
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
-  }
+  };
 
-  const filesExists = file.length > 0;
+  // Check if new files exist
+  const filesExist = file.length > 0;
+
+  if (!selectedCategory.id) return null;
 
   return (
     <>
@@ -69,8 +82,9 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
           </p>
         </div>
       </div>
-      <form onSubmit={onSubmit} className="form">
-        {/* file upload */}
+
+      <form onSubmit={onSubmit} className="form" encType="multipart/form-data">
+        {/* File upload section */}
         <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
           <lord-icon
             src="https://cdn.lordicon.com/smwmetfi.json"
@@ -82,7 +96,7 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
             <div className="text-lg font-semibold mb-1">
               Drag and drop files here
             </div>
-            <div className="text-sm mb-6">File must be image/* format</div>
+            <div className="text-sm mb-6">File must be in image/* format</div>
             <button
               className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
               type="button"
@@ -108,78 +122,65 @@ const EditCategory = ({ selectedCategory, fetchCategories }) => {
             name="image"
             type="file"
             accept="image/*"
-            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
-            onChange={(e) => {
-              setFile((prev) => [...prev, ...e.target.files]);
-            }}
+            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1]"
+            onChange={(e) => setFile((prev) => [...prev, ...e.target.files])}
           />
         </label>
+
+        {/* Image preview section */}
         <div className="flex overflow-x-auto gap-4 py-2">
-          {filesExists ? (
-            <>
-              {file?.map((src, i) => (
+          {filesExist
+            ? file.map((src, i) => (
                 <ImagePreviewWithRemove
                   key={i}
-                  src={src}
-                  onRemove={() => {
-                    setFile((prev) => prev.filter((_, idx) => idx !== i));
-                  }}
+                  src={URL.createObjectURL(src)}
+                  onRemove={() =>
+                    setFile((prev) => prev.filter((_, idx) => idx !== i))
+                  }
                 />
-              ))}
-            </>
-          ) : (
-            <>
-              {formState.serverImage?.map((src, i) => {
-                let path = null;
-                if (typeof src === "string")
-                  path = srcBuilder(`categories/${src}`);
+              ))
+            : formState.serverImage?.map((src, i) => {
+                const imagePath =
+                  typeof src === "string"
+                    ? srcBuilder(`categories/${src}`)
+                    : null;
                 return (
                   <ImagePreviewWithRemove
                     key={i}
-                    src={path}
+                    src={imagePath}
                     onRemove={() => {
                       if (!selectedCategory.id || !src)
-                        throw new Error("id or src is not defined");
-                      // call remove media api
+                        throw new Error("ID or image source is not defined.");
+                      // Call remove image API
                       request(
                         `categories/${selectedCategory.id}/images/${src}`,
-                        {
-                          method: "DELETE"
-                        }
+                        { method: "DELETE" }
                       )
-                        .then((r) => r.json())
-                        .then(() => {
-                          fetchCategoryById();
-                        })
+                        .then((res) => res.json())
+                        .then(fetchCategoryById)
                         .catch(console.error);
                     }}
                   />
                 );
               })}
-            </>
-          )}
         </div>
-        <div>
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-2"
-          >
+
+        {/* Edit name input */}
+        <div className="mt-4">
+          <Typography variant="h6" color="gray" className="mb-1 font-normal">
             Edit Name
           </Typography>
-          <Input
+          <input
             type="text"
             size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none"
-            }}
+            className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+            name="name"
             value={formState.name}
             onChange={handleChange}
-            name="name"
           />
         </div>
 
+        {/* Submit button */}
         <button
           type="submit"
           className="mt-5 bg-green-500 text-white px-4 py-2 rounded"

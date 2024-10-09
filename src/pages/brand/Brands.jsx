@@ -125,7 +125,9 @@ const Brands = () => {
                       />
                     )}
                   </td>
-                  <td className="px-6 py-4 border-b">{brand.name}</td>
+                  <td className="px-6 py-4 border-b capitalize">
+                    {brand.name}
+                  </td>
                   <td className="px-6 py-4 border-b">
                     {moment(brand.created_at).format("Do MMM, YYYY")}
                   </td>
@@ -142,7 +144,7 @@ const Brands = () => {
                     <button
                       onClick={() => {
                         setSelectedBrandId(brand.id);
-                        handleOpen(); // Open delete confirmation modal
+                        handleOpen();
                       }}
                       className="text-red-500 hover:text-red-700"
                     >
@@ -170,12 +172,20 @@ const Brands = () => {
       </div>
 
       {/* Column 2: Conditional Form */}
-      <div className="col-span-1 brand-form bg-white p-4 lg:p-5 rounded-lg custom-shadow">
-        {isEditing ? (
-          <EditBrand selectedBrand={selectedBrand} fetchBrands={fetchBrands} />
-        ) : (
-          <AddBrand fetchBrands={fetchBrands} />
-        )}
+      <div className="col-span-1 brand-form">
+        <div className="w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
+          {isEditing ? (
+            <EditBrand
+              selectedBrand={selectedBrand}
+              fetchBrands={() => {
+                fetchBrands();
+                setIsEditing(false);
+              }}
+            />
+          ) : (
+            <AddBrand fetchBrands={fetchBrands} />
+          )}
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}

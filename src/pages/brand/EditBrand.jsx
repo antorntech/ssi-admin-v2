@@ -4,9 +4,10 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src";
 
+// Initial values for the form
 const initialValues = {
   name: "",
-  serverImage: null,
+  serverImage: [],
 };
 
 const EditBrand = ({ selectedBrand, fetchBrands }) => {
@@ -14,41 +15,88 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
   const [file, setFile] = useState([]);
   const { request } = useContext(FetchContext);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormState({ ...formState, [name]: value });
-  }
-
-  function fetchBrandById() {
+  // Fetch the brand data by ID
+  const fetchBrandById = () => {
     if (!selectedBrand.id) return;
+
     request(`brands/${selectedBrand.id}`)
       .then((r) => r.json())
       .then((data) => {
         if (!data) return;
-        setFormState((prev) => ({
-          ...prev,
-          ...data,
-          serverImage: Array.isArray(data.image) ? data.image : [data.image], // Ensure it's an array
-          image: [],
-        }));
+        setFormState({
+          ...formState,
+          name: data.name || "",
+          serverImage: Array.isArray(data.image) ? data.image : [data.image], // Handle image as array
+        });
       })
       .catch(console.error);
-  }
-  useEffect(fetchBrandById, [selectedBrand]);
+  };
+
+  useEffect(() => {
+    fetchBrandById();
+  }, [selectedBrand]);
+
+  // Handle file selection
+  const handleFileChange = (e) => {
+    setFile((prev) => [...prev, ...e.target.files]);
+  };
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState({ ...formState, [name]: value });
+  };
+
+  // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
-    const body = new FormData(e.target);
-    if (!request) return;
-    request(`brands/${selectedBrand.id}`, { method: "PATCH", body })
-      .then((r) => r.json())
+    const formData = new FormData();
+
+    // Append form data
+    formData.append("name", formState.name);
+
+    // Append new files if any
+    if (file.length > 0) {
+      file.forEach((fileItem) => formData.append("image", fileItem));
+    }
+
+    // Send the PATCH request
+    request(`brands/${selectedBrand.id}`, {
+      method: "PATCH",
+      body: formData,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Error: ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(() => {
+        setFile([]); // Clear file input after successful upload
         if (fetchBrands) {
           fetchBrands();
-        } else {
-          window.location.reload();
         }
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+      });
+  };
+
+  // Remove image on click (both new and server images)
+  const handleRemoveImage = (index, isServerImage = false) => {
+    if (isServerImage) {
+      const image = formState.serverImage[index];
+      if (image && selectedBrand.id) {
+        request(`brands/${selectedBrand.id}/images/${image}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then(() => fetchBrandById()) // Refresh brand data after image deletion
+          .catch(console.error);
+      }
+    } else {
+      setFile((prev) => prev.filter((_, idx) => idx !== index));
+    }
   };
 
   return (
@@ -57,43 +105,29 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
         <div>
           <h1 className="text-xl font-bold">Edit Brand</h1>
           <p className="text-sm text-gray-500">
-            You can edit category details from here.
+            You can edit brand details from here.
           </p>
         </div>
       </div>
       <form onSubmit={onSubmit} className="form">
-        {/* file upload */}
+        {/* File Upload Section */}
         <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
           <lord-icon
             src="https://cdn.lordicon.com/smwmetfi.json"
             trigger="loop"
             colors="primary:#545454"
             style={{ width: "50px", height: "50px" }}
-          ></lord-icon>
+          />
           <div className="flex flex-col items-center">
             <div className="text-lg font-semibold mb-1">
               Drag and drop files here
             </div>
             <div className="text-sm mb-6">File must be image/* format</div>
             <button
-              className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
+              className="border border-gray-900 text-gray-900 hover:bg-gray-100 flex items-center justify-center gap-1 text-sm rounded-xl px-4 py-2 font-medium"
               type="button"
             >
-              <span className="whitespace-nowrap">Browse files</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="h-5 w-5"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
-                />
-              </svg>
+              Browse files
             </button>
           </div>
           <input
@@ -101,68 +135,51 @@ const EditBrand = ({ selectedBrand, fetchBrands }) => {
             type="file"
             accept="image/*"
             multiple
-            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
-            onChange={(e) => {
-              setFile((prev) => [...prev, ...e.target.files]);
-            }}
+            className="absolute top-0 left-0 w-full h-full opacity-0"
+            onChange={handleFileChange}
           />
         </label>
+
+        {/* Image Preview Section */}
         <div className="flex overflow-x-auto gap-4 py-2">
-          {/* Handle single or multiple images */}
+          {/* Server images */}
           {formState.serverImage?.map((src, i) => {
-            let path = null;
-            if (typeof src === "string") path = srcBuilder(`brands/${src}`);
+            const imageUrl =
+              typeof src === "string" ? srcBuilder(`brands/${src}`) : null;
             return (
               <ImagePreviewWithRemove
                 key={i}
-                src={path}
-                onRemove={() => {
-                  if (!selectedBrand.id || !src)
-                    throw new Error("id or src is not defined");
-                  // call remove media api
-                  request(`brands/${selectedBrand.id}/images/${src}`, {
-                    method: "DELETE",
-                  })
-                    .then((r) => r.json())
-                    .then(() => {
-                      fetchCategoryById();
-                    })
-                    .catch(console.error);
-                }}
+                src={imageUrl}
+                onRemove={() => handleRemoveImage(i, true)}
               />
             );
           })}
-          {file?.map((src, i) => (
+
+          {/* New files */}
+          {file.map((fileItem, i) => (
             <ImagePreviewWithRemove
               key={i}
-              src={src}
-              onRemove={() => {
-                setFile((prev) => prev.filter((_, idx) => idx !== i));
-              }}
+              src={URL.createObjectURL(fileItem)}
+              onRemove={() => handleRemoveImage(i)}
             />
           ))}
         </div>
-        <div>
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-2"
-          >
+
+        {/* Name Input */}
+        <div className="mt-4">
+          <Typography variant="h6" color="gray" className="mb-1">
             Edit Name
           </Typography>
-          <Input
+          <input
             type="text"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
+            name="name"
             value={formState.name}
             onChange={handleChange}
-            name="name"
+            className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
           />
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
           className="mt-5 bg-green-500 text-white px-4 py-2 rounded"

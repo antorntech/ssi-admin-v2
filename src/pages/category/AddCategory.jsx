@@ -4,41 +4,42 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 
 const AddCategory = ({ fetchCategories }) => {
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(null); // Single file handling, set to null initially
   const { request } = useContext(FetchContext);
-  const author = "google@gmail.com";
+  const author = "google@gmail.com"; // Consider making this dynamic or removing if not used
 
-  const fileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFile(files[0]);
+  // Handle file input change
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
   };
 
-  const onSubmit = async (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(e.target.name.value);
-    const body = new FormData(e.target);
+
+    const formData = new FormData(e.target);
+
     try {
       await request("categories", {
         method: "POST",
-        body,
+        body: formData,
       });
 
-      if (fetchCategories) {
-        fetchCategories();
-      } else {
-        window.location.reload();
-      }
-
+      // Reset form and state after successful submission
       setFile(null);
       e.target.reset();
+
+      // Fetch categories if the callback is passed, otherwise reload the page
+      fetchCategories ? fetchCategories() : window.location.reload();
     } catch (error) {
-      console.error("Failed to add product", error);
+      console.error("Failed to add category", error);
     }
-    return;
   };
 
   return (
-    <>
+    <div>
+      {/* Heading Section */}
       <div className="flex items-center gap-3 mb-3">
         <div>
           <h1 className="text-xl font-bold">Add Category</h1>
@@ -47,8 +48,10 @@ const AddCategory = ({ fetchCategories }) => {
           </p>
         </div>
       </div>
-      <form onSubmit={onSubmit} className="form">
-        {/* file upload */}
+
+      {/* Form Section */}
+      <form onSubmit={handleSubmit} className="form">
+        {/* File Upload Section */}
         <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
           <lord-icon
             src="https://cdn.lordicon.com/smwmetfi.json"
@@ -60,7 +63,7 @@ const AddCategory = ({ fetchCategories }) => {
             <div className="text-lg font-semibold mb-1">
               Drag and drop files here
             </div>
-            <div className="text-sm mb-6">File must be image/* format</div>
+            <div className="text-sm mb-6">File must be in image/* format</div>
             <button
               className="border border-gray-900 text-gray-900 hover:bg-gray-100 relative flex items-center justify-center gap-1 text-sm lg:text-base rounded-xl px-4 lg:px-5 py-2 lg:py-2.5 font-medium"
               type="button"
@@ -86,45 +89,34 @@ const AddCategory = ({ fetchCategories }) => {
             name="image"
             type="file"
             accept="image/*"
-            multiple
-            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1] bg-black"
-            onChange={fileChange}
+            className="absolute top-0 left-0 w-full h-full opacity-0 z-[1]"
+            onChange={handleFileChange}
             required
           />
         </label>
+
+        {/* Image Preview Section */}
         <div className="flex overflow-x-auto gap-4 mt-2">
-          {file.map((src, i) => {
-            return (
-              <ImagePreviewWithRemove
-                key={i}
-                src={src}
-                onRemove={() => {
-                  // call remove media api
-                  setFile((prev) => prev.filter((_, i) => i !== i));
-                }}
-              />
-            );
-          })}
+          {file && (
+            <ImagePreviewWithRemove src={file} onRemove={() => setFile(null)} />
+          )}
         </div>
-        <div>
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-2"
-          >
+
+        {/* Category Name Input */}
+        <div className="mt-4">
+          <Typography variant="h6" color="gray" className="mb-1 font-normal">
             Name
           </Typography>
-          <Input
+          <input
             type="text"
             size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
+            className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             name="name"
+            required
           />
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
           className="mt-5 bg-green-500 text-white px-4 py-2 rounded"
@@ -132,7 +124,7 @@ const AddCategory = ({ fetchCategories }) => {
           Add Category
         </button>
       </form>
-    </>
+    </div>
   );
 };
 

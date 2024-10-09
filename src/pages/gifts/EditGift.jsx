@@ -113,7 +113,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
         <div className="flex overflow-x-auto gap-4 py-2">
           {formState.serverImages?.map((src, i) => {
             let path = null;
-            if (typeof src == "string") path = srcBuilder(src);
+            if (typeof src == "string") path = srcBuilder(`gifts/${src}`);
             return (
               <ImagePreviewWithRemove
                 key={i}

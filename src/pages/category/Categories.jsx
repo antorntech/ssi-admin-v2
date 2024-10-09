@@ -175,15 +175,20 @@ const Categories = () => {
       </div>
 
       {/* Column 2: Conditional Form */}
-      <div className="col-span-1 category-form bg-white p-4 lg:p-5 rounded-lg custom-shadow">
-        {isEditing ? (
-          <EditCategory
-            selectedCategory={selectedCategory}
-            fetchCategories={fetchCategories}
-          />
-        ) : (
-          <AddCategory fetchCategories={fetchCategories} />
-        )}
+      <div className="col-span-1 category-form">
+        <div className="w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
+          {isEditing ? (
+            <EditCategory
+              selectedCategory={selectedCategory}
+              fetchCategories={() => {
+                fetchCategories();
+                setIsEditing(false);
+              }}
+            />
+          ) : (
+            <AddCategory fetchCategories={fetchCategories} />
+          )}
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}
