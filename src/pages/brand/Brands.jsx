@@ -9,9 +9,9 @@ import { UPLOADS_URL } from "../../utils/API";
 import { useParams } from "react-router-dom";
 
 const Brands = () => {
-  const { request } = useContext(FetchContext);
   const params = useParams();
   const page = params?.page || 1;
+  const { request } = useContext(FetchContext);
   const [brands, setBrands] = useState([]);
   const [response, setResponse] = useState({ data: [], filtered: [] });
 
@@ -35,17 +35,6 @@ const Brands = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [open, setOpen] = useState(false); // State for delete confirmation modal
   const [selectedBrandId, setSelectedBrandId] = useState(null); // ID of the brand to be deleted
-
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const handleEditBrand = (updatedBrand) => {
-    const updatedBrands = brands.map((brand) =>
-      brand.id === updatedBrand.id ? updatedBrand : brand
-    );
-    setBrands(updatedBrands);
-    setIsEditing(false);
-  };
 
   const handleDelete = async (id) => {
     try {
@@ -149,6 +138,7 @@ const Brands = () => {
 
         {/* Pagination Controls */}
         <Pagination
+          endPoint="brands"
           currentPage={page}
           totalPages={response.count ? Math.ceil(response.count / 5) : 0}
         />

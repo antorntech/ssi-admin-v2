@@ -4,17 +4,21 @@ import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import SearchBar from "../../components/searchbar/SearchBar";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import Pagination from "../../components/pagination/Pagination";
 
 const Orders = () => {
+  const params = useParams();
+  const page = params?.page || 1;
   const [orders, setOrders] = useState([]);
   const { request } = useContext(FetchContext);
-
+  const [response, setResponse] = useState({ data: [], filtered: [] });
   const fetchOrders = async () => {
     try {
       const response = await request("orders");
       const json = await response.json();
-      const { data } = json;
-
+      const { data, count } = json;
+      setResponse((prev) => ({ ...prev, data, count }));
       if (!data) return;
 
       const statusOrder = {
@@ -157,6 +161,12 @@ const Orders = () => {
               </tbody>
             </table>
           </div>
+          {/* Pagination Controls */}
+          <Pagination
+            endPoint="orders"
+            currentPage={page}
+            totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+          />
         </>
       ) : (
         <Loader />

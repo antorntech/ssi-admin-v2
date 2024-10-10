@@ -22,13 +22,17 @@ const AppRoutes = () => {
         <>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/products/:page" element={<Products />} />
           <Route path="/products/add-product" element={<AddProduct />} />
           <Route path="/products/edit/:id" element={<EditProduct />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/:page" element={<Categories />} />
           <Route path="/brands" element={<Brands />} />
           <Route path="/brands/:page" element={<Brands />} />
           <Route path="/gifts" element={<Gifts />} />
+          <Route path="/gifts/:page" element={<Gifts />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:page" element={<Orders />} />
           <Route path="/points" element={<Points />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />

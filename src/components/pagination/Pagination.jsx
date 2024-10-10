@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Pagination = ({ currentPage, totalPages }) => {
+const Pagination = ({ currentPage, totalPages, endPoint }) => {
   const pages = [...Array(totalPages).keys()];
   currentPage = parseInt(currentPage);
   return (
     <div className="flex justify-center mt-5">
       <Link
-        to={`/brands/${currentPage - 1}`}
+        to={`/${endPoint}/${currentPage - 1}`}
         disabled={currentPage == 1}
         className={`mx-1 px-3 py-1 rounded ${
           currentPage == 1
@@ -23,7 +23,7 @@ const Pagination = ({ currentPage, totalPages }) => {
         return (
           <Link
             key={index}
-            to={`/brands/${page}`}
+            to={`/${endPoint}/${page}`}
             className={`mx-1 px-3 py-1 rounded ${
               currentPage == page
                 ? "bg-[#6CB93B] text-white"
@@ -36,7 +36,7 @@ const Pagination = ({ currentPage, totalPages }) => {
       })}
 
       <Link
-        to={`/brands/${currentPage + 1}`}
+        to={`/${endPoint}/${currentPage + 1}`}
         disabled={currentPage === totalPages}
         className={`mx-1 px-3 py-1 rounded ${
           currentPage == totalPages

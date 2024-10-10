@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Loader from "../../loader/Loader";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import SearchBar from "../../components/searchbar/SearchBar";
@@ -9,6 +9,8 @@ import { UPLOADS_URL } from "../../utils/API";
 import moment from "moment";
 
 const Products = () => {
+  const params = useParams();
+  const page = params?.page || 1;
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [products, setProducts] = useState([]);
@@ -31,10 +33,7 @@ const Products = () => {
   };
   useEffect(() => {
     fetchProducts();
-  }, []);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Items per page for pagination
+  }, [page]);
 
   const handleOpen = () => setOpen(!open);
 
@@ -43,22 +42,7 @@ const Products = () => {
       product.name.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to first page when products are filtered
   }, [searchText, products]);
-
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProducts?.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(products.count / itemsPerPage);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const nextPage = () =>
-    currentPage < totalPages && setCurrentPage(currentPage + 1);
-  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
   const handleDelete = async (id) => {
     try {
@@ -127,7 +111,7 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItems?.map((product) => {
+                {filteredProducts?.map((product) => {
                   const { images } = product;
                   const image = images[0];
                   return (
@@ -185,15 +169,12 @@ const Products = () => {
           </div>
 
           {/* Reusable Pagination Component */}
-          {totalPages > 1 && ( // Check if there are more than 1 page
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // Pass totalPages to the Pagination component
-              paginate={paginate}
-              nextPage={nextPage}
-              prevPage={prevPage}
-            />
-          )}
+
+          <Pagination
+            endPoint="products"
+            currentPage={page}
+            totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+          />
 
           {/* Delete Confirmation Modal */}
           <DeleteConfirmModal

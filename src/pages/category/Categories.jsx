@@ -6,10 +6,12 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import { UPLOADS_URL } from "../../utils/API";
+import { useParams } from "react-router-dom";
 
 const Categories = () => {
+  const params = useParams();
+  const page = params?.page || 1;
   const { request } = useContext(FetchContext);
-
   const [categories, setCategories] = useState([]);
   const [response, setResponse] = useState({ data: [], filtered: [] });
 
@@ -25,9 +27,10 @@ const Categories = () => {
       console.error();
     }
   };
+
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [page]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -46,38 +49,12 @@ const Categories = () => {
     }
   };
 
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Items per page for pagination
-  const [totalPages, setTotalPages] = useState(0);
-
-  const handleEditCategory = (updatedCategory) => {
-    const updatedCategories = categories.map((category) =>
-      category.id === updatedCategory.id ? updatedCategory : category
-    );
-    setCategories(updatedCategories);
-    setIsEditing(false);
-  };
-
   const handleEditClick = (category) => {
     setSelectedCategory(category);
     setIsEditing(true);
   };
 
   const handleOpen = () => setOpen(!open);
-
-  // Calculate the current categories for the current page
-  const indexOfLastCategory = currentPage * itemsPerPage;
-  const indexOfFirstCategory = indexOfLastCategory - itemsPerPage;
-  const currentCategories = categories.slice(
-    indexOfFirstCategory,
-    indexOfLastCategory
-  );
-
-  // Set total pages whenever categories change
-  useEffect(() => {
-    setTotalPages(Math.ceil(categories.length / itemsPerPage));
-  }, [categories]);
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -111,7 +88,7 @@ const Categories = () => {
               </tr>
             </thead>
             <tbody>
-              {currentCategories.map((category) => (
+              {categories.map((category) => (
                 <tr key={category.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4 border-b">
                     {category.image ? (
@@ -161,17 +138,11 @@ const Categories = () => {
         </div>
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            paginate={setCurrentPage}
-            nextPage={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            prevPage={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          />
-        )}
+        <Pagination
+          endPoint="categories"
+          currentPage={page}
+          totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+        />
       </div>
 
       {/* Column 2: Conditional Form */}

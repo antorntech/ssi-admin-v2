@@ -6,10 +6,12 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
 import moment from "moment";
+import { useParams } from "react-router-dom";
 
 const Gifts = () => {
+  const params = useParams();
+  const page = params?.page || 1;
   const { request } = useContext(FetchContext);
-
   const [gifts, setGifts] = useState([]);
   const [response, setResponse] = useState({ data: [], filtered: [] });
 
@@ -25,31 +27,15 @@ const Gifts = () => {
       console.error();
     }
   };
+
   useEffect(() => {
     fetchGifts();
-  }, []);
+  }, [page]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedGift, setSelectedGift] = useState(null);
   const [open, setOpen] = useState(false); // State for delete confirmation modal
   const [selectedGiftId, setSelectedGiftId] = useState(null); // ID of the gift to be deleted
-
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Items per page for pagination
-  const [totalPages, setTotalPages] = useState(0);
-
-  const handleAddGift = (newGift) => {
-    setGifts([...gifts, newGift]);
-  };
-
-  const handleEditGift = (updatedGift) => {
-    const updatedGifts = gifts.map((gift) =>
-      gift.id === updatedGift.id ? updatedGift : gift
-    );
-    setGifts(updatedGifts);
-    setIsEditing(false);
-  };
 
   const handleEditClick = (gift) => {
     setSelectedGift(gift);
@@ -57,16 +43,6 @@ const Gifts = () => {
   };
 
   const handleOpen = () => setOpen(!open); // Toggle modal open/close
-
-  // Calculate the current gifts for the current page
-  const indexOfLastGift = currentPage * itemsPerPage;
-  const indexOfFirstGift = indexOfLastGift - itemsPerPage;
-  const currentGifts = gifts.slice(indexOfFirstGift, indexOfLastGift);
-
-  // Set total pages whenever gifts change
-  useEffect(() => {
-    setTotalPages(Math.ceil(gifts.length / itemsPerPage));
-  }, [gifts]);
 
   const handleDelete = async (id) => {
     try {
@@ -111,7 +87,7 @@ const Gifts = () => {
               </tr>
             </thead>
             <tbody>
-              {currentGifts?.map((gift) => {
+              {gifts?.map((gift) => {
                 const { images } = gift;
                 const image = images[0];
                 return (
@@ -161,17 +137,11 @@ const Gifts = () => {
         </div>
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            paginate={setCurrentPage}
-            nextPage={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            prevPage={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          />
-        )}
+        <Pagination
+          endPoint="gifts"
+          currentPage={page}
+          totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+        />
       </div>
       <div className="col-span-1">
         <div className=" w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
