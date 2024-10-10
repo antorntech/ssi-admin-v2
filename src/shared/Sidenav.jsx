@@ -40,7 +40,12 @@ const menuItems = [
   {
     title: "Customers",
     link: "/customers",
-    icon: "/img/icons/point",
+    icon: "/img/icons/customer",
+  },
+  {
+    title: "Gallery",
+    link: "/gallery",
+    icon: "/img/icons/gallery",
   },
 ];
 

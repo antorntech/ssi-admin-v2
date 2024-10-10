@@ -86,7 +86,7 @@ const Orders = () => {
         <div>
           <h1 className="text-xl font-bold">Orders</h1>
           <p className="text-sm text-gray-500">
-            orders are {orders.length > 0 ? "" : "not"} available here.
+            Total Orders: {response?.count}
           </p>
         </div>
         <div className="flex items-center gap-3">

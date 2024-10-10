@@ -37,9 +37,7 @@ const Points = () => {
     <>
       <div>
         <h1 className="text-xl font-bold">Points</h1>
-        <p className="text-sm text-gray-500">
-          points are {points.length > 0 ? "" : "not"} available here.
-        </p>
+        <p className="text-sm text-gray-500">Total Points: {points.length}</p>
       </div>
       <div className="mt-5 overflow-x-auto">
         <table className="min-w-[1200px] lg:min-w-full bg-white border">

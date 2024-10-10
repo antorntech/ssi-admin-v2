@@ -62,7 +62,7 @@ const Gifts = () => {
         <div className="mb-4">
           <h1 className="text-xl font-bold">Gifts</h1>
           <p className="text-sm text-gray-500">
-            gifts are {gifts.length > 0 ? "" : "not"} available here.
+            Total Gifts: {response?.count}
           </p>
         </div>
         <div className="overflow-x-auto">
