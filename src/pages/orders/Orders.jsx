@@ -81,7 +81,7 @@ const Orders = () => {
   };
 
   return (
-    <div>
+    <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Orders</h1>
@@ -97,31 +97,31 @@ const Orders = () => {
       {orders.length > 0 ? (
         <>
           <div className="mt-5 overflow-x-auto">
-            <table className="min-w-full bg-white border">
+            <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Product
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Customer
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Price
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Quantity
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Status
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Created At
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Updated At
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Actions
                   </th>
                 </tr>
@@ -129,25 +129,33 @@ const Orders = () => {
               <tbody>
                 {orders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{order.id}</td>
-                    <td className="px-6 py-4 border-b">{order.customer_id}</td>
-                    <td className="px-6 py-4 border-b">${order.price}</td>
-                    <td className="px-6 py-4 border-b">{order.quantity}</td>
-                    <td className="px-6 py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                      {order.id}
+                    </td>
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                      {order.customer_id}
+                    </td>
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                      ${order.price}
+                    </td>
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                      {order.quantity}
+                    </td>
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       <span
                         className={`capitalize status ${order?.status?.toLowerCase()}`}
                       >
                         {order.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {moment(order.created_at).format("Do MMM, YYYY")}
                     </td>
-                    <td className="px-6 py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
                     {order?.status == "pending" ? (
-                      <td className="px-6 py-4 border-b flex items-center gap-3">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b flex items-center gap-3">
                         <button onClick={() => onCompleted(order.id)}>
                           <i className="fa-regular fa-square-check text-2xl text-green-700"></i>
                         </button>
@@ -171,7 +179,7 @@ const Orders = () => {
       ) : (
         <Loader />
       )}
-    </div>
+    </>
   );
 };
 

@@ -61,14 +61,16 @@ const Products = () => {
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Products</h1>
-          <p className="text-sm text-gray-500"></p>
+          <p className="text-sm text-gray-500">
+            Total Products: {response?.count}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           {/* Reusable SearchBar Component */}
           <SearchBar searchText={searchText} handleSearch={setSearchText} />
           <Link
             to="/products/add-product"
-            className="inline-block text-center w-full bg-[#6CB93B] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
+            className="inline-block text-sm font-medium text-center w-full bg-[#6CB93B] text-white px-3 py-2 md:px-4 md:py-2 rounded-md"
           >
             Add Product
           </Link>
@@ -76,36 +78,36 @@ const Products = () => {
       </div>
       {response?.count ? (
         <>
-          <div className="mt-5 overflow-x-auto">
-            <table className="min-w-full bg-white border">
+          <div className="mt-5 w-full overflow-x-auto">
+            <table className="min-w-[1200px] lg:min-w-full bg-white border">
               {/* Table Head */}
               <thead>
                 <tr>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Banner
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Name
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Brand
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Color
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Category
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Price
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Quantity
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Date
                   </th>
-                  <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                     Action
                   </th>
                 </tr>
@@ -116,7 +118,7 @@ const Products = () => {
                   const image = images[0];
                   return (
                     <tr key={product.id} className="hover:bg-gray-100">
-                      <td className="px-6 py-4 border-b">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                         {image ? (
                           <>
                             <img
@@ -127,24 +129,28 @@ const Products = () => {
                           </>
                         ) : null}
                       </td>
-                      <td className="px-6 py-4 border-b capitalize">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                         {product.name}
                       </td>
-                      <td className="px-6 py-4 border-b capitalize">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                         {product.brand}
                       </td>
-                      <td className="px-6 py-4 border-b capitalize">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                         {product.color}
                       </td>
-                      <td className="px-6 py-4 border-b capitalize">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                         {product.category}
                       </td>
-                      <td className="px-6 py-4 border-b">{product.price}</td>
-                      <td className="px-6 py-4 border-b">{product.quantity}</td>
-                      <td className="px-6 py-4 border-b">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        {product.price}
+                      </td>
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        {product.quantity}
+                      </td>
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                         {moment(product.created_at).format("Do MMM, YYYY")}
                       </td>
-                      <td className="px-6 py-4 border-b">
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                         <Link
                           to={`/products/edit/${product.id}`}
                           className="text-orange-500 hover:text-orange-700"

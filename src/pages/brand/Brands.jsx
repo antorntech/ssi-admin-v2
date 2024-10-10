@@ -66,22 +66,22 @@ const Brands = () => {
           </p>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-full bg-white border">
+          <table className="w-full min-w-[600px] lg:min-w-full bg-white border">
             <thead>
               <tr>
-                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   Banner
                 </th>
-                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   Name
                 </th>
-                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   CreatedAt
                 </th>
-                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   UpdatedAt
                 </th>
-                <th className="px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   Action
                 </th>
               </tr>
@@ -89,7 +89,7 @@ const Brands = () => {
             <tbody>
               {brands.map((brand) => (
                 <tr key={brand.id} className="hover:bg-gray-100">
-                  <td className="px-6 py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     {brand.image ? (
                       <img
                         src={`${UPLOADS_URL}brands/${brand.image}`}
@@ -104,16 +104,16 @@ const Brands = () => {
                       />
                     )}
                   </td>
-                  <td className="px-6 py-4 border-b capitalize">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                     {brand.name}
                   </td>
-                  <td className="px-6 py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     {moment(brand.created_at).format("Do MMM, YYYY")}
                   </td>
-                  <td className="px-6 py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     {moment(brand.updated_at).format("Do MMM, YYYY")}
                   </td>
-                  <td className="px-6 py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     <button
                       onClick={() => handleEditClick(brand)}
                       className="text-orange-500 hover:text-orange-700 mr-3"

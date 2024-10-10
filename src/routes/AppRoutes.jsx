@@ -13,6 +13,7 @@ import Orders from "../pages/orders/Orders";
 import Points from "../pages/points/Points";
 import Categories from "../pages/category/Categories";
 import Brands from "../pages/brand/Brands";
+import Customers from "../pages/customers/Customers";
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
 
@@ -34,6 +35,8 @@ const AppRoutes = () => {
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:page" element={<Orders />} />
           <Route path="/points" element={<Points />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/customers/:page" element={<Customers />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>
