@@ -5,11 +5,14 @@ import {
   Popover,
   PopoverContent,
   PopoverHandler,
+  Tooltip,
 } from "@material-tailwind/react";
 import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const email = localStorage.getItem("email");
+
   const handleLogOut = () => {
     localStorage.clear();
     window.location.href = "/login";
@@ -23,9 +26,11 @@ const Header = () => {
               <Popover placement="bottom-start" className="px-12">
                 <PopoverHandler>
                   <Button className="!p-0 bg-transparent shadow-none hover:shadow-none">
-                    <div className="w-12 h-12 rounded-full bg-[#97df6b] text-white flex items-center justify-center">
-                      <i className="fa-solid fa-user-tie text-3xl" />
-                    </div>
+                    <Tooltip content={email}>
+                      <div className="w-12 h-12 p-2 rounded-full bg-[#6CB93B] text-white flex items-center justify-center">
+                        <i className="fa-solid fa-user-tie text-xl" />
+                      </div>
+                    </Tooltip>
                   </Button>
                 </PopoverHandler>
                 <PopoverContent className="mt-2 w-[150px]">
