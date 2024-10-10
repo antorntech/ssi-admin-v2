@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AppextBarChart from "../components/chart/AppextBarChart";
+import FetchContext from "../context/FetchContext";
 
 const Home = () => {
   const [dashboard, setDashboard] = useState({});
+  const { request } = useContext(FetchContext);
 
   const fetchDashboard = async () => {
     try {
-      const response = await fetch("dashboard");
+      const response = await request("dashboard");
       const json = await response.json();
       const { data } = json;
       console.log(json);
