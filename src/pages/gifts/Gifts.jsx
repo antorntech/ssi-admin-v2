@@ -17,7 +17,7 @@ const Gifts = () => {
 
   const fetchGifts = async () => {
     try {
-      const response = await request("gifts");
+      const response = await request(`gifts?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
       const { data, count } = json;
       if (!data) return;

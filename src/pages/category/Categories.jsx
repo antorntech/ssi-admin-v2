@@ -17,7 +17,9 @@ const Categories = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await request("categories");
+      const response = await request(
+        `categories?skip=${(page - 1) * 5}&limit=5`
+      );
       const json = await response.json();
       const { data, count } = json;
       if (!data) return;

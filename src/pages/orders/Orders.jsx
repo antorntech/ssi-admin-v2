@@ -4,62 +4,71 @@ import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import SearchBar from "../../components/searchbar/SearchBar";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 
 const Orders = () => {
-  const params = useParams();
-  const page = params?.page || 1;
+  const { page } = useParams();
+  const navigate = useNavigate();
+  const currentPage = parseInt(page || 1, 10); // Ensure page is an integer
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
-  const [response, setResponse] = useState({ data: [], filtered: [] });
-  const fetchOrders = async () => {
+
+  // Fetch orders with pagination
+  const fetchOrders = async (page) => {
+    setLoading(true);
     try {
-      const response = await request("orders");
-      const json = await response.json();
+      const limit = 5; // Set the limit to 5 orders per page
+      const res = await request(
+        `orders?skip=${(page - 1) * limit}&limit=${limit}`
+      );
+      const json = await res.json();
       const { data, count } = json;
-      setResponse((prev) => ({ ...prev, data, count }));
-      if (!data) return;
 
-      const statusOrder = {
-        pending: 1,
-        completed: 2,
-        canceled: 3,
-      };
+      if (data) {
+        const statusOrder = {
+          pending: 1,
+          completed: 2,
+          canceled: 3,
+        };
 
-      const sortedOrders = data.sort((a, b) => {
-        return (
-          statusOrder[a.status.toLowerCase()] -
-          statusOrder[b.status.toLowerCase()]
-        );
-      });
-      setOrders(sortedOrders);
-      console.log(sortedOrders);
+        const sortedOrders = data.sort((a, b) => {
+          return (
+            statusOrder[a.status.toLowerCase()] -
+            statusOrder[b.status.toLowerCase()]
+          );
+        });
+
+        setOrders(sortedOrders);
+        setResponse({ data, count });
+      }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Refetch orders when the page number changes
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    fetchOrders(currentPage);
+  }, [currentPage]);
 
   const onCompleted = (id) => {
     request(`orders/${id}/completed`, {
       method: "PATCH",
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error: ${res.statusText}`);
-        }
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
         return res.json();
       })
       .then(() => {
         toast.success("Order Completed Successfully!");
+        fetchOrders(currentPage); // Refetch orders after updating status
       })
-      .catch((error) => {
-        console.error("Error updating order:", error);
-      });
+      .catch((error) => console.error("Error updating order:", error));
   };
 
   const onCanceled = (id) => {
@@ -67,17 +76,14 @@ const Orders = () => {
       method: "PATCH",
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error: ${res.statusText}`);
-        }
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
         return res.json();
       })
       .then(() => {
         toast.success("Order Canceled Successfully!");
+        fetchOrders(currentPage); // Refetch orders after updating status
       })
-      .catch((error) => {
-        console.error("Error updating order:", error);
-      });
+      .catch((error) => console.error("Error updating order:", error));
   };
 
   return (
@@ -86,7 +92,7 @@ const Orders = () => {
         <div>
           <h1 className="text-xl font-bold">Orders</h1>
           <p className="text-sm text-gray-500">
-            Total Orders: {response?.count}
+            Total Orders: {response.count}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -94,36 +100,31 @@ const Orders = () => {
         </div>
       </div>
 
-      {orders.length > 0 ? (
+      {loading ? (
+        <Loader />
+      ) : orders.length > 0 ? (
         <>
           <div className="mt-5 overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Product
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Customer
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Price
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Quantity
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Status
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Created At
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Updated At
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
+                  {[
+                    "Product",
+                    "Customer",
+                    "Price",
+                    "Quantity",
+                    "Status",
+                    "Created At",
+                    "Updated At",
+                    "Actions",
+                  ].map((heading) => (
+                    <th
+                      key={heading}
+                      className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700"
+                    >
+                      {heading}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -154,7 +155,7 @@ const Orders = () => {
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
-                    {order?.status == "pending" ? (
+                    {order?.status === "pending" && (
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b flex items-center gap-3">
                         <button onClick={() => onCompleted(order.id)}>
                           <i className="fa-regular fa-square-check text-2xl text-green-700"></i>
@@ -163,21 +164,23 @@ const Orders = () => {
                           <i className="fa-regular fa-rectangle-xmark text-2xl text-red-700"></i>
                         </button>
                       </td>
-                    ) : null}
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
           {/* Pagination Controls */}
           <Pagination
             endPoint="orders"
-            currentPage={page}
-            totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+            currentPage={currentPage}
+            totalPages={Math.ceil(response.count / 5)}
+            onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
         </>
       ) : (
-        <Loader />
+        <p>No orders found.</p>
       )}
     </>
   );

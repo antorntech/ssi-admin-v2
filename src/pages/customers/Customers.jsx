@@ -15,7 +15,9 @@ const Customers = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await fetch("customers");
+      const response = await request(
+        `customers?skip=${(page - 1) * 5}&limit=5`
+      );
       const json = await response.json();
       const { data, count } = json;
       if (!data) return;

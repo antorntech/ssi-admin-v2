@@ -16,7 +16,7 @@ const Gallery = () => {
 
   const fetchGalleries = async () => {
     try {
-      const response = await fetch("galleries");
+      const response = await request(`gallery?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
       const { data, count } = json;
       if (!data) return;

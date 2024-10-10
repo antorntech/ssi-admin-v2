@@ -9,51 +9,69 @@ import { UPLOADS_URL } from "../../utils/API";
 import moment from "moment";
 
 const Products = () => {
+  const { request } = useContext(FetchContext);
   const params = useParams();
-  const page = params?.page || 1;
+  const page = parseInt(params?.page || 1, 10); // Ensure page is an integer
+
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [products, setProducts] = useState([]);
-  const [searchText, setSearchText] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const { request } = useContext(FetchContext);
-  const [response, setResponse] = useState({ data: [], filtered: [] });
+  const [searchText, setSearchText] = useState("");
+  const [response, setResponse] = useState({ data: [], count: 0 });
+  const [loading, setLoading] = useState(false);
 
+  // Fetch products with pagination
   const fetchProducts = async () => {
+    setLoading(true);
     try {
-      const response = await request("products");
-      const json = await response.json();
+      const res = await request(`products?skip=${(page - 1) * 5}&limit=5`);
+      const json = await res.json();
       const { data, count } = json;
-      if (!data) return;
-      setResponse((prev) => ({ ...prev, data, count }));
-      setProducts(json);
+
+      if (data) {
+        setResponse({ data, count });
+        setProducts(data);
+      }
     } catch (error) {
-      console.error();
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Fetch products when component mounts or when page changes
   useEffect(() => {
     fetchProducts();
   }, [page]);
 
-  const handleOpen = () => setOpen(!open);
-
+  // Handle search filtering
   useEffect(() => {
-    const filtered = products?.data?.filter((product) =>
+    const filtered = products.filter((product) =>
       product.name.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredProducts(filtered);
   }, [searchText, products]);
 
+  // Handle delete operation
   const handleDelete = async (id) => {
     try {
       if (!id) throw new Error("Id is not defined");
-      const response = await request(`products/${id}`, { method: "DELETE" });
-      setSelectedItemId(null);
-      fetchProducts();
-      setOpen(false);
+
+      const res = await request(`products/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fetchProducts(); // Refetch products after successful deletion
+        setOpen(false);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error deleting product:", error);
     }
+  };
+
+  // Toggle delete confirmation modal
+  const handleOpen = (id = null) => {
+    setSelectedItemId(id);
+    setOpen(!open);
   };
 
   return (
@@ -62,106 +80,107 @@ const Products = () => {
         <div>
           <h1 className="text-xl font-bold">Products</h1>
           <p className="text-sm text-gray-500">
-            Total Products: {response?.count}
+            Total Products: {response.count}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {/* Reusable SearchBar Component */}
+          {/* SearchBar component for searching */}
           <SearchBar searchText={searchText} handleSearch={setSearchText} />
           <Link
             to="/products/add-product"
-            className="inline-block text-sm font-medium text-center w-full bg-[#6CB93B] text-white px-3 py-2 md:px-4 md:py-2 rounded-md"
+            className="inline-block text-sm font-medium bg-[#6CB93B] text-white px-3 py-2 md:px-4 md:py-2 rounded-md"
           >
             Add Product
           </Link>
         </div>
       </div>
-      {response?.count ? (
+
+      {loading ? (
+        <Loader />
+      ) : response.count > 0 ? (
         <>
           <div className="mt-5 w-full overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
-              {/* Table Head */}
               <thead>
                 <tr>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Banner
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Name
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Brand
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Color
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Category
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Price
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Quantity
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Date
-                  </th>
-                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                    Action
-                  </th>
+                  {[
+                    "Banner",
+                    "Name",
+                    "Brand",
+                    "Color",
+                    "Category",
+                    "Price",
+                    "Quantity",
+                    "Date",
+                    "Action",
+                  ].map((heading) => (
+                    <th
+                      key={heading}
+                      className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700"
+                    >
+                      {heading}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts?.map((product) => {
-                  const { images } = product;
-                  const image = images[0];
+                {filteredProducts.map((product) => {
+                  const {
+                    id,
+                    images,
+                    name,
+                    brand,
+                    color,
+                    category,
+                    price,
+                    quantity,
+                    created_at,
+                  } = product;
+                  const imageUrl = images?.[0]
+                    ? `${UPLOADS_URL}${images[0]}`
+                    : "";
+
                   return (
-                    <tr key={product.id} className="hover:bg-gray-100">
+                    <tr key={id} className="hover:bg-gray-100">
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {image ? (
-                          <>
-                            <img
-                              src={`${UPLOADS_URL + image}`}
-                              alt={image}
-                              className="h-12 w-12 object-cover border"
-                            />
-                          </>
-                        ) : null}
+                        {imageUrl && (
+                          <img
+                            src={imageUrl}
+                            alt={name}
+                            className="h-12 w-12 object-cover border"
+                          />
+                        )}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {product.name}
+                        {name}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {product.brand}
+                        {brand}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {product.color}
+                        {color}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {product.category}
+                        {category}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {product.price}
+                        {price}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {product.quantity}
+                        {quantity}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {moment(product.created_at).format("Do MMM, YYYY")}
+                        {moment(created_at).format("Do MMM, YYYY")}
                       </td>
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                         <Link
-                          to={`/products/edit/${product.id}`}
+                          to={`/products/edit/${id}`}
                           className="text-orange-500 hover:text-orange-700"
                         >
                           <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
                         </Link>
                         <button
-                          onClick={() => {
-                            setSelectedItemId(product.id);
-                            handleOpen();
-                          }}
+                          onClick={() => handleOpen(id)}
                           className="text-red-500 hover:text-red-700"
                         >
                           <i className="fa-solid fa-trash-can text-xl"></i>
@@ -174,18 +193,17 @@ const Products = () => {
             </table>
           </div>
 
-          {/* Reusable Pagination Component */}
-
+          {/* Pagination Component */}
           <Pagination
             endPoint="products"
             currentPage={page}
-            totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+            totalPages={response.count ? Math.ceil(response.count / 5) : 1}
           />
 
           {/* Delete Confirmation Modal */}
           <DeleteConfirmModal
             open={open}
-            handleOpen={handleOpen}
+            handleOpen={() => handleOpen(null)}
             onCollapse={() => setOpen(false)}
             itemId={selectedItemId}
             onDelete={() => handleDelete(selectedItemId)}
@@ -193,7 +211,7 @@ const Products = () => {
           />
         </>
       ) : (
-        <>{/* <Loader /> */}</>
+        <p>No products found.</p>
       )}
     </>
   );
