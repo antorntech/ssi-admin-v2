@@ -47,7 +47,7 @@ const Login = () => {
 
     const newErrors = {
       ...(emailError && { email: emailError }),
-      ...(passwordError && { password: passwordError })
+      ...(passwordError && { password: passwordError }),
     };
 
     return newErrors;
@@ -73,7 +73,7 @@ const Login = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined
+          progress: undefined,
         });
 
         // Redirect to home after 1 second
@@ -83,7 +83,7 @@ const Login = () => {
       } else {
         setErrors({
           ...(email !== regEmail && { email: "Email is invalid." }),
-          ...(password !== regPassword && { password: "Password is invalid." })
+          ...(password !== regPassword && { password: "Password is invalid." }),
         });
       }
     } else {
@@ -103,7 +103,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center p-5 bg-[#F8F8FB]">
-      <div className="w-96 max-w-screen-lg sm:w-[450px] mx-auto bg-white rounded-md custom-shadow">
+      <div className="max-w-screen-lg sm:w-[450px] mx-auto bg-white rounded-md custom-shadow">
         <div className="flex items-start justify-between bg-[#bde0a8] rounded-t-md">
           <div className="w-1/2 p-3 lg:p-5">
             <h2 className="text-md md:text-lg text-[#6CB93B] font-semibold">
@@ -135,7 +135,7 @@ const Login = () => {
                   size="md"
                   className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
                   labelProps={{
-                    className: "before:content-none after:content-none"
+                    className: "before:content-none after:content-none",
                   }}
                   value={email}
                   name="email"
@@ -161,7 +161,7 @@ const Login = () => {
                     size="md"
                     className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
                     labelProps={{
-                      className: "before:content-none after:content-none"
+                      className: "before:content-none after:content-none",
                     }}
                     value={password}
                     name="password"
