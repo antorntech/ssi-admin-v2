@@ -4,8 +4,8 @@ import Loader from "../loader/Loader";
 
 const Profile = () => {
   const initialData = JSON.parse(localStorage.getItem("profileData")) || {
-    name: "Abdul Hamid",
-    designation: "COO, PeopleNTech Institute of IT",
+    name: "Mr Admin",
+    designation: "CEO, SSI SHOP",
     email: "admin@gmail.com",
     phone: "01534 855 125",
     address: "Panthapath, Dhaka",

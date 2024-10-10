@@ -4,10 +4,9 @@ import {
   Input,
   Popover,
   PopoverContent,
-  PopoverHandler
+  PopoverHandler,
 } from "@material-tailwind/react";
 import React from "react";
-import moment from "moment";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -20,35 +19,27 @@ const Header = () => {
       <div className="w-full hidden md:flex items-center justify-between bg-whtie">
         <div className="w-full flex items-center justify-end gap-5">
           <div className="flex items-center ">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-              <i className="fa-solid fa-user-tie text-3xl" />
-            </div>
             <div>
               <Popover placement="bottom-start" className="px-12">
                 <PopoverHandler>
                   <Button className="!p-0 bg-transparent shadow-none hover:shadow-none">
-                    <p className="text-[14px] font-semibold text-black px-2">
-                      Mr. Admin
-                    </p>
-                    <p className="text-[12px] text-gray-500">
-                      Admin{" "}
-                      <span>
-                        <i className="fa-solid fa-caret-down text-gray-500"></i>
-                      </span>
-                    </p>
+                    <div className="w-12 h-12 rounded-full bg-[#97df6b] text-white flex items-center justify-center">
+                      <i className="fa-solid fa-user-tie text-3xl" />
+                    </div>
                   </Button>
                 </PopoverHandler>
                 <PopoverContent className="mt-2 w-[150px]">
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
-                  <Link to={"/profile"}>
-                    <div className="w-full flex items-center gap-2 hover:text-blue-700 hover:font-bold transition-all duration-300">
-                      <i className="fa-regular fa-user"></i>
-                      <p>Profile</p>
-                    </div>
+                  <Link
+                    to={"/profile"}
+                    className="w-full flex items-center gap-2 hover:text-[#6CB93B] transition-all duration-300"
+                  >
+                    <i className="fa-regular fa-user"></i>
+                    <p>Profile</p>
                   </Link>
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <div
-                    className="w-full flex items-center gap-2 hover:text-blue-700 hover:font-bold cursor-pointer transition-all duration-300"
+                    className="w-full flex items-center gap-2 hover:text-[#6CB93B] cursor-pointer transition-all duration-300"
                     onClick={handleLogOut}
                   >
                     <i className="fa-solid fa-arrow-right-from-bracket"></i>
