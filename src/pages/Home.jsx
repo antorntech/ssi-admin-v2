@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AppextBarChart from "../components/chart/AppextBarChart";
 
 const Home = () => {
+  const [dashboard, setDashboard] = useState({});
+
+  const fetchDashboard = async () => {
+    try {
+      const response = await fetch("dashboard");
+      const json = await response.json();
+      const { data } = json;
+      console.log(json);
+      if (!data) return;
+      setDashboard(data);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
