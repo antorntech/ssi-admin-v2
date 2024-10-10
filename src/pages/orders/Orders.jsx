@@ -14,14 +14,24 @@ const Orders = () => {
       const response = await request("orders");
       const json = await response.json();
       const { data, count } = json;
+
       if (!data) return;
-      setOrders(json.data);
-      console.log(json.data);
-      setFilteredOrders(json.data);
+
+      const statusOrder = {
+        pending: 1,
+        completed: 2,
+      };
+
+      const sortedOrders = data.sort((a, b) => {
+        return statusOrder[a.status] - statusOrder[b.status];
+      });
+      setOrders(sortedOrders);
+      console.log(sortedOrders);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -48,7 +58,7 @@ const Orders = () => {
 
   const onCanceled = (id) => {
     e.preventDefault();
-    request(`orders/canceled/${id}`, {
+    request(`orders/canceled /${id}`, {
       method: "PATCH",
       body: formData,
     })
