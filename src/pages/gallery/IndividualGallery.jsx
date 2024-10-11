@@ -54,7 +54,8 @@ const IndividualGallery = () => {
         {gallery.length > 0 ? (
           gallery.map((gal, index) => (
             <div className="w-24 h-24">
-              {slug.toLowerCase() === "default" ? (
+              {slug.toLowerCase() === "default" ||
+              slug.toLowerCase() === "products" ? (
                 <img
                   key={index}
                   src={`${UPLOADS_URL}${gal}`}
