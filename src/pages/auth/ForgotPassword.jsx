@@ -69,7 +69,7 @@ const ForgotPassword = () => {
   };
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center p-5 bg-[#F8F8FB]">
-      <div className="w-96 max-w-screen-lg sm:w-[450px] mx-auto bg-white rounded-md custom-shadow">
+      <div className="max-w-screen-lg sm:w-[450px] mx-auto bg-white rounded-md custom-shadow">
         <div className="flex items-start justify-between bg-[#bde0a8] rounded-t-md">
           <div className="w-1/2 p-3 lg:p-5">
             <h2 className="text-md md:text-lg text-[#6CB93B] font-semibold">
