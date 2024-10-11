@@ -56,7 +56,7 @@ const Home = () => {
                   <p className="text-sm">Web Developer</p>
                 </div>
               </div>
-              <div className="w-full lg:w-2/3 px-5 pb-5 md:px-5 md:py-5">
+              <div className="hidden w-full lg:w-2/3 px-5 pb-5 md:px-5 md:py-5">
                 <div className="flex items-center">
                   <div className="w-1/2">
                     <h2 className="font-semibold">125</h2>
@@ -80,7 +80,7 @@ const Home = () => {
           </div>
 
           {/* box-2 */}
-          <div className="bg-white rounded-md custom-shadow mt-6">
+          <div className="hidden bg-white rounded-md custom-shadow mt-6">
             <div className="p-5">
               <h2 className="text-lg font-semibold">Monthly Earning</h2>
               <div>
@@ -147,7 +147,7 @@ const Home = () => {
             </div>
           </div>
           {/* box-4 */}
-          <div className="bg-white rounded-md custom-shadow mt-6 lg:h-[79%]">
+          <div className="hidden bg-white rounded-md custom-shadow mt-6 lg:h-[79%]">
             <AppextBarChart />
           </div>
         </div>
