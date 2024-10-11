@@ -62,16 +62,6 @@ const Customers = () => {
             Total Customers: {response?.count}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {/* Reusable SearchBar Component */}
-          <SearchBar searchText={searchText} handleSearch={setSearchText} />
-          <Link
-            to="/customers/add-customer"
-            className="inline-block text-sm font-medium text-center w-full bg-[#6CB93B] text-white px-3 py-2 md:px-4 md:py-2 rounded-md"
-          >
-            Add Customer
-          </Link>
-        </div>
       </div>
 
       <div className="mt-5 w-full overflow-x-auto">
