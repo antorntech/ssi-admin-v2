@@ -11,10 +11,9 @@ const Home = () => {
     try {
       const response = await request("dashboard");
       const json = await response.json();
-      const { data } = json;
       console.log(json);
-      if (!data) return;
-      setDashboard(data);
+      if (!json) return;
+      setDashboard(json);
     } catch (error) {
       console.error;
     }
@@ -111,8 +110,8 @@ const Home = () => {
           <div className="flex flex-col lg:flex-row items-center gap-5">
             <div className="custom-shadow flex items-center justify-between gap-3 bg-white px-4 py-6 w-full rounded-md">
               <div>
-                <p className="text-sm mb-2">Orders</p>
-                <h2 className="text-xl font-semibold">1,235</h2>
+                <p className="text-sm mb-2">Total Orders</p>
+                <h2 className="text-xl font-semibold">{dashboard?.orders}</h2>
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
@@ -122,8 +121,10 @@ const Home = () => {
             </div>
             <div className="custom-shadow flex items-center justify-between gap-3 bg-white px-4 py-6 w-full rounded-md">
               <div>
-                <p className="text-sm mb-2">Revenue</p>
-                <h2 className="text-xl font-semibold">$35, 723</h2>
+                <p className="text-sm mb-2">Total Revenue</p>
+                <h2 className="text-xl font-semibold">
+                  ${dashboard?.total_revenue}
+                </h2>
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
@@ -133,12 +134,14 @@ const Home = () => {
             </div>
             <div className="custom-shadow flex items-center justify-between gap-3 bg-white px-4 py-6 w-full rounded-md">
               <div>
-                <p className="text-sm mb-2">Average Price</p>
-                <h2 className="text-xl font-semibold">$16.2</h2>
+                <p className="text-sm mb-2">Total Customers</p>
+                <h2 className="text-xl font-semibold">
+                  {dashboard?.customers}
+                </h2>
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
-                  <i className="fa-solid fa-filter-circle-dollar text-xl text-white" />
+                  <i class="fa-solid fa-users text-xl text-white"></i>
                 </div>
               </div>
             </div>
