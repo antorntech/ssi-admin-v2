@@ -32,11 +32,11 @@ const menuItems = [
     link: "/orders",
     icon: "/img/icons/order",
   },
-  {
-    title: "Points",
-    link: "/points",
-    icon: "/img/icons/point",
-  },
+  // {
+  //   title: "Points",
+  //   link: "/points",
+  //   icon: "/img/icons/point",
+  // },
   {
     title: "Customers",
     link: "/customers",
