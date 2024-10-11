@@ -95,9 +95,6 @@ const Orders = () => {
             Total Orders: {response.count}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <SearchBar />
-        </div>
       </div>
 
       {loading ? (
@@ -175,7 +172,7 @@ const Orders = () => {
           <Pagination
             endPoint="orders"
             currentPage={currentPage}
-            totalPages={Math.ceil(response.count / 5)}
+            totalPages={Math.ceil(response.count / 10)}
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
         </>
