@@ -88,7 +88,7 @@ const Products = () => {
           <SearchBar searchText={searchText} handleSearch={setSearchText} />
           <Link
             to="/products/add-product"
-            className="inline-block text-sm font-medium bg-[#6CB93B] text-white px-3 py-2 md:px-4 md:py-2 rounded-md"
+            className="inline-block ml-[50px] md:ml-0 w-[110px] text-sm font-medium bg-[#6CB93B] text-white md:w-[150px] text-center px-3 py-2 md:px-4 md:py-2 rounded-md"
           >
             Add Product
           </Link>

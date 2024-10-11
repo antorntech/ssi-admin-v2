@@ -4,7 +4,7 @@ import { Input, Button } from "@material-tailwind/react";
 
 const SearchBar = ({ searchText, handleSearch }) => {
   return (
-    <div className="relative w-full max-w-[24rem]">
+    <div className="relative w-[150px] md:w-[20rem]">
       <Input
         type="text"
         placeholder="Search..."
@@ -18,7 +18,7 @@ const SearchBar = ({ searchText, handleSearch }) => {
       <Button
         size="sm"
         disabled={!searchText}
-        className={`!absolute right-1 top-1 rounded transition-all duration-300 ${
+        className={`!absolute right-[-3rem] md:right-1 top-1 rounded transition-all duration-300 ${
           searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
         }`}
       >
