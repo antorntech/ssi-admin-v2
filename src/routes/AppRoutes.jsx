@@ -15,6 +15,7 @@ import Categories from "../pages/category/Categories";
 import Brands from "../pages/brand/Brands";
 import Customers from "../pages/customers/Customers";
 import Gallery from "../pages/gallery/Gallery";
+import IndividualGallery from "../pages/gallery/IndividualGallery";
 const AppRoutes = () => {
   const user = localStorage.getItem("email");
 
@@ -40,6 +41,7 @@ const AppRoutes = () => {
           <Route path="/customers/:page" element={<Customers />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/gallery/:page" element={<Gallery />} />
+          <Route path="/gallerys/:slug" element={<IndividualGallery />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </>

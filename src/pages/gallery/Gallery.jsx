@@ -1,56 +1,104 @@
-import React, { useEffect, useState } from "react";
-import SearchBar from "../../components/searchbar/SearchBar";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Pagination from "../../components/pagination/Pagination";
-import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
-import { UPLOADS_URL } from "../../utils/API";
+import FetchContext from "../../context/FetchContext";
 
 const Gallery = () => {
   const params = useParams();
   const page = params?.page || 1;
-  const [galleries, setGalleries] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [open, setOpen] = useState(false);
+  const [defaultGallery, setDefaultGallery] = useState([]);
+  const [brandsGallery, setBrandsGallery] = useState([]);
+  const [categoryGallery, setCategoryGallery] = useState([]);
+  const [productsGallery, setProductsGallery] = useState([]);
+  const [giftsGallery, setGiftsGallery] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState({ data: [], count: 0 });
+  const { request } = useContext(FetchContext);
 
-  const fetchGalleries = async () => {
+  const fetchDefaultGallery = async () => {
     try {
-      const response = await request(`gallery?skip=${(page - 1) * 5}&limit=5`);
+      const response = await request("gallery");
       const json = await response.json();
-      const { data, count } = json;
-      if (!data) return;
-      setResponse((prev) => ({ ...prev, data, count }));
-      setGalleries(json.data);
+      if (!json) return;
+      setDefaultGallery(json);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  const fetchBrandsGallery = async () => {
+    try {
+      const response = await request("gallery/brands");
+      const json = await response.json();
+      if (!json) return;
+      setBrandsGallery(json);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  const fetchCategoryGallery = async () => {
+    try {
+      const response = await request("gallery/categories");
+      const json = await response.json();
+      if (!json) return;
+      setCategoryGallery(json);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  const fetchProductsGallery = async () => {
+    try {
+      const response = await request("gallery/products");
+      const json = await response.json();
+      if (!json) return;
+      setProductsGallery(json);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  const fetchGiftsGallery = async () => {
+    try {
+      const response = await request("gallery/gifts");
+      const json = await response.json();
+      if (!json) return;
+      setGiftsGallery(json);
     } catch (error) {
       console.error;
     }
   };
 
   useEffect(() => {
-    fetchGalleries();
+    fetchDefaultGallery();
+    fetchBrandsGallery();
+    fetchCategoryGallery();
+    fetchProductsGallery();
+    fetchGiftsGallery();
   }, [page]);
 
-  useEffect(() => {
-    const filteredData = galleries.filter((gallery) =>
-      gallery.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setResponse((prev) => ({ ...prev, data: filteredData }));
-  }, [searchText]);
-
-  const handleOpen = () => setOpen(!open);
-
-  const handleDelete = async (id) => {
-    try {
-      if (!id) throw new Error("Id is not defined");
-      const response = await request(`products/${id}`, { method: "DELETE" });
-      setSelectedItemId(null);
-      fetchGalleries();
-      setOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const totalGallery = [
+    {
+      title: "Default",
+      data: defaultGallery,
+    },
+    {
+      title: "Brands",
+      data: brandsGallery,
+    },
+    {
+      title: "Categories",
+      data: categoryGallery,
+    },
+    {
+      title: "Products",
+      data: productsGallery,
+    },
+    {
+      title: "Gifts",
+      data: giftsGallery,
+    },
+  ];
 
   return (
     <>
@@ -58,100 +106,35 @@ const Gallery = () => {
         <div>
           <h1 className="text-xl font-bold">Galleries</h1>
           <p className="text-sm text-gray-500">
-            Total Galleries: {response?.count}
+            Total Galleries:{" "}
+            {defaultGallery.length +
+              brandsGallery.length +
+              categoryGallery.length +
+              productsGallery.length +
+              giftsGallery.length}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {/* Reusable SearchBar Component */}
-          <SearchBar searchText={searchText} handleSearch={setSearchText} />
-          <Link
-            to="/galleries/add-gallery"
-            className="inline-block text-sm font-medium text-center w-full bg-[#6CB93B] text-white px-3 py-2 md:px-4 md:py-2 rounded-md"
-          >
-            Add Customer
-          </Link>
+      </div>
+
+      <div className="mt-5 w-full h-full">
+        <div className="grid grid-cols-3 xl:grid-cols-12 gap-5 w-full h-full">
+          {totalGallery.map((gallery, index) => (
+            <div key={index} className="relative">
+              <span className="font-bold ml-2">{gallery?.title}</span>
+              <Link to={`/gallerys/${gallery?.title}`}>
+                <img
+                  src="/img/icons/folder.png"
+                  className="w-full h-full object-contained cursor-pointer"
+                  alt=""
+                />
+              </Link>
+              <span className="absolute bottom-0 left-3 text-[1.5rem] text-white">
+                {gallery?.data?.length}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className="mt-5 w-full overflow-x-auto">
-        <table className="min-w-[1200px] lg:min-w-full bg-white border">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Image
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Name
-              </th>
-
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {response?.data.map((gallery) => {
-              const { images } = gallery;
-              const image = images[0];
-              return (
-                <tr
-                  key={gallery.id}
-                  className="border-b border-gray-200 hover:bg-gray-100"
-                >
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                    {image ? (
-                      <>
-                        <img
-                          src={`${UPLOADS_URL + image}`}
-                          alt={image}
-                          className="h-12 w-12 object-cover border"
-                        />
-                      </>
-                    ) : null}
-                  </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                    {gallery.name}
-                  </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                    <Link
-                      to={`/gallery/edit/${gallery.id}`}
-                      className="text-orange-500 hover:text-orange-700"
-                    >
-                      <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setSelectedItemId(gallery.id);
-                        handleOpen();
-                      }}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <i className="fa-solid fa-trash-can text-xl"></i>
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Component */}
-      <Pagination
-        endPoint="gallery"
-        currentPage={page}
-        totalPages={response.count ? Math.ceil(response.count / 5) : 0}
-      />
-
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmModal
-        open={open}
-        handleOpen={handleOpen}
-        onCollapse={() => setOpen(false)}
-        itemId={selectedItemId}
-        onDelete={() => handleDelete(selectedItemId)}
-        itemName="Gallery"
-      />
     </>
   );
 };
