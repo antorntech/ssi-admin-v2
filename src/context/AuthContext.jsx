@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "../utils/API";
@@ -59,6 +60,8 @@ const AuthProvider = ({ children }) => {
 
     fetchUser();
   }, []);
+
+  if (state?.loading) return;
 
   return (
     <AuthContext.Provider value={{ ...state, isAuthenticated: !!state.user }}>
