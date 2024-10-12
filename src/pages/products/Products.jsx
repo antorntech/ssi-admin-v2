@@ -15,8 +15,8 @@ const Products = () => {
 
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]); // Initialize as an empty array
+  const [filteredProducts, setFilteredProducts] = useState([]); // Initialize as an empty array
   const [searchText, setSearchText] = useState("");
   const [response, setResponse] = useState({ data: [], count: 0 });
   const [loading, setLoading] = useState(false);
@@ -29,9 +29,10 @@ const Products = () => {
       const json = await res.json();
       const { data, count } = json;
 
-      if (data) {
+      if (Array.isArray(data)) {
         setResponse({ data, count });
         setProducts(data);
+        setFilteredProducts(data); // Set filteredProducts initially to the fetched products
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -47,10 +48,23 @@ const Products = () => {
 
   // Handle search filtering
   useEffect(() => {
-    const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredProducts(filtered);
+    const fetchData = async () => {
+      try {
+        if (searchText.trim()) {
+          const filtered = await request(`search?q=${searchText}`);
+          const data = await filtered.json();
+          if (Array.isArray(data)) {
+            setFilteredProducts(data);
+          }
+        } else {
+          setFilteredProducts(products); // Reset to original products if searchText is empty
+        }
+      } catch (error) {
+        console.error("Error fetching filtered data:", error);
+      }
+    };
+
+    fetchData();
   }, [searchText, products]);
 
   // Handle delete operation
@@ -124,71 +138,79 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map((product) => {
-                  const {
-                    id,
-                    images,
-                    name,
-                    brand,
-                    color,
-                    category,
-                    price,
-                    quantity,
-                    created_at,
-                  } = product;
-                  const imageUrl = images?.[0]
-                    ? `${UPLOADS_URL}${images[0]}`
-                    : "";
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => {
+                    const {
+                      id,
+                      images,
+                      name,
+                      brand,
+                      color,
+                      category,
+                      price,
+                      quantity,
+                      created_at,
+                    } = product;
+                    const imageUrl = images?.[0]
+                      ? `${UPLOADS_URL}${images[0]}`
+                      : "";
 
-                  return (
-                    <tr key={id} className="hover:bg-gray-100">
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {imageUrl && (
-                          <img
-                            src={imageUrl}
-                            alt={name}
-                            className="h-12 w-12 object-cover border"
-                          />
-                        )}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {name}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {brand}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {color}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                        {category}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {price}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {quantity}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        {moment(created_at).format("Do MMM, YYYY")}
-                      </td>
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        <Link
-                          to={`/products/edit/${id}`}
-                          className="text-orange-500 hover:text-orange-700"
-                        >
-                          <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
-                        </Link>
-                        <button
-                          onClick={() => handleOpen(id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <i className="fa-solid fa-trash-can text-xl"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    return (
+                      <tr key={id} className="hover:bg-gray-100">
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {imageUrl && (
+                            <img
+                              src={imageUrl}
+                              alt={name}
+                              className="h-12 w-12 object-cover border"
+                            />
+                          )}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                          {name}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                          {brand}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                          {color}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                          {category}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {price}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {quantity}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {moment(created_at).format("Do MMM, YYYY")}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          <Link
+                            to={`/products/edit/${id}`}
+                            className="text-orange-500 hover:text-orange-700"
+                          >
+                            <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
+                          </Link>
+                          <button
+                            onClick={() => handleOpen(id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <i className="fa-solid fa-trash-can text-xl"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center py-4">
+                      No products found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
