@@ -60,10 +60,19 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  function logout() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUser(null);
+    window.location.href = "/login";
+  }
+
   if (loading) return null; // Return null while loading
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated: !!user, loading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
