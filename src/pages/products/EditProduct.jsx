@@ -1,11 +1,5 @@
-import {
-  Input,
-  Textarea,
-  Typography,
-  Select,
-  Option,
-} from "@material-tailwind/react";
-import React, { useState, useEffect, useContext } from "react";
+import { Input, Textarea, Typography } from "@material-tailwind/react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
@@ -61,7 +55,7 @@ const EditProduct = () => {
       if (!data) return;
       setBrands(json.data);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -75,7 +69,7 @@ const EditProduct = () => {
       console.log(data);
       setCategories(json.data);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 

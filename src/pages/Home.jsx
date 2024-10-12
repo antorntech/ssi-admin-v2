@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AppextBarChart from "../components/chart/AppextBarChart";
 import FetchContext from "../context/FetchContext";
-import { useAuth } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
   const [dashboard, setDashboard] = useState({});
   const { request } = useContext(FetchContext);
-  const { user } = useAuth();
+  const { user } = useContext(AuthContext);
 
   const fetchDashboard = async () => {
     try {

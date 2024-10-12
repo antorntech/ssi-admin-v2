@@ -1,13 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
+import { useContext, useEffect } from "react";
 
 const ProtectedLayout = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
+  const { user, isAuthenticated } = useContext(AuthContext);
+  console.log(isAuthenticated);
+  useEffect(() => {
+    if (user?.email == false) {
+      window.location.href = "/login";
+    }
+  }, [user?.email]);
 
   return children;
 };

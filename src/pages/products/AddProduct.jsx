@@ -1,16 +1,11 @@
-import {
-  Input,
-  Textarea,
-  Typography,
-  Select,
-  Option,
-} from "@material-tailwind/react";
-import React, { useContext, useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { Typography } from "@material-tailwind/react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
-import { useAuth } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const initialValues = {
   name: "",
@@ -29,7 +24,7 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
-  const { user } = useAuth();
+  const { user } = useContext(AuthContext);
   const author = user?.email || "admin";
 
   function onChange(e) {
@@ -47,7 +42,7 @@ const AddProduct = () => {
       if (!data) return;
       setBrands(json.data);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -60,7 +55,7 @@ const AddProduct = () => {
       if (!data) return;
       setCategories(json.data);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -286,7 +281,7 @@ const AddProduct = () => {
                     src={src}
                     onRemove={() => {
                       // call remove media api
-                      setImages((prev) => prev.filter((_, i) => i !== i));
+                      setFiles((prev) => prev.filter((_, i) => i !== i));
                     }}
                   />
                 );
