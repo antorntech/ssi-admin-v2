@@ -15,44 +15,40 @@ import Brands from "../pages/brand/Brands";
 import Customers from "../pages/customers/Customers";
 import Gallery from "../pages/gallery/Gallery";
 import IndividualGallery from "../pages/gallery/IndividualGallery";
-const AppRoutes = () => {
-  const user = localStorage.getItem("access_token");
+import RootLayout from "../layout/RootLayout";
 
+const AppRoutes = () => {
   return (
     <Routes>
-      {user ? (
-        <>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:page" element={<Products />} />
-          <Route path="/products/add-product" element={<AddProduct />} />
-          <Route path="/products/edit/:id" element={<EditProduct />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/categories/:page" element={<Categories />} />
-          <Route path="/brands" element={<Brands />} />
-          <Route path="/brands/:page" element={<Brands />} />
-          <Route path="/gifts" element={<Gifts />} />
-          <Route path="/gifts/:page" element={<Gifts />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/orders/:page" element={<Orders />} />
-          <Route path="/points" element={<Points />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/customers/:page" element={<Customers />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/gallery/:page" element={<Gallery />} />
-          <Route path="/gallerys/:slug" element={<IndividualGallery />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </>
-      ) : (
-        <>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </>
-      )}
+      <Route path="" element={<RootLayout />}>
+        <Route index element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:page" element={<Products />}></Route>
+        <Route path="/products/add-product" element={<AddProduct />} />
+        <Route path="/products/edit/:id" element={<EditProduct />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/:page" element={<Categories />} />
+        <Route path="/brands" element={<Brands />} />
+        <Route path="/brands/:page" element={<Brands />} />
+        <Route path="/gifts" element={<Gifts />} />
+        <Route path="/gifts/:page" element={<Gifts />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/orders/:page" element={<Orders />} />
+        <Route path="/points" element={<Points />} />
+        <Route path="/customers" element={<Customers />} />
+        <Route path="/customers/:page" element={<Customers />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/gallery/:page" element={<Gallery />} />
+        <Route path="/gallerys/:slug" element={<IndividualGallery />} />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
+      {/*  */}
+      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 };

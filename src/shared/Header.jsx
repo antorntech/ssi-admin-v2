@@ -1,22 +1,22 @@
 import {
-  Avatar,
   Button,
-  Input,
   Popover,
   PopoverContent,
   PopoverHandler,
   Tooltip,
 } from "@material-tailwind/react";
-import React from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
-  const email = localStorage.getItem("email");
+  const { user } = useContext(AuthContext);
 
   const handleLogOut = () => {
     localStorage.clear();
     window.location.href = "/login";
   };
+
   return (
     <div className="px-5 min-h-[70px] bg-white flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
       <div className="w-full hidden md:flex items-center justify-between bg-whtie">
@@ -26,7 +26,7 @@ const Header = () => {
               <Popover placement="bottom-start" className="px-12">
                 <PopoverHandler>
                   <Button className="!p-0 bg-transparent shadow-none hover:shadow-none">
-                    <Tooltip content={email}>
+                    <Tooltip content={user?.email}>
                       <div className="w-12 h-12 p-2 rounded-full bg-[#6CB93B] text-white flex items-center justify-center">
                         <i className="fa-solid fa-user-tie text-xl" />
                       </div>

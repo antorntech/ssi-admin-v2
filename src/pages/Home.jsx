@@ -1,11 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AppextBarChart from "../components/chart/AppextBarChart";
 import FetchContext from "../context/FetchContext";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
   const [dashboard, setDashboard] = useState({});
   const { request } = useContext(FetchContext);
+  const { user } = useAuth();
 
   const fetchDashboard = async () => {
     try {
@@ -15,7 +17,7 @@ const Home = () => {
       if (!json) return;
       setDashboard(json);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -52,8 +54,7 @@ const Home = () => {
                   <img src="/img/avatar.png" alt="" className="w-full h-full" />
                 </div>
                 <div className="mt-5">
-                  <h2 className="text-lg font-semibold">John Doe</h2>
-                  <p className="text-sm">Web Developer</p>
+                  <h2 className="font-semibold">{user?.email}</h2>
                 </div>
               </div>
               <div className="hidden w-full lg:w-2/3 px-5 pb-5 md:px-5 md:py-5">
@@ -141,7 +142,7 @@ const Home = () => {
               </div>
               <div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center p-2 rounded-full">
-                  <i class="fa-solid fa-users text-xl text-white"></i>
+                  <i className="fa-solid fa-users text-xl text-white" />
                 </div>
               </div>
             </div>

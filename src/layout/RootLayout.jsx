@@ -1,15 +1,13 @@
-import React from "react";
+import { Outlet } from "react-router-dom";
 import Header from "../shared/Header";
-import AppRoutes from "../routes/AppRoutes";
 import Sidenav from "../shared/Sidenav";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { AuthProvider } from "../context/AuthContext";
+import ProtectedLayout from "./ProtectedLayout";
 
-const AppLayout = () => {
-  const user = localStorage.getItem("access_token");
+const RootLayout = () => {
   return (
-    <>
-      {user ? (
+    <AuthProvider>
+      <ProtectedLayout>
         <div className="flex items-start">
           <div className="md:w-[250px]">
             <Sidenav />
@@ -19,16 +17,13 @@ const AppLayout = () => {
               <Header />
             </div>
             <div className="content-shadow bg-[#F8F8FB] min-h-[calc(100vh-70px)] p-5 md:p-7 mt-[70px]">
-              <AppRoutes />
+              <Outlet />
             </div>
           </div>
         </div>
-      ) : (
-        <AppRoutes />
-      )}
-      <ToastContainer />
-    </>
+      </ProtectedLayout>
+    </AuthProvider>
   );
 };
 
-export default AppLayout;
+export default RootLayout;

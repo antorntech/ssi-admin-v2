@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
+import { useAuth } from "../../context/AuthContext";
 
 const initialValues = {
   name: "",
@@ -28,7 +29,8 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
-  const author = "google@gmail.com";
+  const { user } = useAuth();
+  const author = user?.email || "admin";
 
   function onChange(e) {
     const { name, value } = e.target;
