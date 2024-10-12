@@ -36,15 +36,12 @@ const AuthProvider = ({ children }) => {
               setUser(jwtDecode(data.access_token));
             } else {
               console.error("Failed to refresh token");
-              setUser(null);
             }
           } catch (error) {
             console.error("Error refreshing token:", error);
-            setUser(null);
           }
-        } else {
-          setUser(user);
         }
+        setUser(user);
       } else {
         console.log("No access token found");
       }
