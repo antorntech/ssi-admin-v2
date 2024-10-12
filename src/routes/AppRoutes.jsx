@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
@@ -17,7 +16,7 @@ import Customers from "../pages/customers/Customers";
 import Gallery from "../pages/gallery/Gallery";
 import IndividualGallery from "../pages/gallery/IndividualGallery";
 const AppRoutes = () => {
-  const user = localStorage.getItem("email");
+  const user = localStorage.getItem("access_token");
 
   return (
     <Routes>

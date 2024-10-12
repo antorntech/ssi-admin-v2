@@ -1,8 +1,9 @@
 import { Button, Input, Typography } from "@material-tailwind/react";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import { API_URL } from "../../utils/API";
 
 const SignUp = () => {
   const [email, setEmail] = React.useState("");
@@ -69,28 +70,42 @@ const SignUp = () => {
     return newErrors;
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
 
-    if (Object.keys(formErrors).length === 0) {
-      localStorage.setItem("email", email);
-
-      toast.success("Successfully Signed Up!", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
-    } else {
+    if (Object.keys(formErrors).length !== 0) {
       setErrors(formErrors);
+      return;
+    }
+
+    try {
+      const url = `${API_URL}admin/register`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      if (response.ok) {
+        toast.success("Successfully Signed Up!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

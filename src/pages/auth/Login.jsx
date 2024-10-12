@@ -1,11 +1,11 @@
 import { Button, Input, Typography } from "@material-tailwind/react";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import { API_URL } from "../../utils/API";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
@@ -53,19 +53,28 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
 
-    if (Object.keys(formErrors).length === 0) {
-      const regEmail = "admin@gmail.com";
-      const regPassword = "125125";
-
-      if (email === regEmail || password === regPassword) {
-        // Store email in localStorage
-        localStorage.setItem("email", email);
-
-        // Display success message
+    if (Object.keys(formErrors).length !== 0) {
+      setErrors(formErrors);
+      return;
+    }
+    try {
+      const url = `${API_URL}admin/login`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      if (response.ok) {
         toast.success("Successfully Logged In!", {
           position: "top-right",
           autoClose: 1000,
@@ -75,26 +84,22 @@ const Login = () => {
           draggable: true,
           progress: undefined,
         });
-
-        // Redirect to home after 1 second
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1000);
-      } else {
-        setErrors({
-          ...(email !== regEmail && { email: "Email is invalid." }),
-          ...(password !== regPassword && { password: "Password is invalid." }),
-        });
+        if (data.access_token) {
+          localStorage.setItem("access_token", data.access_token);
+        }
+        if (data.refresh_token) {
+          localStorage.setItem("refresh_token", data.refresh_token);
+        }
+        window.location.href = "/";
       }
-    } else {
-      setErrors(formErrors);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     name === "email" ? setEmail(value) : setPassword(value);
-
     // Clear error when the user starts typing
     if (errors[name]) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -207,7 +212,7 @@ const Login = () => {
           color="black"
           className="mb-1 font-normal text-center"
         >
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             to="/signup"
             className="text-[#6CB93B] hover:text-green-700 transition-all duration-500"
