@@ -152,7 +152,7 @@ const EditProduct = () => {
             >
               <option value="Select" disabled></option>
               {brands.map((brand, i) => (
-                <option key={brand.id || i} value={brand.name}>
+                <option key={brand.id || i} value={brand.id}>
                   {brand.name}
                 </option>
               ))}
@@ -190,7 +190,7 @@ const EditProduct = () => {
             >
               <option value="Select" disabled></option>
               {categories.map((category, i) => (
-                <option key={category.id || i} value={category.name}>
+                <option key={category.id || i} value={category.id}>
                   {category.name}
                 </option>
               ))}
