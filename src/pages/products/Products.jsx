@@ -170,13 +170,13 @@ const Products = () => {
                           {name}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                          {brand}
+                          {brand.name}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                           {color}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                          {category}
+                          {category.name}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {price}
@@ -184,22 +184,24 @@ const Products = () => {
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {quantity}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                           {moment(created_at).format("Do MMM, YYYY")}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                          <Link
-                            to={`/products/edit/${id}`}
-                            className="text-orange-500 hover:text-orange-700"
-                          >
-                            <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
-                          </Link>
-                          <button
-                            onClick={() => handleOpen(id)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <i className="fa-solid fa-trash-can text-xl"></i>
-                          </button>
+                          <div className="flex">
+                            <Link
+                              to={`/products/edit/${id}`}
+                              className="text-orange-500 hover:text-orange-700"
+                            >
+                              <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
+                            </Link>
+                            <button
+                              onClick={() => handleOpen(id)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <i className="fa-solid fa-trash-can text-xl"></i>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
