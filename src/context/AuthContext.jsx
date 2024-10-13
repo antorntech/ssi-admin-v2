@@ -16,38 +16,54 @@ const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       if (access_token) {
         const user = jwtDecode(access_token);
-        const exp = user?.exp;
+        const exp = user?.exp * 1000;
 
-        // Check if the token has expired
-        if (exp < Date.now() / 1000) {
+        // Check if the access token has expired
+        if (exp < Date.now()) {
           // Attempt to refresh the access token
-          try {
-            const response = await fetch(`${API_URL}users/token`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ refresh_token }),
-            });
-            const data = await response.json();
+          if (refresh_token) {
+            // Ensure we have a refresh token
+            try {
+              const response = await fetch(`${API_URL}users/token`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ refresh_token }),
+              });
 
-            if (data.access_token) {
-              localStorage.setItem("access_token", data.access_token);
-              setUser(jwtDecode(data.access_token));
-            } else {
-              console.error("Failed to refresh token");
+              if (!response.ok) {
+                throw new Error("Failed to refresh token");
+              }
+
+              const data = await response.json();
+
+              if (data.access_token) {
+                localStorage.setItem("access_token", data.access_token);
+                setUser(jwtDecode(data.access_token)); // Update user state with the new token
+              } else {
+                console.error("No new access token returned");
+                logout(); // Handle logout if token refresh fails
+              }
+            } catch (error) {
+              console.error("Error refreshing token:", error);
+              logout(); // Handle logout on error
             }
-          } catch (error) {
-            console.error("Error refreshing token:", error);
+          } else {
+            console.log("No refresh token found, logging out");
+            logout(); // Handle logout if no refresh token is available
           }
+        } else {
+          // If the access token is valid, set the user state
+          setUser(user);
         }
-        setUser(user);
       } else {
-        console.log("No access token found");
+        console.log("No access token found, logging out");
+        logout(); // Handle logout if no access token is available
       }
-      setLoading(false);
-    };
 
+      setLoading(false); // Set loading to false after processing
+    };
     fetchUser();
 
     // Optional: cleanup function to avoid memory leaks
