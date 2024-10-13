@@ -90,6 +90,15 @@ const SignUp = () => {
       });
       const data = await response.json();
       if (!response.ok) {
+        toast.error(data.detail, {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         throw new Error(data.message);
       }
       if (response.ok) {

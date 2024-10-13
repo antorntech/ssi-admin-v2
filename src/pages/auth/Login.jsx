@@ -72,6 +72,9 @@ const Login = () => {
       });
       const data = await response.json();
       if (!response.ok) {
+        toast.error("Invalid Credentials!", {
+          autoClose: 1000,
+        });
         throw new Error(data.message);
       }
       if (response.ok) {
@@ -90,10 +93,16 @@ const Login = () => {
         if (data.refresh_token) {
           localStorage.setItem("refresh_token", data.refresh_token);
         }
-        window.location.href = "/";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
       }
+      setEmail("");
+      setPassword("");
     } catch (error) {
       console.error(error);
+      setEmail("");
+      setPassword("");
     }
   };
 

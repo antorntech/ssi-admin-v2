@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AppLayout = () => {
-  const user = localStorage.getItem("email");
+  const user = localStorage.getItem("access_token");
   return (
     <>
       {user ? (
