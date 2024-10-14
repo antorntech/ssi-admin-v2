@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Login from "../pages/auth/Login";
@@ -16,39 +16,216 @@ import Customers from "../pages/customers/Customers";
 import Gallery from "../pages/gallery/Gallery";
 import IndividualGallery from "../pages/gallery/IndividualGallery";
 import RootLayout from "../layout/RootLayout";
+import Protected from "../layout/Protected";
+import UnProtected from "../layout/UnProtected";
+import { AuthProvider } from "../context/AuthContext";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="" element={<RootLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:page" element={<Products />}></Route>
-        <Route path="/products/add-product" element={<AddProduct />} />
-        <Route path="/products/edit/:id" element={<EditProduct />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/categories/:page" element={<Categories />} />
-        <Route path="/brands" element={<Brands />} />
-        <Route path="/brands/:page" element={<Brands />} />
-        <Route path="/gifts" element={<Gifts />} />
-        <Route path="/gifts/:page" element={<Gifts />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/orders/:page" element={<Orders />} />
-        <Route path="/points" element={<Points />} />
-        <Route path="/customers" element={<Customers />} />
-        <Route path="/customers/:page" element={<Customers />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/gallery/:page" element={<Gallery />} />
-        <Route path="/gallerys/:slug" element={<IndividualGallery />} />
-        <Route path="/profile" element={<Profile />} />
+      <Route
+        path=""
+        element={
+          <AuthProvider>
+            <RootLayout />
+          </AuthProvider>
+        }
+      >
+        <Route
+          index
+          element={
+            <Protected>
+              <Home />
+            </Protected>
+          }
+        />
+        <Route
+          path="products"
+          element={
+            <Protected>
+              <Products />
+            </Protected>
+          }
+        />
+        <Route
+          path="products/:page"
+          element={
+            <Protected>
+              <Products />
+            </Protected>
+          }
+        />
+        <Route
+          path="products/add-product"
+          element={
+            <Protected>
+              <AddProduct />
+            </Protected>
+          }
+        />
+        <Route
+          path="products/edit/:id"
+          element={
+            <Protected>
+              <EditProduct />
+            </Protected>
+          }
+        />
+        <Route
+          path="categories"
+          element={
+            <Protected>
+              <Categories />
+            </Protected>
+          }
+        />
+        <Route
+          path="categories/:page"
+          element={
+            <Protected>
+              <Categories />
+            </Protected>
+          }
+        />
+        <Route
+          path="brands"
+          element={
+            <Protected>
+              <Brands />
+            </Protected>
+          }
+        />
+        <Route
+          path="brands/:page"
+          element={
+            <Protected>
+              <Brands />
+            </Protected>
+          }
+        />
+        <Route
+          path="gifts"
+          element={
+            <Protected>
+              <Gifts />
+            </Protected>
+          }
+        />
+        <Route
+          path="gifts/:page"
+          element={
+            <Protected>
+              <Gifts />
+            </Protected>
+          }
+        />
+        <Route
+          path="orders"
+          element={
+            <Protected>
+              <Orders />
+            </Protected>
+          }
+        />
+        <Route
+          path="orders/:page"
+          element={
+            <Protected>
+              <Orders />
+            </Protected>
+          }
+        />
+        <Route
+          path="points"
+          element={
+            <Protected>
+              <Points />
+            </Protected>
+          }
+        />
+        <Route
+          path="customers"
+          element={
+            <Protected>
+              <Customers />
+            </Protected>
+          }
+        />
+        <Route
+          path="customers/:page"
+          element={
+            <Protected>
+              <Customers />
+            </Protected>
+          }
+        />
+        <Route
+          path="gallery"
+          element={
+            <Protected>
+              <Gallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="gallery/:page"
+          element={
+            <Protected>
+              <Gallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="gallerys/:slug"
+          element={
+            <Protected>
+              <IndividualGallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <Protected>
+              <Profile />
+            </Protected>
+          }
+        />
       </Route>
-      {/*  */}
-      <Route path="*" element={<Navigate to="/" />} />
-      <Route path="/" element={<Login />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route
+        path="auth"
+        element={
+          <AuthProvider>
+            <Outlet />
+          </AuthProvider>
+        }
+      >
+        <Route
+          path="login"
+          element={
+            <UnProtected>
+              <Login />
+            </UnProtected>
+          }
+        />
+        <Route
+          path="signup"
+          element={
+            <UnProtected>
+              <SignUp />
+            </UnProtected>
+          }
+        />
+        <Route
+          path="forgot-password"
+          element={
+            <UnProtected>
+              <ForgotPassword />
+            </UnProtected>
+          }
+        />
+      </Route>
+      <Route path="*" element={<Navigate to="auth/login" />} />
     </Routes>
   );
 };

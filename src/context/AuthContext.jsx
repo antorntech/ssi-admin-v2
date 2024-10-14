@@ -59,7 +59,6 @@ const AuthProvider = ({ children }) => {
         }
       } else {
         console.log("No access token found, logging out");
-        logout(); // Handle logout if no access token is available
       }
 
       setLoading(false); // Set loading to false after processing
@@ -77,7 +76,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setUser(null);
-    window.location.href = "/login";
+    window.location.href = "/auth/login";
   }
 
   if (loading) return null; // Return null while loading

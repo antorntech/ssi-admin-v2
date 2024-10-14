@@ -110,7 +110,7 @@ const SignUp = () => {
           draggable: true,
           progress: undefined,
         });
-        window.location.href = "/login";
+        window.location.href = "/auth/login";
       }
     } catch (error) {
       console.error(error);
@@ -259,7 +259,7 @@ const SignUp = () => {
         >
           Already have an account?{" "}
           <Link
-            to="/login"
+            to="/auth/login"
             className="text-[#6CB93B] hover:text-green-700 transition-all duration-500"
           >
             Login

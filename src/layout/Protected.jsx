@@ -2,11 +2,10 @@ import { AuthContext } from "../context/AuthContext";
 import { useContext, useEffect } from "react";
 
 const ProtectedLayout = ({ children }) => {
-  const { user, isAuthenticated } = useContext(AuthContext);
-  // console.log(isAuthenticated);
+  const { user } = useContext(AuthContext);
   useEffect(() => {
     if (user?.email == false) {
-      window.location.href = "/login";
+      window.location.href = "/auth/login";
     }
   }, [user?.email]);
 

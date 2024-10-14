@@ -77,31 +77,16 @@ const Login = () => {
         throw new Error(data.message);
       }
       if (response.ok) {
-        toast.success("Successfully Logged In!", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
         if (data.access_token) {
           localStorage.setItem("access_token", data.access_token);
         }
         if (data.refresh_token) {
           localStorage.setItem("refresh_token", data.refresh_token);
         }
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1000);
       }
-      setEmail("");
-      setPassword("");
+      window.location.href = "/";
     } catch (error) {
       console.error(error);
-      setEmail("");
-      setPassword("");
     }
   };
 
@@ -204,7 +189,7 @@ const Login = () => {
           </form>
         </div>
         <div className="flex flex-col gap-3 items-center justify-center my-6">
-          <Link to="/forgot-password" className="text-sm text-gray-600">
+          <Link to="/auth/forgot-password" className="text-sm text-gray-600">
             <i className="fa-solid fa-lock mr-2" />
             <span>Forgot your password ?</span>
           </Link>
@@ -218,7 +203,7 @@ const Login = () => {
         >
           Don&apos;t have an account?{" "}
           <Link
-            to="/signup"
+            to="/auth/signup"
             className="text-[#6CB93B] hover:text-green-700 transition-all duration-500"
           >
             Sign Up

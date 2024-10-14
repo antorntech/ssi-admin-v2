@@ -47,9 +47,6 @@ const ForgotPassword = () => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
-      // Send email request
-      // console.log("Email:", email);
-
       toast.success("Successfully Reset Password!", {
         position: "top-right",
         autoClose: 1000,
@@ -59,10 +56,6 @@ const ForgotPassword = () => {
         draggable: true,
         progress: undefined,
       });
-
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
     } else {
       setErrors(formErrors);
     }
@@ -136,7 +129,7 @@ const ForgotPassword = () => {
         >
           Remember It ?{" "}
           <Link
-            to="/login"
+            to="/auth/login"
             className="text-[#6CB93B] hover:text-green-700 transition-all duration-500"
           >
             Login here
