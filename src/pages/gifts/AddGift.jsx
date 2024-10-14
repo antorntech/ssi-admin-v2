@@ -2,14 +2,16 @@ import { Typography } from "@material-tailwind/react";
 import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const AddGift = ({ fetchGifts }) => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
-  const author = "author@gmail.com";
   const [formState, setFormState] = useState({
-    price: 0
+    price: 0,
   });
+  const { user } = useContext(AuthContext);
+  const author = user?.email || "admin";
 
   const fileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -18,14 +20,13 @@ const AddGift = ({ fetchGifts }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     const body = new FormData(e.target);
     if (!body.has("author")) body.append("author", author);
 
     try {
       const response = await request("gifts", {
         method: "POST",
-        body
+        body,
       });
       if (response.ok) {
         if (fetchGifts) {

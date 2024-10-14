@@ -1,12 +1,14 @@
-import { Input, Typography } from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
 import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const AddCategory = ({ fetchCategories }) => {
   const [file, setFile] = useState(null); // Single file handling, set to null initially
   const { request } = useContext(FetchContext);
-  const author = "google@gmail.com"; // Consider making this dynamic or removing if not used
+  const { user } = useContext(AuthContext);
+  const author = user?.email || "admin";
 
   // Handle file input change
   const handleFileChange = (e) => {
@@ -16,13 +18,12 @@ const AddCategory = ({ fetchCategories }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData(e.target);
-
+    const body = new FormData(e.target);
+    if (!body.has("author")) body.append("author", author);
     try {
       await request("categories", {
         method: "POST",
-        body: formData
+        body: body,
       });
 
       // Reset form and state after successful submission

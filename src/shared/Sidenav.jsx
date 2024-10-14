@@ -96,7 +96,7 @@ const Sidenav = () => {
                   <>
                     <div className="group">
                       <div
-                        className={`flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828] transition-all duration-500 ${
+                        className={`flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828]  ${
                           activeMenu === index
                             ? "bg-[#6CB93B] text-white hover:text-white"
                             : ""
@@ -147,7 +147,7 @@ const Sidenav = () => {
                   <div className="group">
                     <Link
                       to={item.link}
-                      className={`flex items-center p-3 hover:text-[#050828] transition-all duration-500 ${
+                      className={`flex items-center p-3 hover:text-[#050828] ${
                         currentPath === item.link
                           ? "bg-[#6CB93B] text-white hover:text-white"
                           : ""

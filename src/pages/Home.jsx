@@ -13,7 +13,6 @@ const Home = () => {
     try {
       const response = await request("dashboard");
       const json = await response.json();
-      console.log(json);
       if (!json) return;
       setDashboard(json);
     } catch (error) {

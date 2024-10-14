@@ -11,7 +11,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
-  console.log("user", user);
+  // console.log("user", user);
 
   return (
     <div className="px-5 min-h-[70px] bg-white flex items-center fixed top-0 w-[calc(100%-250px)] z-40">

@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SearchBar from "../../components/searchbar/SearchBar";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
+import FetchContext from "../../context/FetchContext";
 
 const Customers = () => {
   const params = useParams();
   const page = params?.page || 1;
   const [customers, setCustomers] = useState([]);
-  const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState({ data: [], count: 0 });
+  const { request } = useContext(FetchContext);
 
   const fetchCustomers = async () => {
     try {
-      const response = await request(
-        `customers?skip=${(page - 1) * 5}&limit=5`
-      );
+      const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
+      console.log(json);
       const { data, count } = json;
       if (!data) return;
       setResponse((prev) => ({ ...prev, data, count }));
-      setCustomers(json.data);
+      setCustomers(data);
     } catch (error) {
       console.error;
     }
@@ -32,12 +32,7 @@ const Customers = () => {
     fetchCustomers();
   }, [page]);
 
-  useEffect(() => {
-    const filteredData = customers.filter((customer) =>
-      customer.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setResponse((prev) => ({ ...prev, data: filteredData }));
-  }, [searchText]);
+  console.log(response);
 
   const handleOpen = () => setOpen(!open);
 
@@ -78,47 +73,33 @@ const Customers = () => {
                 Phone
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Address
+                Points
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Action
+                Address
               </th>
             </tr>
           </thead>
           <tbody>
-            {response?.data.map((customer) => (
+            {customers?.map((customer) => (
               <tr
-                key={customer.id}
+                key={customer?.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer.name}
+                  {customer?.name}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer.email}
+                  {customer?.email}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer.phone}
+                  {customer?.phone}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer.address}
+                  {customer?.points}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  <Link
-                    to={`/customers/edit/${customer.id}`}
-                    className="text-orange-500 hover:text-orange-700"
-                  >
-                    <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setSelectedItemId(customer.id);
-                      handleOpen();
-                    }}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <i className="fa-solid fa-trash-can text-xl"></i>
-                  </button>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  {customer?.address}
                 </td>
               </tr>
             ))}

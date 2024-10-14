@@ -2,11 +2,13 @@ import { Input, Typography } from "@material-tailwind/react";
 import React, { useContext, useState } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const AddBrand = ({ fetchBrands }) => {
   const [file, setFile] = useState(null);
   const { request } = useContext(FetchContext);
-  const author = "google@gmail.com";
+  const { user } = useContext(AuthContext);
+  const author = user?.email || "admin";
 
   const fileChange = (e) => {
     setFile(e.target.files[0]);
@@ -21,7 +23,7 @@ const AddBrand = ({ fetchBrands }) => {
     try {
       const response = await request("brands", {
         method: "POST",
-        body
+        body,
       });
       if (response.ok) {
         setFile(null);
@@ -113,7 +115,7 @@ const AddBrand = ({ fetchBrands }) => {
             name="name"
             className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             labelProps={{
-              className: "before:content-none after:content-none"
+              className: "before:content-none after:content-none",
             }}
           />
         </div>

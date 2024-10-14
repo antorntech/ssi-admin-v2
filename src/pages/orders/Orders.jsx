@@ -106,7 +106,7 @@ const Orders = () => {
               <thead>
                 <tr>
                   {[
-                    "Product",
+                    // "Product",
                     "Customer",
                     "Price",
                     "Quantity",
@@ -127,9 +127,9 @@ const Orders = () => {
               <tbody>
                 {orders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    {/* <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {order.id}
-                    </td>
+                    </td> */}
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {order.customer_id}
                     </td>
@@ -172,7 +172,7 @@ const Orders = () => {
           <Pagination
             endPoint="orders"
             currentPage={currentPage}
-            totalPages={Math.ceil(response.count / 10)}
+            totalPages={Math.ceil(response.count / 5)}
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
         </>

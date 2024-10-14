@@ -66,7 +66,6 @@ const EditProduct = () => {
       const json = await response.json();
       const { data } = json;
       if (!data) return;
-      console.log(data);
       setCategories(json.data);
     } catch (error) {
       console.error(error);

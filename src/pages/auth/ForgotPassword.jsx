@@ -48,7 +48,7 @@ const ForgotPassword = () => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
       // Send email request
-      console.log("Email:", email);
+      // console.log("Email:", email);
 
       toast.success("Successfully Reset Password!", {
         position: "top-right",
