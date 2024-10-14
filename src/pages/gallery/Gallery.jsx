@@ -115,16 +115,16 @@ const Gallery = () => {
           {totalGallery.map((gallery, index) => (
             <div key={index} className="relative">
               <span className="font-bold ml-2">{gallery?.title}</span>
-              <Link to={`/gallerys/${gallery?.title}`}>
+              <Link to={`/gallerys/${gallery?.title}`} className="relative">
                 <img
                   src="/img/icons/folder.png"
                   className="w-full h-full object-contained cursor-pointer"
                   alt=""
                 />
+                <span className="absolute bottom-4 left-6 text-[1.5rem] text-white">
+                  {gallery?.data?.length}
+                </span>
               </Link>
-              <span className="absolute bottom-0 left-3 text-[1.5rem] text-white">
-                {gallery?.data?.length}
-              </span>
             </div>
           ))}
         </div>
