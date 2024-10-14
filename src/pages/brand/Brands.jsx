@@ -104,31 +104,33 @@ const Brands = () => {
                       />
                     )}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize min-w-[220px]">
                     {brand.name}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                     {moment(brand.created_at).format("Do MMM, YYYY")}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                     {moment(brand.updated_at).format("Do MMM, YYYY")}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                    <button
-                      onClick={() => handleEditClick(brand)}
-                      className="text-orange-500 hover:text-orange-700 mr-3"
-                    >
-                      <i className="fa-solid fa-pen-to-square text-xl"></i>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedBrandId(brand.id);
-                        handleOpen();
-                      }}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <i className="fa-solid fa-trash-can text-xl"></i>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleEditClick(brand)}
+                        className="text-orange-500 hover:text-orange-700 mr-3"
+                      >
+                        <i className="fa-solid fa-pen-to-square text-xl"></i>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBrandId(brand.id);
+                          handleOpen();
+                        }}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <i className="fa-solid fa-trash-can text-xl"></i>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
