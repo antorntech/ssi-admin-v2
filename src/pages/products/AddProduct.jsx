@@ -175,6 +175,17 @@ const AddProduct = () => {
               required
             />
 
+            <Legend>Regular Price</Legend>
+            <input
+              type="number"
+              size="md"
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="regular_price"
+              value={formState.regular_price}
+              onChange={onChange}
+              required
+            />
+
             <Legend>Quantity</Legend>
             <input
               type="number"
@@ -226,11 +237,11 @@ const AddProduct = () => {
               name="description"
               value={formState.description}
               onChange={onChange}
-              rows={7}
+              rows={11}
               required
             />
             {/* file upload */}
-            <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
+            <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative">
               <lord-icon
                 src="https://cdn.lordicon.com/smwmetfi.json"
                 trigger="loop"

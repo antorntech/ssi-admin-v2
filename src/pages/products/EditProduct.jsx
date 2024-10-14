@@ -13,6 +13,7 @@ const initialValues = {
   brand: "",
   category: "",
   price: "",
+  regular_price: "",
   quantity: "",
   serverImages: null,
 };
@@ -157,6 +158,7 @@ const EditProduct = () => {
                 </option>
               ))}
             </select>
+
             <Legend>Price</Legend>
             <Input
               type="number"
@@ -169,6 +171,20 @@ const EditProduct = () => {
               name="price"
               onChange={handleChange}
             />
+
+            <Legend>Regular Price</Legend>
+            <Input
+              type="number"
+              size="md"
+              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+              value={formState.regular_price}
+              name="regular_price"
+              onChange={handleChange}
+            />
+
             <Legend>Quantity</Legend>
             <Input
               type="number"
@@ -216,18 +232,15 @@ const EditProduct = () => {
           {/* Right Column */}
           <div className="w-full md:col-span-2">
             <Legend>Description</Legend>
-            <Textarea
+            <textarea
               value={formState.description}
               name="description"
-              className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               onChange={handleChange}
-              rows={8}
+              rows={12}
             />
             {/* file upload */}
-            <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 py-2 lg:py-[33px] text-center w-full flex flex-col items-center relative">
+            <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative">
               <lord-icon
                 src="https://cdn.lordicon.com/smwmetfi.json"
                 trigger="loop"

@@ -124,6 +124,7 @@ const Products = () => {
                     "Color",
                     "Category",
                     "Price",
+                    "Regular Price",
                     "Quantity",
                     "Date",
                     "Action",
@@ -148,6 +149,7 @@ const Products = () => {
                       color,
                       category,
                       price,
+                      regular_price,
                       quantity,
                       created_at,
                     } = product;
@@ -180,6 +182,9 @@ const Products = () => {
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {price}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {regular_price}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {quantity}
