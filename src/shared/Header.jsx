@@ -11,6 +11,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
   const { user } = useContext(AuthContext);
+  console.log("user", user);
 
   const handleLogOut = () => {
     localStorage.clear();
