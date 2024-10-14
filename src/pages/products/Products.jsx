@@ -178,7 +178,7 @@ const Products = () => {
                           {color}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                          {category.name}
+                          {category?.name}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {price}

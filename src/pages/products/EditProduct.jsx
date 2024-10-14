@@ -12,9 +12,9 @@ const initialValues = {
   color: "",
   brand: "",
   category: "",
-  price: "",
-  regular_price: "",
-  quantity: "",
+  price: 0,
+  regular_price: 0,
+  quantity: 0,
   serverImages: null,
 };
 

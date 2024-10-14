@@ -13,8 +13,9 @@ const initialValues = {
   color: "",
   brand: "",
   category: "",
-  price: "",
-  quantity: "",
+  price: 0,
+  regular_price: 0,
+  quantity: 0,
 };
 
 const AddProduct = () => {
