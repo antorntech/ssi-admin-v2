@@ -36,15 +36,12 @@ const AuthProvider = ({ children }) => {
               setUser(jwtDecode(data.access_token));
             } else {
               console.error("Failed to refresh token");
-              setUser(null);
             }
           } catch (error) {
             console.error("Error refreshing token:", error);
-            setUser(null);
           }
-        } else {
-          setUser(user);
         }
+        setUser(user);
       } else {
         console.log("No access token found");
       }
@@ -60,10 +57,19 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  function logout() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUser(null);
+    window.location.href = "/login";
+  }
+
   if (loading) return null; // Return null while loading
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated: !!user, loading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

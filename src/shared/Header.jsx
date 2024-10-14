@@ -10,13 +10,13 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
-  const { user } = useContext(AuthContext);
-  console.log("user", user);
-
   const handleLogOut = () => {
     localStorage.clear();
     window.location.href = "/login";
   };
+
+  const { user, logout } = useContext(AuthContext);
+  console.log("user", user);
 
   return (
     <div className="px-5 min-h-[70px] bg-white flex items-center fixed top-0 w-[calc(100%-250px)] z-40">
@@ -46,7 +46,11 @@ const Header = () => {
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <div
                     className="w-full flex items-center gap-2 hover:text-[#6CB93B] cursor-pointer transition-all duration-300"
-                    onClick={handleLogOut}
+                    onClick={() => {
+                      if (logout) {
+                        logout();
+                      }
+                    }}
                   >
                     <i className="fa-solid fa-arrow-right-from-bracket"></i>
                     <p>Log Out</p>
@@ -58,7 +62,14 @@ const Header = () => {
         </div>
       </div>
       <div className="w-full min-h-[70px] md:hidden fixed top-0 left-0 z-40 bg-white flex justify-end">
-        <button className="me-4" onClick={handleLogOut}>
+        <button
+          className="me-4"
+          onClick={() => {
+            if (logout) {
+              logout();
+            }
+          }}
+        >
           <span className="px-4 py-3 bg-[#050828] text-white rounded-md">
             Logout
           </span>
