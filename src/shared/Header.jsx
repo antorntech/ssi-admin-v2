@@ -10,11 +10,6 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
-  const handleLogOut = () => {
-    localStorage.clear();
-    window.location.href = "/login";
-  };
-
   const { user, logout } = useContext(AuthContext);
   console.log("user", user);
 
