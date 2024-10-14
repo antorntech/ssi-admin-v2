@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
 
 const IndividualGallery = () => {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params.slug.toLowerCase();
   const [gallery, setGallery] = useState([]);
   const { request } = useContext(FetchContext);
   const fetchGallery = async () => {
@@ -24,7 +25,7 @@ const IndividualGallery = () => {
         return;
       }
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -52,26 +53,29 @@ const IndividualGallery = () => {
       </div>
       <div className="grid grid-cols-3 md:grid-cols-5 gap-8">
         {gallery.length > 0 ? (
-          gallery.map((gal, index) => (
-            <div className="w-24 h-24">
-              {slug.toLowerCase() === "default" ||
-              slug.toLowerCase() === "products" ? (
+          gallery.map((image, index) => {
+            if (!image) return;
+
+            let url = UPLOADS_URL;
+            if (slug === "products") {
+              url += image;
+            } else {
+              url += slug + "/" + image;
+            }
+
+            return (
+              <div
+                className="aspect-video border rounded-lg overflow-hidden"
+                key={index}
+              >
                 <img
-                  key={index}
-                  src={`${UPLOADS_URL}${gal}`}
-                  alt={gal}
+                  src={url}
+                  alt={image}
                   className="w-full h-full object-cover"
                 />
-              ) : (
-                <img
-                  key={index}
-                  src={`${UPLOADS_URL + slug.toLowerCase() + "/" + gal}`}
-                  alt={gal}
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </div>
-          ))
+              </div>
+            );
+          })
         ) : (
           <p className="text-center text-gray-500">No images found</p>
         )}

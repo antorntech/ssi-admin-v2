@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 
@@ -10,8 +10,6 @@ const Gallery = () => {
   const [categoryGallery, setCategoryGallery] = useState([]);
   const [productsGallery, setProductsGallery] = useState([]);
   const [giftsGallery, setGiftsGallery] = useState([]);
-  const [selectedItemId, setSelectedItemId] = useState(null);
-  const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
 
   const fetchDefaultGallery = async () => {
@@ -21,7 +19,7 @@ const Gallery = () => {
       if (!json) return;
       setDefaultGallery(json);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -32,7 +30,7 @@ const Gallery = () => {
       if (!json) return;
       setBrandsGallery(json);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -43,7 +41,7 @@ const Gallery = () => {
       if (!json) return;
       setCategoryGallery(json);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -54,7 +52,7 @@ const Gallery = () => {
       if (!json) return;
       setProductsGallery(json);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -65,7 +63,7 @@ const Gallery = () => {
       if (!json) return;
       setGiftsGallery(json);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -78,10 +76,6 @@ const Gallery = () => {
   }, [page]);
 
   const totalGallery = [
-    {
-      title: "Default",
-      data: defaultGallery,
-    },
     {
       title: "Brands",
       data: brandsGallery,
