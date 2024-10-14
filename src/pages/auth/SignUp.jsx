@@ -2,7 +2,6 @@ import { Button, Input, Typography } from "@material-tailwind/react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import SocialLogin from "../../components/SocialLogin/SocialLogin";
 import { API_URL } from "../../utils/API";
 
 const SignUp = () => {
@@ -244,18 +243,12 @@ const SignUp = () => {
             </div>
             <Button
               type="submit"
-              className="py-3 mt-5 text-sm bg-[#6CB93B] hover:bg-green-700 transition-all duration-500"
+              className="py-3 my-5 text-sm bg-[#6CB93B] hover:bg-green-700 transition-all duration-500"
               fullWidth
             >
               Sign Up
             </Button>
           </form>
-        </div>
-        <div className="flex flex-col gap-3 items-center justify-center my-6">
-          <div className="flex items-center">
-            <p className="text-lg">Sign in with</p>
-            <SocialLogin />
-          </div>
         </div>
       </div>
       <div className="mt-6">

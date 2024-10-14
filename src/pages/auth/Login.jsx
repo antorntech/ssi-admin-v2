@@ -2,7 +2,6 @@ import { Button, Input, Typography } from "@material-tailwind/react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import SocialLogin from "../../components/SocialLogin/SocialLogin";
 import { API_URL } from "../../utils/API";
 
 const Login = () => {
@@ -205,10 +204,6 @@ const Login = () => {
           </form>
         </div>
         <div className="flex flex-col gap-3 items-center justify-center my-6">
-          <div className="flex items-center">
-            <p className="text-lg">Sign in with</p>
-            <SocialLogin />
-          </div>
           <Link to="/forgot-password" className="text-sm text-gray-600">
             <i className="fa-solid fa-lock mr-2" />
             <span>Forgot your password ?</span>
