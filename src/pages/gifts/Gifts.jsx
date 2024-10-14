@@ -107,29 +107,31 @@ const Gifts = () => {
                       {gift.price}
                     </td>
 
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(gift.created_at).format("Do MMM, YYYY")}
                     </td>
 
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(gift.updated_at).format("Do MMM, YYYY")}
                     </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      <button
-                        onClick={() => handleEditClick(gift)}
-                        className="text-orange-500 hover:text-orange-700 mr-3"
-                      >
-                        <i className="fa-solid fa-pen-to-square text-xl"></i>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedGiftId(gift.id);
-                          handleOpen(); // Open delete confirmation modal
-                        }}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <i className="fa-solid fa-trash-can text-xl"></i>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditClick(gift)}
+                          className="text-orange-500 hover:text-orange-700 mr-3"
+                        >
+                          <i className="fa-solid fa-pen-to-square text-xl"></i>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedGiftId(gift.id);
+                            handleOpen(); // Open delete confirmation modal
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <i className="fa-solid fa-trash-can text-xl"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
