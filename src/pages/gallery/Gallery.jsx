@@ -110,22 +110,23 @@ const Gallery = () => {
         </div>
       </div>
 
-      <div className="mt-5 w-full h-full">
-        <div className="grid grid-cols-3 xl:grid-cols-12 gap-5 w-full h-full">
+      <div className="mt-5">
+        <div className="flex gap-5">
           {totalGallery.map((gallery, index) => (
-            <div key={index} className="relative">
+            <Link to={`/gallerys/${gallery?.title}`} key={index} className="hover:text-green-600">
               <span className="font-bold ml-2">{gallery?.title}</span>
-              <Link to={`/gallerys/${gallery?.title}`} className="relative">
+              <div className="relative block h-32">
                 <img
                   src="/img/icons/folder.png"
-                  className="w-full h-full object-contained cursor-pointer"
+                  className="w-full h-full object-contained"
                   alt=""
+                  loading="lazy"
                 />
-                <span className="absolute bottom-4 left-6 text-[1.5rem] text-white">
+                <span className="absolute bottom-5 left-5 text-[1.5rem] text-white">
                   {gallery?.data?.length}
                 </span>
-              </Link>
-            </div>
+              </div>
+            </Link>
           ))}
         </div>
       </div>
