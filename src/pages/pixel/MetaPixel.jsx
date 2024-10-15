@@ -11,7 +11,7 @@ const MetaPixel = () => {
   // Fetch products with pagination
   const fetchMetaPixels = async () => {
     try {
-      const res = await request("meta-pixels");
+      const res = await request("pixel-id");
       const json = await res.json();
       const { data } = json;
 
