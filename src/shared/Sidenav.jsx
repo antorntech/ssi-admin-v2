@@ -45,13 +45,13 @@ const menuItems = [
   {
     title: "Previous Customer",
     link: "/customers/previous",
-    icon: "/img/icons/customer",
+    icon: "/img/icons/precustomer",
     disabled: true,
   },
   {
     title: "Send Messages",
     link: "send-messages",
-    icon: "/img/icons/customer",
+    icon: "/img/icons/message",
     disabled: true,
   },
   {
@@ -62,7 +62,7 @@ const menuItems = [
   {
     title: "Pixel ID",
     link: "/pixel-id",
-    icon: "/img/icons/gallery",
+    icon: "/img/icons/meta",
   },
 ];
 
