@@ -1,10 +1,34 @@
 import moment from "moment";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import FetchContext from "../../context/FetchContext";
 
 const MetaPixel = () => {
   const [metaId, setMetaId] = useState("");
   const [metaData, setMetaData] = useState([]);
+  const { request } = useContext(FetchContext);
+
+  // Fetch products with pagination
+  const fetchMetaPixels = async () => {
+    try {
+      const res = await request("meta-pixels");
+      const json = await res.json();
+      const { data } = json;
+
+      if (Array.isArray(data)) {
+        setMetaData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      console.log("MetaPixels fetched");
+    }
+  };
+
+  // Fetch products when component mounts or when page changes
+  useEffect(() => {
+    fetchMetaPixels();
+  }, [metaData]);
 
   const handleInputChange = (e) => {
     setMetaId(e.target.value);
