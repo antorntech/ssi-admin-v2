@@ -12,7 +12,9 @@ import Orders from "../pages/orders/Orders";
 import Points from "../pages/points/Points";
 import Categories from "../pages/category/Categories";
 import Brands from "../pages/brand/Brands";
+import SendMessages from "../pages/send-messages/SendMessages";
 import Customers from "../pages/customers/Customers";
+import PreviousCustomers from "../pages/previous-customers/PreviousCustomers";
 import Gallery from "../pages/gallery/Gallery";
 import IndividualGallery from "../pages/gallery/IndividualGallery";
 import RootLayout from "../layout/RootLayout";
@@ -156,6 +158,22 @@ const AppRoutes = () => {
           element={
             <Protected>
               <Customers />
+            </Protected>
+          }
+        />
+        <Route
+          path="previous-customers/:page"
+          element={
+            <Protected>
+              <PreviousCustomers />
+            </Protected>
+          }
+        />
+        <Route
+          path="send-messages"
+          element={
+            <Protected>
+              <SendMessages />
             </Protected>
           }
         />

@@ -32,19 +32,36 @@ const menuItems = [
     link: "/orders",
     icon: "/img/icons/order",
   },
-  // {
-  //   title: "Points",
-  //   link: "/points",
-  //   icon: "/img/icons/point",
-  // },
+  {
+    title: "Points",
+    link: "/points",
+    icon: "/img/icons/point",
+  },
   {
     title: "Customers",
     link: "/customers",
     icon: "/img/icons/customer",
   },
   {
+    title: "Previous Customer",
+    link: "/customers/previous",
+    icon: "/img/icons/customer",
+    disabled: true,
+  },
+  {
+    title: "Send Messages",
+    link: "send-messages",
+    icon: "/img/icons/customer",
+    disabled: true,
+  },
+  {
     title: "Gallery",
     link: "/gallery",
+    icon: "/img/icons/gallery",
+  },
+  {
+    title: "Pixel ID",
+    link: "/pixel-id",
     icon: "/img/icons/gallery",
   },
 ];
@@ -96,14 +113,14 @@ const Sidenav = () => {
                   <>
                     <div className="group">
                       <div
-                        className={`flex items-center justify-between menu-title p-2 cursor-pointer hover:text-[#050828]  ${
+                        className={`flex items-center justify-between menu-title p-2 hover:text-[#050828]  ${
                           activeMenu === index
                             ? "bg-[#6CB93B] text-white hover:text-white"
                             : ""
                         }`}
                         onClick={() => handleMenuClick(index)}
                       >
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-2">
                           <img
                             src={
                               activeMenu === index
@@ -111,7 +128,7 @@ const Sidenav = () => {
                                 : item.icon + "-dark.png"
                             }
                             alt=""
-                            className="mx-2"
+                            className="size-6"
                           />
                           <p>{item.title}</p>
                         </div>
@@ -147,10 +164,10 @@ const Sidenav = () => {
                   <div className="group">
                     <Link
                       to={item.link}
-                      className={`flex items-center p-3 hover:text-[#050828] ${
+                      className={`flex items-center gap-2 px-3 py-2 hover:text-[#050828] ${
                         currentPath === item.link
                           ? "bg-[#6CB93B] text-white hover:text-white"
-                          : ""
+                          : "hover:bg-green-50"
                       }`}
                       onClick={toggleSidebar}
                     >
@@ -161,7 +178,7 @@ const Sidenav = () => {
                             : item.icon + "-dark.png"
                         }
                         alt=""
-                        className="mx-2"
+                        className="size-6"
                       />
                       <span className="text-[17px]">{item.title}</span>
                     </Link>

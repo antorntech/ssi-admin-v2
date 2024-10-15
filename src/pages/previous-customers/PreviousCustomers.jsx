@@ -5,7 +5,7 @@ import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 
-const Customers = () => {
+const PreviousCustomers = () => {
   const params = useParams();
   const page = params?.page || 1;
   const [customers, setCustomers] = useState([]);
@@ -28,9 +28,9 @@ const Customers = () => {
     }
   };
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [page]);
+  // useEffect(() => {
+  //   fetchCustomers();
+  // }, [page]);
 
   console.log(response);
 
@@ -142,4 +142,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default PreviousCustomers;

@@ -113,8 +113,14 @@ const Gallery = () => {
       <div className="mt-5">
         <div className="flex gap-5">
           {totalGallery.map((gallery, index) => (
-            <Link to={`/gallerys/${gallery?.title}`} key={index} className="hover:text-green-600">
-              <span className="font-bold ml-2">{gallery?.title}</span>
+            <Link
+              to={`/gallerys/${gallery?.title}`}
+              key={index}
+              className="hover:text-green-600"
+            >
+              <span className="font-bold ml-2">
+                {gallery?.title}({gallery?.data?.length})
+              </span>
               <div className="relative block h-32">
                 <img
                   src="/img/icons/folder.png"
@@ -122,9 +128,6 @@ const Gallery = () => {
                   alt=""
                   loading="lazy"
                 />
-                <span className="absolute bottom-5 left-5 text-[1.5rem] text-white">
-                  {gallery?.data?.length}
-                </span>
               </div>
             </Link>
           ))}
