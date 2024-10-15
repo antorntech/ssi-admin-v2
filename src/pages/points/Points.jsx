@@ -47,22 +47,13 @@ const Points = () => {
                 ID
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Customer ID
+                Customer Email
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Product ID
+                Customer Phone
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Coins Earned
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Coins Used
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Transaction Type
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Order ID
+                Coins Given
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                 Created At
@@ -76,24 +67,15 @@ const Points = () => {
                   {point.id}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.customer_id}
+                  {point.customer_email}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.product_id}
+                  {point.customer_phone}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.coins_earned}
+                  {point.coins_given}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.coins_used}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.transaction_type}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.order_id}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                   {point.created_at}
                 </td>
               </tr>

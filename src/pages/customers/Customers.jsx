@@ -64,19 +64,19 @@ const Customers = () => {
         <table className="min-w-[1200px] lg:min-w-full bg-white border">
           <thead>
             <tr className="bg-gray-50">
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Name
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Email
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Phone
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Earned Points
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Address
               </th>
             </tr>

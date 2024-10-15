@@ -146,10 +146,10 @@ const Orders = () => {
                         {order.status}
                       </span>
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(order.created_at).format("Do MMM, YYYY")}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
                     {order?.status === "pending" && (
