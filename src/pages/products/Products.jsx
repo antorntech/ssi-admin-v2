@@ -125,6 +125,9 @@ const Products = () => {
                     "Category",
                     "Price",
                     "Regular Price",
+                    "Weight",
+                    "Points",
+                    "Points Max",
                     "Quantity",
                     "Date",
                     "Action",
@@ -150,9 +153,13 @@ const Products = () => {
                       category,
                       price,
                       regular_price,
+                      weight,
+                      point,
+                      points_max,
                       quantity,
                       created_at,
                     } = product;
+
                     const imageUrl = images?.[0]
                       ? `${UPLOADS_URL}${images[0]}`
                       : "";
@@ -185,6 +192,15 @@ const Products = () => {
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {regular_price}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {weight}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {point}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {points_max}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {quantity}
