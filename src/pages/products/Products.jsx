@@ -236,7 +236,6 @@ const Products = () => {
             onCollapse={() => setOpen(false)}
             itemId={selectedItemId}
             onDelete={() => handleDelete(selectedItemId)}
-            itemName="Product"
           />
         </>
       ) : (
