@@ -2,11 +2,14 @@ import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
+import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 
 const MetaPixel = () => {
   const [metaId, setMetaId] = useState("");
   const [metaData, setMetaData] = useState([]);
   const { request } = useContext(FetchContext);
+  const [open, setOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
   // Fetch products with pagination
   const fetchMetaPixels = async () => {
@@ -28,33 +31,65 @@ const MetaPixel = () => {
   // Fetch products when component mounts or when page changes
   useEffect(() => {
     fetchMetaPixels();
-  }, [metaData]);
+  }, []);
 
-  const handleInputChange = (e) => {
-    setMetaId(e.target.value);
+  const onChange = (e) => {
+    const { value } = e.target;
+    setMetaId(value.replace(/\D+$/g, ""));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!/^\d+$/.test(metaId)) {
-      toast.error("Please enter a valid Meta ID", {
-        autoClose: 1000,
-      });
-      setMetaId("");
-      return;
-    }
 
-    const newMeta = {
-      id: metaId,
-      createdAt: new Date().toLocaleString(),
+    // if (!/^\d+$/.test(metaId)) {
+    //   toast.error("Please enter a valid Meta ID", {
+    //     autoClose: 1000,
+    //   });
+    //   setMetaId("");
+    //   return;
+    // }
+
+    const body = {
+      pixel_id: metaId,
     };
 
-    setMetaData((prevData) => [...prevData, newMeta]);
-    setMetaId("");
+    try {
+      const response = await request("pixel-id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      setMetaId("");
+      fetchMetaPixels();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleDelete = (id) => {
-    setMetaData((prevData) => prevData.filter((meta) => meta.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      if (!id) throw new Error("Id is not defined");
+
+      const res = await request(`pixel-id/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fetchMetaPixels(); // Refetch products after successful deletion
+        setOpen(false);
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  // Toggle delete confirmation modal
+  const handleOpen = (id = null) => {
+    setSelectedItemId(id);
+    setOpen(!open);
   };
 
   return (
@@ -64,10 +99,11 @@ const MetaPixel = () => {
         <form onSubmit={handleSubmit} className="flex space-x-4">
           <input
             type="text"
+            name="pixel_id"
             value={metaId}
-            onChange={handleInputChange}
+            onChange={onChange}
             className="w-full lg:w-[300px] py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            placeholder="Enter Meta ID"
+            placeholder="Meta Pixel ID"
             required
           />
           <button
@@ -100,14 +136,14 @@ const MetaPixel = () => {
               {metaData.map((meta) => (
                 <tr key={meta.id}>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                    {meta.id}
+                    {meta?.pixel_id}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                     {moment(meta.createdAt).format("Do MMM, YYYY")}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     <button
-                      onClick={() => handleDelete(meta.id)}
+                      onClick={() => handleOpen(meta.id)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                     >
                       Delete
@@ -124,6 +160,13 @@ const MetaPixel = () => {
               )}
             </tbody>
           </table>
+          <DeleteConfirmModal
+            open={open}
+            handleOpen={() => handleOpen(null)}
+            onCollapse={() => setOpen(false)}
+            itemId={selectedItemId}
+            onDelete={() => handleDelete(selectedItemId)}
+          />
         </div>
       </div>
     </div>
