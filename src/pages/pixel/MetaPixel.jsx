@@ -40,6 +40,7 @@ const MetaPixel = () => {
       toast.error("Please enter a valid Meta ID", {
         autoClose: 1000,
       });
+      setMetaId("");
       return;
     }
 
