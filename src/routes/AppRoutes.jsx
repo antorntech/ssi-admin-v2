@@ -163,7 +163,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="previous-customers/:page"
+          path="previous-customers"
           element={
             <Protected>
               <PreviousCustomers />

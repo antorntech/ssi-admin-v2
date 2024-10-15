@@ -7,7 +7,7 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 const Points = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [points, setPoints] = useState("");
+  const [points, setPoints] = useState(0);
   const [pointsData, setPointsData] = useState([]);
   const { request } = useContext(FetchContext);
   const [open, setOpen] = useState(false);
@@ -35,18 +35,8 @@ const Points = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email.includes("@")) {
-      toast.error("Please enter a valid email", { autoClose: 1000 });
-      return;
-    }
-
-    if (isNaN(phone) || phone.trim() === "") {
-      toast.error("Please enter a valid phone number", { autoClose: 1000 });
-      return;
-    }
-
-    if (isNaN(points) || points.trim() === "") {
-      toast.error("Please enter valid points", { autoClose: 1000 });
+    if (!email || !phone) {
+      toast.error("Email or Phone is required", { autoClose: 1000 });
       return;
     }
 
@@ -100,12 +90,11 @@ const Points = () => {
         <h2 className="text-xl font-semibold">Add Points</h2>
         <form onSubmit={handleSubmit} className="flex space-x-4">
           <input
-            type="text"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full lg:w-[300px] py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring focus:ring-green-300"
             placeholder="Email"
-            required
           />
           <input
             type="text"
@@ -113,10 +102,11 @@ const Points = () => {
             onChange={(e) => setPhone(e.target.value)}
             className="w-full lg:w-[300px] py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring focus:ring-green-300"
             placeholder="Phone"
-            required
+            min={11}
+            max={11}
           />
           <input
-            type="text"
+            type="number"
             value={points}
             onChange={(e) => setPoints(e.target.value)}
             className="w-full lg:w-[300px] py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring focus:ring-green-300"

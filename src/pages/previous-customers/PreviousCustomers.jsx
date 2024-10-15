@@ -14,19 +14,19 @@ const PreviousCustomers = () => {
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
 
-  const fetchCustomers = async () => {
-    try {
-      const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
-      const json = await response.json();
-      console.log(json);
-      const { data, count } = json;
-      if (!data) return;
-      setResponse((prev) => ({ ...prev, data, count }));
-      setCustomers(data);
-    } catch (error) {
-      console.error;
-    }
-  };
+  // const fetchCustomers = async () => {
+  //   try {
+  //     const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
+  //     const json = await response.json();
+  //     console.log(json);
+  //     const { data, count } = json;
+  //     if (!data) return;
+  //     setResponse((prev) => ({ ...prev, data, count }));
+  //     setCustomers(data);
+  //   } catch (error) {
+  //     console.error;
+  //   }
+  // };
 
   // useEffect(() => {
   //   fetchCustomers();
@@ -42,7 +42,7 @@ const PreviousCustomers = () => {
       const response = await request(`products/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete product");
       setSelectedItemId(null);
-      fetchCustomers();
+      // fetchCustomers();
       setOpen(false);
     } catch (error) {
       console.error(error);
