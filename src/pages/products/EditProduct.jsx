@@ -1,10 +1,12 @@
-import { Input, Textarea, Typography } from "@material-tailwind/react";
+/* eslint-disable react/prop-types */
+import { Input, Typography } from "@material-tailwind/react";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 import filterImages from "../../utils/filter.js";
 import { srcBuilder } from "../../utils/src.js";
+import colors from "../../utils/colors";
 
 const initialValues = {
   name: "",
@@ -14,6 +16,7 @@ const initialValues = {
   category: "",
   price: 0,
   regular_price: 0,
+  weight: 0,
   quantity: 0,
   serverImages: null,
 };
@@ -27,7 +30,7 @@ const EditProduct = () => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
-  function handleChange(e) {
+  function onChange(e) {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
   }
@@ -92,25 +95,6 @@ const EditProduct = () => {
       .catch(console.error);
   };
 
-  const colors = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "purple",
-    "pink",
-    "brown",
-    "gray",
-    "black",
-    "white",
-    "violet",
-    "indigo",
-    "cyan",
-    "teal",
-    "lime",
-    "amber",
-  ];
   const Legend = ({ children }) => (
     <Typography variant="h6" color="gray" className="mb-1 font-normal">
       {children}
@@ -141,14 +125,14 @@ const EditProduct = () => {
               }}
               value={formState.name}
               name="name"
-              onChange={handleChange}
+              onChange={onChange}
             />
 
             <Legend>Brand</Legend>
             <select
               name="brand"
               className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              onChange={handleChange}
+              onChange={onChange}
               value={formState.brand}
             >
               <option value="Select" disabled></option>
@@ -169,7 +153,7 @@ const EditProduct = () => {
               }}
               value={formState.price}
               name="price"
-              onChange={handleChange}
+              onChange={onChange}
             />
 
             <Legend>Regular Price</Legend>
@@ -182,7 +166,17 @@ const EditProduct = () => {
               }}
               value={formState.regular_price}
               name="regular_price"
-              onChange={handleChange}
+              onChange={onChange}
+            />
+
+            <Legend>Weight in gm</Legend>
+            <input
+              type="number"
+              size="md"
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="weight"
+              value={formState.weight}
+              onChange={onChange}
             />
 
             <Legend>Quantity</Legend>
@@ -195,13 +189,13 @@ const EditProduct = () => {
               }}
               value={formState.quantity}
               name="quantity"
-              onChange={handleChange}
+              onChange={onChange}
             />
             <Legend>Category</Legend>
             <select
               name="category"
               className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              onChange={handleChange}
+              onChange={onChange}
               value={formState.category}
             >
               <option value="Select" disabled></option>
@@ -215,7 +209,7 @@ const EditProduct = () => {
             <select
               value={formState.color}
               name="color"
-              onChange={handleChange}
+              onChange={onChange}
               className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             >
               <option value="Select" disabled>
@@ -236,7 +230,7 @@ const EditProduct = () => {
               value={formState.description}
               name="description"
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              onChange={handleChange}
+              onChange={onChange}
               rows={12}
             />
             {/* file upload */}

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 import { AuthContext } from "../../context/AuthContext";
+import colors from "../../utils/colors.js";
 
 const initialValues = {
   name: "",
@@ -15,6 +16,7 @@ const initialValues = {
   category: "",
   price: 0,
   regular_price: 0,
+  weight: 0,
   quantity: 0,
 };
 
@@ -90,26 +92,6 @@ const AddProduct = () => {
     return;
   };
 
-  const colors = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "purple",
-    "pink",
-    "brown",
-    "gray",
-    "black",
-    "white",
-    "violet",
-    "indigo",
-    "cyan",
-    "teal",
-    "lime",
-    "amber",
-  ];
-
   const Legend = ({ children }) => (
     <Typography variant="h6" color="gray" className="mb-1 mt-2 font-normal">
       {children}
@@ -158,8 +140,8 @@ const AddProduct = () => {
               required
             >
               <option value="" disabled></option>
-              {brands.map((brand) => (
-                <option key={brand.id} value={brand?.id}>
+              {brands.map((brand, i) => (
+                <option key={brand.id || i} value={brand?.id}>
                   {brand.name}
                 </option>
               ))}
@@ -172,6 +154,7 @@ const AddProduct = () => {
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="price"
               value={formState.price}
+              min={1}
               onChange={onChange}
               required
             />
@@ -183,8 +166,19 @@ const AddProduct = () => {
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="regular_price"
               value={formState.regular_price}
+              min={1}
               onChange={onChange}
               required
+            />
+
+            <Legend>Weight in gm</Legend>
+            <input
+              type="number"
+              size="md"
+              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="weight"
+              value={formState.weight}
+              onChange={onChange}
             />
 
             <Legend>Quantity</Legend>
@@ -207,8 +201,8 @@ const AddProduct = () => {
               required
             >
               <option value="" disabled></option>
-              {categories.map((category) => (
-                <option key={category._id} value={category?.id}>
+              {categories.map((category, i) => (
+                <option key={category._id || i} value={category?.id}>
                   {category.name}
                 </option>
               ))}
@@ -222,8 +216,8 @@ const AddProduct = () => {
               required
             >
               <option value="" disabled></option>
-              {colors.map((color) => (
-                <option key={color} value={color}>
+              {colors.map((color, i) => (
+                <option key={i} value={color}>
                   {color}
                 </option>
               ))}
