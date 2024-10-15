@@ -49,7 +49,7 @@ const menuItems = [
   },
   {
     title: "Send Messages",
-    link: "send-messages",
+    link: "/send-messages",
     icon: "/img/icons/message",
   },
   {
@@ -106,7 +106,7 @@ const Sidenav = () => {
         <div className=" flex flex-col h-full">
           <ul className="w-full flex flex-col">
             {menuItems.map((item, index) => (
-              <li key={index} className="mb-1">
+              <li key={index} className="">
                 {item.submenu ? (
                   <>
                     <div className="group">
@@ -162,7 +162,7 @@ const Sidenav = () => {
                   <div className="group">
                     <Link
                       to={item.link}
-                      className={`flex items-center gap-2 px-3 py-2 hover:text-[#050828] ${
+                      className={`flex items-center gap-2 px-3 py-2.5 hover:text-[#050828] ${
                         currentPath === item.link
                           ? "bg-[#6CB93B] text-white hover:text-white"
                           : "hover:bg-green-50"
