@@ -46,13 +46,11 @@ const menuItems = [
     title: "Previous Customer",
     link: "/customers/previous",
     icon: "/img/icons/precustomer",
-    disabled: true,
   },
   {
     title: "Send Messages",
     link: "send-messages",
     icon: "/img/icons/message",
-    disabled: true,
   },
   {
     title: "Gallery",

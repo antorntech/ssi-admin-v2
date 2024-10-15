@@ -81,6 +81,7 @@ const SendMessages = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   <input
                     type="checkbox"
+                    className="w-5 h-5 cursor-pointer rounded border-gray-300 text-green-600 focus:ring-green-500"
                     checked={selectedPoints.includes(point.id)}
                     onChange={() => handleSelect(point.id)}
                   />

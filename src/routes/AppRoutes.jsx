@@ -21,6 +21,7 @@ import RootLayout from "../layout/RootLayout";
 import Protected from "../layout/Protected";
 import UnProtected from "../layout/UnProtected";
 import { AuthProvider } from "../context/AuthContext";
+import MetaPixel from "../pages/pixel/MetaPixel";
 
 const AppRoutes = () => {
   return (
@@ -198,6 +199,14 @@ const AppRoutes = () => {
           element={
             <Protected>
               <IndividualGallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="pixel-id"
+          element={
+            <Protected>
+              <MetaPixel />
             </Protected>
           }
         />
