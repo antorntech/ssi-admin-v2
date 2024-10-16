@@ -40,9 +40,16 @@ const EditProduct = () => {
       .then((r) => r.json())
       .then((data) => {
         if (!data) return;
-        setFormState((prev) => ({
-          ...prev,
-          ...data,
+        setFormState(() => ({
+          name: data.name,
+          description: data.description,
+          color: data.color,
+          brand: data.brand,
+          category: data.category,
+          price: data.price,
+          regular_price: data.regular_price,
+          weight: data.weight,
+          quantity: data.quantity,
           serverImages: filterImages(data.images),
           images: [],
         }));

@@ -202,7 +202,7 @@ const AddProduct = () => {
             >
               <option value="" disabled></option>
               {categories.map((category, i) => (
-                <option key={category._id || i} value={category?.id}>
+                <option key={category.id || i} value={category?.id}>
                   {category.name}
                 </option>
               ))}
