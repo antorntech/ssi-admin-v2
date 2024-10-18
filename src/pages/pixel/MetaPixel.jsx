@@ -1,6 +1,5 @@
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 
@@ -97,6 +96,8 @@ const MetaPixel = () => {
             className="w-full lg:w-[300px] py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             placeholder="Meta Pixel ID"
             required
+            minLength={15}
+            maxLength={15}
           />
           <button
             type="submit"
