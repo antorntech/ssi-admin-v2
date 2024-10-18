@@ -93,6 +93,7 @@ const EditProduct = () => {
     const body = new FormData(e.target);
     if (!body.has("color")) body.append("color", "#000000");
     if (!body.has("author")) body.append("author", author);
+    if (body.has("weight")) body.append("weight", `${body.get("weight")}gm`);
     if (!request) return;
     request(`products/${id}`, { method: "PATCH", body })
       .then((r) => r.json())
