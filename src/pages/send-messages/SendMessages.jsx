@@ -1,30 +1,34 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import FetchContext from "../../context/FetchContext";
+import { useParams } from "react-router-dom";
 
 const SendMessages = () => {
+  const params = useParams();
+  const page = params?.page || 1;
   const [selectedPoints, setSelectedPoints] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  console.log(customers);
+  const [response, setResponse] = useState({ data: [], count: 0 });
+  const { request } = useContext(FetchContext);
 
-  // Dummy data for points
-  const points = [
-    {
-      id: 1,
-      name: "John Doe",
-      phone: "123-456-7890",
-      email: "john@example.com",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      phone: "987-654-3210",
-      email: "jane@example.com",
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      phone: "555-123-4567",
-      email: "alice@example.com",
-    },
-  ];
+  const fetchCustomers = async () => {
+    try {
+      const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
+      const json = await response.json();
+      console.log(json);
+      const { data, count } = json;
+      if (!data) return;
+      setResponse((prev) => ({ ...prev, data, count }));
+      setCustomers(data);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [page]);
 
   // Handle row selection
   const handleSelect = (pointId) => {
@@ -38,7 +42,7 @@ const SendMessages = () => {
 
   // Handle "Send" button click
   const handleSend = () => {
-    const selectedPhones = points
+    const selectedPhones = customers
       .filter((point) => selectedPoints.includes(point.id))
       .map((point) => point.phone);
 
@@ -53,7 +57,9 @@ const SendMessages = () => {
     <>
       <div>
         <h1 className="text-xl font-bold">Send Messages</h1>
-        <p className="text-sm text-gray-500">Total Points: {points.length}</p>
+        <p className="text-sm text-gray-500">
+          Total Points: {customers.length}
+        </p>
       </div>
 
       <div className="mt-5 overflow-x-auto">
@@ -76,7 +82,7 @@ const SendMessages = () => {
           </thead>
 
           <tbody>
-            {points.map((point) => (
+            {customers.map((point) => (
               <tr key={point.id}>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   <input

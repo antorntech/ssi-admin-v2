@@ -41,14 +41,6 @@ const MetaPixel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!/^\d+$/.test(metaId)) {
-    //   toast.error("Please enter a valid Meta ID", {
-    //     autoClose: 1000,
-    //   });
-    //   setMetaId("");
-    //   return;
-    // }
-
     const body = {
       pixel_id: metaId,
     };
