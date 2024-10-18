@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import { useParams } from "react-router-dom";
+import Pagination from "../../components/pagination/Pagination";
 
 const SendMessages = () => {
   const params = useParams();
@@ -106,6 +107,13 @@ const SendMessages = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Component */}
+      <Pagination
+        endPoint="customers"
+        currentPage={page}
+        totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+      />
 
       <div className="mt-5">
         <button
