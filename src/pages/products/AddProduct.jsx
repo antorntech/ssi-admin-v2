@@ -77,6 +77,7 @@ const AddProduct = () => {
     const body = new FormData(e.target);
     if (!body.has("color")) body.append("color", "#000000");
     if (!body.has("author")) body.append("author", author);
+    if (body.has("weight")) body.append("weight", `${body.get("weight")}gm`);
     try {
       await request("products", {
         method: "POST",
