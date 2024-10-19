@@ -111,7 +111,7 @@ const Banners = () => {
                         : "https://via.placeholder.com/150"
                     }
                     alt={banner.name || "Banner"}
-                    className="h-12 w-12 object-cover"
+                    className="h-20 aspect-video object-contain border rounded-lg overflow-hidden"
                   />
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
