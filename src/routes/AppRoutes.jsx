@@ -22,6 +22,9 @@ import Protected from "../layout/Protected";
 import UnProtected from "../layout/UnProtected";
 import { AuthProvider } from "../context/AuthContext";
 import MetaPixel from "../pages/pixel/MetaPixel";
+import Banners from "../pages/banners/Banners";
+import AddBanner from "../pages/banners/AddBanner";
+import EditBanner from "../pages/banners/EditBanner";
 
 const AppRoutes = () => {
   return (
@@ -207,6 +210,30 @@ const AppRoutes = () => {
           element={
             <Protected>
               <MetaPixel />
+            </Protected>
+          }
+        />
+        <Route
+          path="banners"
+          element={
+            <Protected>
+              <Banners />
+            </Protected>
+          }
+        />
+        <Route
+          path="banners/add-banner"
+          element={
+            <Protected>
+              <AddBanner />
+            </Protected>
+          }
+        />
+        <Route
+          path="banners/edit/:id"
+          element={
+            <Protected>
+              <EditBanner />
             </Protected>
           }
         />

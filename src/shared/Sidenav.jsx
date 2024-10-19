@@ -62,6 +62,11 @@ const menuItems = [
     link: "/pixel-id",
     icon: "/img/icons/meta",
   },
+  {
+    title: "Banners",
+    link: "/banners",
+    icon: "/img/icons/banner",
+  },
 ];
 
 const Sidenav = () => {

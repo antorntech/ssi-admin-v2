@@ -12,7 +12,6 @@ const Products = () => {
   const { request } = useContext(FetchContext);
   const params = useParams();
   const page = parseInt(params?.page || 1, 10); // Ensure page is an integer
-
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [products, setProducts] = useState([]); // Initialize as an empty array
