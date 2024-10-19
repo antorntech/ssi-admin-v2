@@ -128,6 +128,7 @@ const Products = () => {
                     "Points",
                     "Points Max",
                     "Quantity",
+                    "Status",
                     "Date",
                     "Action",
                   ].map((heading) => (
@@ -156,6 +157,7 @@ const Products = () => {
                       points,
                       points_max,
                       quantity,
+                      active,
                       created_at,
                     } = product;
 
@@ -204,16 +206,52 @@ const Products = () => {
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {quantity}
                         </td>
+                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                          {active === false ? "Inactive" : "Active"}
+                        </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                           {moment(created_at).format("Do MMM, YYYY")}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                          <div className="flex">
+                          <div className="flex gap-2 items-center">
+                            {active === false ? (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await request(`products/${id}/activate`, {
+                                      method: "PATCH",
+                                    });
+                                    await fetchProducts();
+                                  } catch (error) {
+                                    console.error(error);
+                                  }
+                                }}
+                                className="text-green-500 hover:text-green-700"
+                              >
+                                <i className="fa-solid fa-play text-xl"></i>
+                              </button>
+                            ) : (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await request(`products/${id}/deactivate`, {
+                                      method: "PATCH",
+                                    });
+                                    await fetchProducts();
+                                  } catch (error) {
+                                    console.error(error);
+                                  }
+                                }}
+                                className="text-green-500 hover:text-green-700"
+                              >
+                                <i className="fa-solid fa-pause text-xl"></i>
+                              </button>
+                            )}
                             <Link
                               to={`/products/edit/${id}`}
                               className="text-orange-500 hover:text-orange-700"
                             >
-                              <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
+                              <i className="fa-solid fa-pen-to-square text-xl"></i>
                             </Link>
                             <button
                               onClick={() => handleOpen(id)}
