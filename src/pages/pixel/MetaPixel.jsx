@@ -10,7 +10,7 @@ const MetaPixel = () => {
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
 
-  // Fetch products with pagination
+  // Fetch metaPixels
   const fetchMetaPixels = async () => {
     try {
       const res = await request("pixel-id");
@@ -21,7 +21,7 @@ const MetaPixel = () => {
         setMetaData(data);
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching metaPixels:", error);
     } finally {
       console.log("MetaPixels fetched");
     }
@@ -69,11 +69,11 @@ const MetaPixel = () => {
 
       const res = await request(`pixel-id/${id}`, { method: "DELETE" });
       if (res.ok) {
-        fetchMetaPixels(); // Refetch products after successful deletion
+        fetchMetaPixels(); // Refetch metaPixels after successful deletion
         setOpen(false);
       }
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error deleting metaPixel:", error);
     }
   };
 
