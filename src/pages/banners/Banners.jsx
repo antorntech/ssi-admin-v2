@@ -28,20 +28,26 @@ const Banners = () => {
     }
   };
 
-  // Fetch products when component mounts or when page changes
+  // Fetch banners on component mount
   useEffect(() => {
     fetchBanners();
   }, []);
 
   // Handle delete operation
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     try {
-      if (!id) throw new Error("Id is not defined");
+      if (!selectedItemId) {
+        console.error("Selected banner ID is not defined");
+        return;
+      }
 
-      const res = await request(`banners/${id}`, { method: "DELETE" });
+      const res = await request(`banners/${selectedItemId}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
         fetchBanners(); // Refetch banners after successful deletion
-        setOpen(false);
+        setOpen(false); // Close modal
+        setSelectedItemId(null); // Clear selected item ID
       }
     } catch (error) {
       console.error("Error deleting banner:", error);
@@ -59,7 +65,9 @@ const Banners = () => {
       <div className="w-full flex flex-row items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Banners</h1>
-          <p className="text-sm text-gray-500">Total Banners:</p>
+          <p className="text-sm text-gray-500">
+            Total Banners: {banners.length}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -96,19 +104,15 @@ const Banners = () => {
             {banners.map((banner) => (
               <tr key={banner.id} className="hover:bg-gray-100">
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {banner.image ? (
-                    <img
-                      src={srcBuilder(`banners/${banner.image}`)}
-                      alt={banner.name || "Brand"}
-                      className="h-12 w-12 object-cover"
-                    />
-                  ) : (
-                    <img
-                      src="https://via.placeholder.com/150"
-                      alt="Placeholder"
-                      className="h-12 w-12 object-cover"
-                    />
-                  )}
+                  <img
+                    src={
+                      banner.image
+                        ? srcBuilder(`banners/${banner.image}`)
+                        : "https://via.placeholder.com/150"
+                    }
+                    alt={banner.name || "Banner"}
+                    className="h-12 w-12 object-cover"
+                  />
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {banner.size}
@@ -128,10 +132,7 @@ const Banners = () => {
                       <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>
                     </Link>
                     <button
-                      onClick={() => {
-                        setSelectedItemId(banner.id);
-                        handleOpen();
-                      }}
+                      onClick={() => handleOpen(banner.id)}
                       className="text-red-500 hover:text-red-700"
                     >
                       <i className="fa-solid fa-trash-can text-xl"></i>
@@ -150,7 +151,7 @@ const Banners = () => {
         handleOpen={() => handleOpen(null)}
         onCollapse={() => setOpen(false)}
         itemId={selectedItemId}
-        onDelete={() => handleDelete(selectedItemId)}
+        onDelete={handleDelete}
       />
     </>
   );

@@ -122,10 +122,7 @@ const Brands = () => {
                         <i className="fa-solid fa-pen-to-square text-xl"></i>
                       </button>
                       <button
-                        onClick={() => {
-                          setSelectedBrandId(brand.id);
-                          handleOpen();
-                        }}
+                        onClick={() => handleOpen(brand.id)}
                         className="text-red-500 hover:text-red-700"
                       >
                         <i className="fa-solid fa-trash-can text-xl"></i>
