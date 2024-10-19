@@ -16,6 +16,8 @@ const initialValues = {
   category: "",
   price: 0,
   regular_price: 0,
+  points: 0,
+  points_max: 0,
   weight: 0,
   quantity: 0,
 };
@@ -118,7 +120,7 @@ const AddProduct = () => {
 
       <form className="" onSubmit={onSubmit}>
         {/* Three Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4">
           {/* Left Column */}
           <div className="w-full md:col-span-1">
             <Legend>Name</Legend>
@@ -192,50 +194,85 @@ const AddProduct = () => {
               onChange={onChange}
               required
             />
-
-            <Legend>Category</Legend>
-            <select
-              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="category"
-              value={formState.category}
-              onChange={onChange}
-              required
-            >
-              <option value="" disabled></option>
-              {categories.map((category, i) => (
-                <option key={category.id || i} value={category?.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            <Legend>Color</Legend>
-            <select
-              className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="color"
-              onChange={onChange}
-              value={formState.color}
-              required
-            >
-              <option value="" disabled></option>
-              {colors.map((color, i) => (
-                <option key={i} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
           </div>
 
           {/* Right Column */}
           <div className="w-full md:col-span-2">
-            <Legend>Description</Legend>
-            <textarea
-              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="description"
-              value={formState.description}
-              onChange={onChange}
-              rows={11}
-              required
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+              <div>
+                <Legend>Points</Legend>
+                <input
+                  type="number"
+                  size="md"
+                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="points"
+                  value={formState.points}
+                  min={0}
+                  onChange={onChange}
+                  required
+                />
+
+                <Legend>Points Max</Legend>
+                <input
+                  type="number"
+                  size="md"
+                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="points_max"
+                  value={formState.points_max}
+                  min={0}
+                  onChange={onChange}
+                  required
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+                  <div>
+                    <Legend>Category</Legend>
+                    <select
+                      className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      name="category"
+                      value={formState.category}
+                      onChange={onChange}
+                      required
+                    >
+                      <option value="" disabled></option>
+                      {categories.map((category, i) => (
+                        <option key={category.id || i} value={category?.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <Legend>Color</Legend>
+                    <select
+                      className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      name="color"
+                      onChange={onChange}
+                      value={formState.color}
+                      required
+                    >
+                      <option value="" disabled></option>
+                      {colors.map((color, i) => (
+                        <option key={i} value={color}>
+                          {color}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Legend>Description</Legend>
+                <textarea
+                  className="capitalize w-full mb-3 md:mb-0 py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="description"
+                  value={formState.description}
+                  onChange={onChange}
+                  rows={8}
+                  required
+                />
+              </div>
+            </div>
             {/* file upload */}
             <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative">
               <lord-icon
