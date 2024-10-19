@@ -1,7 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
+import { srcBuilder } from "../../utils/src";
+import moment from "moment";
 
 const Banners = () => {
   const [banners, setBanners] = useState([]);
@@ -61,7 +63,7 @@ const Banners = () => {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            to="/banners/add-banner"
+            to="/banners/add"
             className="inline-block ml-[50px] md:ml-0 w-[110px] text-sm font-medium bg-[#6CB93B] text-white md:w-[150px] text-center px-3 py-2 md:px-4 md:py-2 rounded-md"
           >
             Add Banner
@@ -74,10 +76,10 @@ const Banners = () => {
           <thead>
             <tr>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Mobile Banner
+                Banner
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Desktop Banner
+                Size
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                 CreatedAt
@@ -96,7 +98,7 @@ const Banners = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   {banner.image ? (
                     <img
-                      src={`${UPLOADS_URL}banners/${banner.image}`}
+                      src={srcBuilder(`banners/${banner.image}`)}
                       alt={banner.name || "Brand"}
                       className="h-12 w-12 object-cover"
                     />
@@ -108,20 +110,8 @@ const Banners = () => {
                     />
                   )}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {banner.image ? (
-                    <img
-                      src={`${UPLOADS_URL}banners/${banner.image}`}
-                      alt={banner.name || "Brand"}
-                      className="h-12 w-12 object-cover"
-                    />
-                  ) : (
-                    <img
-                      src="https://via.placeholder.com/150"
-                      alt="Placeholder"
-                      className="h-12 w-12 object-cover"
-                    />
-                  )}
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  {banner.size}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                   {moment(banner.created_at).format("Do MMM, YYYY")}
@@ -132,7 +122,7 @@ const Banners = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   <div className="flex items-center gap-2">
                     <Link
-                      to={`/banners/edit/${id}`}
+                      to={`/banners/edit/${banner.id}`}
                       className="text-orange-500 hover:text-orange-700"
                     >
                       <i className="fa-solid fa-pen-to-square mr-3 text-xl"></i>

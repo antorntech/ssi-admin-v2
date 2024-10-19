@@ -222,7 +222,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="banners/add-banner"
+          path="banners/add"
           element={
             <Protected>
               <AddBanner />
@@ -233,7 +233,7 @@ const AppRoutes = () => {
           path="banners/edit/:id"
           element={
             <Protected>
-              <EditBanner />
+              <AddBanner />
             </Protected>
           }
         />
