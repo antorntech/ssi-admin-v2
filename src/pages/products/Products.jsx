@@ -154,7 +154,7 @@ const Products = () => {
                       price,
                       regular_price,
                       weight,
-                      point,
+                      points,
                       points_max,
                       quantity,
                       created_at,
@@ -197,7 +197,7 @@ const Products = () => {
                           {weight}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                          {point}
+                          {points}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                           {points_max}
