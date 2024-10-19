@@ -21,7 +21,8 @@ const AddBanner = () => {
   const author = user?.email || "admin";
   const [sizes, setSizes] = useState([]);
   const [formState, setFormState] = useState(initialValues);
-  const { id } = useParams();
+  const params = useParams();
+  const { id } = params;
 
   useEffect(() => {
     if (!id) return;
@@ -55,10 +56,20 @@ const AddBanner = () => {
     const body = new FormData(e.target);
     if (!body.has("author")) body.append("author", author);
     try {
-      await request("banners", {
-        method: "POST",
-        body,
-      });
+      let reponse = null;
+      if (id) {
+        reponse = await request(`banners/${id}`, {
+          method: "PATCH",
+          body,
+        });
+      } else {
+        reponse = await request("banners", {
+          method: "POST",
+          body,
+        });
+      }
+      const data = await reponse.json();
+      if (!data) return;
       toast.success("Banner added successfully", {
         autoClose: 1000,
       });
