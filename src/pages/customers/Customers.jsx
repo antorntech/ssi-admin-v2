@@ -1,9 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
-import SearchBar from "../../components/searchbar/SearchBar";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
-import FetchContext from "../../context/FetchContext";
+import FetchContext, { useFetch } from "../../context/FetchContext";
+
+const Orders = ({ customer = {} }) => {
+  const [orders, setOrders] = useState({ data: [], count: 0 });
+  const { request } = useFetch();
+  const { email, phone } = customer;
+  const id = email || phone;
+
+  useEffect(() => {
+    if (!id) return;
+    async function fetchOrders() {
+      try {
+        const response = await request(`orders?customer_id=${id}`);
+        const data = await response.json();
+        if (!data) return;
+        console.log(data);
+        setOrders(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchOrders();
+  }, [id]);
+
+  return <div>{orders.count}</div>;
+};
 
 const Customers = () => {
   const params = useParams();
@@ -13,10 +37,13 @@ const Customers = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
+  const limit = 10;
 
   const fetchCustomers = async () => {
     try {
-      const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
+      const response = await request(
+        `users?skip=${(page - 1) * limit}&limit=${limit}`
+      );
       const json = await response.json();
       console.log(json);
       const { data, count } = json;
@@ -24,7 +51,7 @@ const Customers = () => {
       setResponse((prev) => ({ ...prev, data, count }));
       setCustomers(data);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
@@ -77,6 +104,9 @@ const Customers = () => {
                 Earned Points
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Orders
+              </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Address
               </th>
             </tr>
@@ -90,21 +120,21 @@ const Customers = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.name}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   {customer?.email ? (
                     <Link
                       to={`mailto:${customer?.email}`}
-                      className="hover:underline"
+                      className="blur-sm hover:blur-none hover:underline py-2"
                     >
                       {customer?.email}
                     </Link>
                   ) : null}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   {customer?.phone ? (
                     <Link
                       to={`tel:${customer?.phone}`}
-                      className="hover:underline"
+                      className="blur-sm hover:blur-none hover:underline py-2"
                     >
                       {customer?.phone}
                     </Link>
@@ -112,6 +142,9 @@ const Customers = () => {
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.points || 0}
+                </td>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  <Orders customer={customer} />
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.address}
@@ -126,7 +159,7 @@ const Customers = () => {
       <Pagination
         endPoint="customers"
         currentPage={page}
-        totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+        totalPages={response.count ? Math.ceil(response.count / limit) : 0}
       />
 
       {/* Delete Confirmation Modal */}
