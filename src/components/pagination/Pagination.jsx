@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Pagination = ({ currentPage, totalPages, endPoint }) => {
@@ -14,7 +14,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
       {/* Previous Page Link */}
       <Link
         to={currentPage > 1 ? `/${endPoint}/${currentPage - 1}` : "#"}
-        className={`mx-1 px-3 py-1 rounded ${
+        className={`mx-1 px-1 py-1 rounded ${
           currentPage === 1
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-[#6CB93B] text-white"
@@ -41,7 +41,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
       {/* Next Page Link */}
       <Link
         to={currentPage < totalPages ? `/${endPoint}/${currentPage + 1}` : "#"}
-        className={`mx-1 px-3 py-1 rounded ${
+        className={`mx-1 px-1 py-1 rounded ${
           currentPage === totalPages
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-[#6CB93B] text-white"

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../../loader/Loader";
@@ -10,6 +11,7 @@ import moment from "moment";
 import { Edit2, Pause, Play, Trash } from "iconsax-react";
 
 const Products = () => {
+  const limit = 10;
   const { request } = useContext(FetchContext);
   const params = useParams();
   const page = parseInt(params?.page || 1, 10); // Ensure page is an integer
@@ -25,7 +27,9 @@ const Products = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await request(`products?skip=${(page - 1) * 5}&limit=5`);
+      const res = await request(
+        `products?skip=${(page - 1) * limit}&limit=${limit}`
+      );
       const json = await res.json();
       const { data, count } = json;
 
@@ -46,26 +50,20 @@ const Products = () => {
     fetchProducts();
   }, [page]);
 
-  // Handle search filtering
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (searchText.trim()) {
-          const filtered = await request(`search?q=${searchText}`);
-          const data = await filtered.json();
-          if (Array.isArray(data)) {
-            setFilteredProducts(data);
-          }
-        } else {
-          setFilteredProducts(products); // Reset to original products if searchText is empty
-        }
-      } catch (error) {
-        console.error("Error fetching filtered data:", error);
+  const doSearch = async (e) => {
+    e.preventDefault();
+    try {
+      if (!searchText.trim()) return;
+      const res = await request(`search?q=${searchText}`);
+      const product = await res.json();
+      if (!product) {
+        throw new Error("No product found");
       }
-    };
-
-    fetchData();
-  }, [searchText, products]);
+      setFilteredProducts(product.data);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
+  };
 
   // Handle delete operation
   const handleDelete = async (id) => {
@@ -90,19 +88,22 @@ const Products = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-        <div>
+      <div className="w-full flex flex-wrap gap-2 items-start md:items-center">
+        <div className="flex-grow">
           <h1 className="text-xl font-bold">Products</h1>
           <p className="text-sm text-gray-500">
             Total Products: {response.count}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {/* SearchBar component for searching */}
-          <SearchBar searchText={searchText} handleSearch={setSearchText} />
+        <div className="w-full max-w-lg flex items-center gap-3">
+          <SearchBar
+            searchText={searchText}
+            handleSearch={setSearchText}
+            doSearch={doSearch}
+          />
           <Link
             to="/products/add-product"
-            className="inline-block ml-[50px] md:ml-0 w-[110px] text-sm font-medium bg-[#6CB93B] text-white md:w-[150px] text-center px-3 py-2 md:px-4 md:py-2 rounded-md"
+            className="text-sm font-medium bg-main-5 text-white text-center px-4 py-2.5 rounded-md"
           >
             Add Product
           </Link>
@@ -113,7 +114,7 @@ const Products = () => {
         <Loader />
       ) : response.count > 0 ? (
         <>
-          <div className="mt-5 w-full overflow-x-auto">
+          <div className="mt-4 w-full overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr>
@@ -168,7 +169,7 @@ const Products = () => {
 
                     return (
                       <tr key={id} className="hover:bg-gray-100">
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {imageUrl && (
                             <img
                               src={imageUrl}
@@ -177,43 +178,43 @@ const Products = () => {
                             />
                           )}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
                           {name}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                          {brand.name}
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+                          {brand?.name}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize">
                           {color}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
                           {category?.name}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {price}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {regular_price}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {weight}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {points}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {points_max}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {quantity}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {active === false ? "Inactive" : "Active"}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
                           {moment(created_at).format("Do MMM, YYYY")}
                         </td>
-                        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           <div className="flex gap-2 items-center">
                             {active === false ? (
                               <button
@@ -296,7 +297,7 @@ const Products = () => {
           <Pagination
             endPoint="products"
             currentPage={page}
-            totalPages={response.count ? Math.ceil(response.count / 5) : 1}
+            totalPages={response.count ? Math.ceil(response.count / limit) : 1}
           />
 
           {/* Delete Confirmation Modal */}

@@ -1,31 +1,26 @@
-// components/SearchBar.js
-import React from "react";
-import { Input, Button } from "@material-tailwind/react";
+/* eslint-disable react/prop-types */
 import { SearchNormal } from "iconsax-react";
 
-const SearchBar = ({ searchText, handleSearch }) => {
+const SearchBar = ({ searchText, handleSearch, doSearch }) => {
   return (
-    <div className="relative w-[150px] md:w-[20rem]">
-      <Input
-        type="text"
+    <form
+      className="flex-grow relative min-w-[16rem] border border-green-400 flex rounded-lg bg-white overflow-hidden"
+      onSubmit={doSearch}
+    >
+      <input
+        type="search"
         placeholder="Search..."
         value={searchText}
         onChange={(e) => handleSearch(e.target.value)}
-        className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:ring-border-[#199bff]/10"
-        labelProps={{
-          className: "before:content-none after:content-none",
-        }}
+        className="flex-grow focus:outline-none px-3 rounded-lg"
       />
-      <Button
-        size="sm"
+      <button
         disabled={!searchText}
-        className={`!absolute right-[-3rem] md:right-1 top-1 rounded transition-all duration-300 ${
-          searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
-        }`}
+        className="size-10 grid place-items-center bg-main-5 hover:bg-main-7 text-white rounded-r-md"
       >
-        <SearchNormal size="15" color="#fff" />
-      </Button>
-    </div>
+        <SearchNormal className="size-4" />
+      </button>
+    </form>
   );
 };
 
