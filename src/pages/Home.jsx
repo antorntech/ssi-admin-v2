@@ -49,14 +49,14 @@ const Home = () => {
 
             <div className="flex flex-col lg:flex-row items-start justify-between p-5">
               <div className="w-full lg:w-1/3 relative">
-                <div className="absolute -top-8 left-5 w-16 h-16 p-1 rounded-full bg-white shadow-md">
+                <div className="absolute -top-14 left-5 w-16 h-16 p-1 rounded-full bg-white shadow-md">
                   <img
                     src="/img/avatar.png"
                     alt="Avatar"
                     className="w-full h-full rounded-full"
                   />
                 </div>
-                <div className="mt-10">
+                <div className="mt-8">
                   <h2 className="text-sm md:text-base font-semibold break-words">
                     {user?.email}
                   </h2>
