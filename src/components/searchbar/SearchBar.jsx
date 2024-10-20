@@ -16,7 +16,7 @@ const SearchBar = ({ searchText, handleSearch, doSearch }) => {
       />
       <button
         disabled={!searchText}
-        className="size-10 grid place-items-center bg-main-5 hover:bg-main-7 text-white rounded-r-md"
+        className="size-10 grid place-items-center bg-main-5 hover:bg-main-7 text-white rounded-r-md cursor-pointer"
       >
         <SearchNormal className="size-4" />
       </button>

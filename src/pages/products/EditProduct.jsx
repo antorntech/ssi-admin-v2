@@ -7,6 +7,7 @@ import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 import filterImages from "../../utils/filter.js";
 import { srcBuilder } from "../../utils/src.js";
 import colors from "../../utils/colors";
+import { Back } from "iconsax-react";
 
 const initialValues = {
   name: "",
@@ -121,7 +122,7 @@ const EditProduct = () => {
           onClick={() => window.history.back()}
           className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
         >
-          <i className="fa-solid fa-hand-point-left"></i>
+          <Back className="size-6" />
         </button>
         <div>
           <h1 className="text-xl font-bold">Edit Product</h1>

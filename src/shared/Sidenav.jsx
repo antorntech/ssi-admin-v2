@@ -1,3 +1,4 @@
+import { HambergerMenu } from "iconsax-react";
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -90,7 +91,7 @@ const Sidenav = () => {
         onClick={toggleSidebar}
         className="px-4 py-2 bg-[#050828] text-white fixed top-4 left-4 z-50 md:hidden rounded-md"
       >
-        <i className="fa-solid fa-bars"></i>
+        <HambergerMenu className="size-6" />
       </button>
 
       {/* Sidebar */}
