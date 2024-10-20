@@ -51,6 +51,8 @@ const EditProduct = () => {
           category: data.category,
           price: data.price,
           regular_price: data.regular_price,
+          points: data.points,
+          points_max: data.points_max,
           weight: data.weight,
           quantity: data.quantity,
           serverImages: filterImages(data.images),
