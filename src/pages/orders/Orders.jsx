@@ -6,6 +6,8 @@ import SearchBar from "../../components/searchbar/SearchBar";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
+import { Add, WalletCheck, Xrp } from "iconsax-react";
+import { CheckIcon } from "@heroicons/react/24/solid";
 
 const Orders = () => {
   const { page } = useParams();
@@ -152,14 +154,18 @@ const Orders = () => {
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
-                    {order?.status === "pending" && (
+                    {order?.status === "pending" ? (
                       <td className="px-4 py-2 md:px-6 md:py-4 border-b flex items-center gap-3">
                         <button onClick={() => onCompleted(order.id)}>
-                          <i className="fa-regular fa-square-check text-2xl text-green-700"></i>
+                          <CheckIcon className="size-6 text-green-600" />
                         </button>
                         <button onClick={() => onCanceled(order.id)}>
-                          <i className="fa-regular fa-rectangle-xmark text-2xl text-red-700"></i>
+                          <Add size="32" className="text-red-600 rotate-45" />
                         </button>
+                      </td>
+                    ) : (
+                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                        N/A
                       </td>
                     )}
                   </tr>

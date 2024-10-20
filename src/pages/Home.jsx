@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import AppextBarChart from "../components/chart/AppextBarChart";
 import FetchContext from "../context/FetchContext";
 import { AuthContext } from "../context/AuthContext";
+import {
+  DollarCircle,
+  Profile2User,
+  ShoppingCart,
+  UserTick,
+} from "iconsax-react";
 
 const Home = () => {
   const [dashboard, setDashboard] = useState({});
@@ -117,24 +123,24 @@ const Home = () => {
               {
                 label: "Total Orders",
                 value: dashboard?.orders,
-                icon: "fa-cart-shopping",
+                icon: <ShoppingCart size="30" className="text-white" />,
               },
               {
                 label: "Total Revenue",
                 value: `$ ${
                   dashboard?.total_revenue ? dashboard?.total_revenue : 0
                 }`,
-                icon: "fa-sack-dollar",
+                icon: <DollarCircle size="30" className="text-white" />,
               },
               {
                 label: "Total Customers",
                 value: dashboard?.customers,
-                icon: "fa-users",
+                icon: <Profile2User size="30" className="text-white" />,
               },
               {
                 label: "Repeated Customers",
                 value: `${dashboard?.repeated_percentage}%`,
-                icon: "fa-users",
+                icon: <UserTick size="30" className="text-white" />,
               },
             ].map((item, index) => (
               <div
@@ -146,7 +152,7 @@ const Home = () => {
                   <h2 className="text-xl font-semibold">{item.value}</h2>
                 </div>
                 <div className="bg-[#6CB93B] w-12 h-12 flex items-center justify-center rounded-full">
-                  <i className={`fa-solid ${item.icon} text-xl text-white`} />
+                  {item.icon}
                 </div>
               </div>
             ))}

@@ -2,6 +2,7 @@ import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
+import { Trash } from "iconsax-react";
 
 const MetaPixel = () => {
   const [metaId, setMetaId] = useState("");
@@ -135,11 +136,12 @@ const MetaPixel = () => {
                     {moment(meta.createdAt).format("Do MMM, YYYY")}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                    <button
-                      onClick={() => handleOpen(meta.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                    >
-                      Delete
+                    <button onClick={() => handleOpen(meta.id)} className="">
+                      <Trash
+                        size="22"
+                        className="text-red-600"
+                        variant="Bold"
+                      />
                     </button>
                   </td>
                 </tr>

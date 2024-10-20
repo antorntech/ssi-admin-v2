@@ -1,3 +1,4 @@
+import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -19,7 +20,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
             : "bg-[#6CB93B] text-white"
         }`}
       >
-        <i className="fa-solid fa-angle-left"></i>
+        <ArrowLeft2 size="24" variant="Bold" color="#fff" />
       </Link>
 
       {/* Page Numbers */}
@@ -46,7 +47,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
             : "bg-[#6CB93B] text-white"
         }`}
       >
-        <i className="fa-solid fa-angle-right"></i>
+        <ArrowRight2 size="24" variant="Bold" color="#fff" />
       </Link>
     </div>
   );

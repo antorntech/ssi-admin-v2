@@ -7,6 +7,7 @@ import Pagination from "../../components/pagination/Pagination";
 import FetchContext from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
 import moment from "moment";
+import { Edit2, Pause, Play, Trash } from "iconsax-react";
 
 const Products = () => {
   const { request } = useContext(FetchContext);
@@ -228,7 +229,11 @@ const Products = () => {
                                 }}
                                 className="text-green-500 hover:text-green-700"
                               >
-                                <i className="fa-solid fa-play text-xl"></i>
+                                <Play
+                                  size="22"
+                                  className="text-green-600"
+                                  variant="Bold"
+                                />
                               </button>
                             ) : (
                               <button
@@ -244,20 +249,32 @@ const Products = () => {
                                 }}
                                 className="text-green-500 hover:text-green-700"
                               >
-                                <i className="fa-solid fa-pause text-xl"></i>
+                                <Pause
+                                  size="22"
+                                  className="text-red-600"
+                                  variant="Bold"
+                                />
                               </button>
                             )}
                             <Link
                               to={`/products/edit/${id}`}
                               className="text-orange-500 hover:text-orange-700"
                             >
-                              <i className="fa-solid fa-pen-to-square text-xl"></i>
+                              <Edit2
+                                size="22"
+                                className="text-orange-600"
+                                variant="Bold"
+                              />
                             </Link>
                             <button
                               onClick={() => handleOpen(id)}
                               className="text-red-500 hover:text-red-700"
                             >
-                              <i className="fa-solid fa-trash-can text-xl"></i>
+                              <Trash
+                                size="22"
+                                className="text-red-600"
+                                variant="Bold"
+                              />
                             </button>
                           </div>
                         </td>

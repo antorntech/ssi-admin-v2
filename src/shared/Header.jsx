@@ -8,6 +8,7 @@ import {
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { Logout, User } from "iconsax-react";
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
@@ -24,7 +25,7 @@ const Header = () => {
                   <Button className="!p-0 bg-transparent shadow-none hover:shadow-none">
                     <Tooltip content={user?.email}>
                       <div className="w-12 h-12 p-2 rounded-full bg-[#6CB93B] text-white flex items-center justify-center">
-                        <i className="fa-solid fa-user-tie text-xl" />
+                        <User size="32" variant="Bold" className="text-whtie" />
                       </div>
                     </Tooltip>
                   </Button>
@@ -35,7 +36,7 @@ const Header = () => {
                     to={"/profile"}
                     className="w-full flex items-center gap-2 hover:text-[#6CB93B] transition-all duration-300"
                   >
-                    <i className="fa-regular fa-user"></i>
+                    <User size="20" className="text-whtie" />
                     <p>Profile</p>
                   </Link>
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
@@ -47,7 +48,7 @@ const Header = () => {
                       }
                     }}
                   >
-                    <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                    <Logout size="20" className="text-whtie" />
                     <p>Log Out</p>
                   </div>
                 </PopoverContent>

@@ -1,6 +1,7 @@
 // components/SearchBar.js
 import React from "react";
 import { Input, Button } from "@material-tailwind/react";
+import { SearchNormal } from "iconsax-react";
 
 const SearchBar = ({ searchText, handleSearch }) => {
   return (
@@ -22,7 +23,7 @@ const SearchBar = ({ searchText, handleSearch }) => {
           searchText ? "bg-[#050828]" : "bg-[#c9c8c8]"
         }`}
       >
-        <i className="fa-solid fa-magnifying-glass"></i>
+        <SearchNormal size="15" color="#fff" />
       </Button>
     </div>
   );

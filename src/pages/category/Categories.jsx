@@ -7,6 +7,7 @@ import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import { UPLOADS_URL } from "../../utils/API";
 import { useParams } from "react-router-dom";
+import { Edit2, Trash } from "iconsax-react";
 
 const Categories = () => {
   const params = useParams();
@@ -122,7 +123,11 @@ const Categories = () => {
                         onClick={() => handleEditClick(category)}
                         className="text-orange-500 hover:text-orange-700 mr-3"
                       >
-                        <i className="fa-solid fa-pen-to-square text-xl"></i>
+                        <Edit2
+                          size="22"
+                          className="text-orange-600"
+                          variant="Bold"
+                        />
                       </button>
                       <button
                         onClick={() => {
@@ -131,7 +136,11 @@ const Categories = () => {
                         }}
                         className="text-red-500 hover:text-red-700"
                       >
-                        <i className="fa-solid fa-trash-can text-xl"></i>
+                        <Trash
+                          size="22"
+                          className="text-red-600"
+                          variant="Bold"
+                        />
                       </button>
                     </div>
                   </td>
