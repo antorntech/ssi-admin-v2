@@ -20,6 +20,7 @@ const initialValues = {
   points_max: 0,
   weight: 0,
   quantity: 0,
+  scale: "gm",
 };
 
 const AddProduct = () => {
@@ -79,7 +80,8 @@ const AddProduct = () => {
     const body = new FormData(e.target);
     if (!body.has("color")) body.append("color", "#000000");
     if (!body.has("author")) body.append("author", author);
-    if (body.has("weight")) body.append("weight", `${body.get("weight")}gm`);
+    if (body.has("weight"))
+      body.append("weight", `${body.get("weight")}${formState.scale}`);
     try {
       await request("products", {
         method: "POST",
@@ -90,6 +92,7 @@ const AddProduct = () => {
       });
       navigate("/products");
     } catch (error) {
+      alert(error.message || error.detail);
       console.error("Failed to add product", error);
     }
     return;
@@ -173,8 +176,7 @@ const AddProduct = () => {
               onChange={onChange}
               required
             />
-
-            <Legend>Weight in gm</Legend>
+            <Legend>Weight in {formState.scale}</Legend>
             <input
               type="number"
               size="md"
@@ -183,6 +185,24 @@ const AddProduct = () => {
               value={formState.weight}
               onChange={onChange}
             />
+
+            <Legend>Weight Scale</Legend>
+            <select
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="scale"
+              value={formState.scale}
+              onChange={onChange}
+              required
+            >
+              <option value="" disabled></option>
+              {["gm", "kg", "ml"].map((scale) => (
+                <option key={scale} value={scale}>
+                  {scale}
+                </option>
+              ))}
+            </select>
+
+            <Legend>Description</Legend>
 
             <Legend>Quantity</Legend>
             <input
@@ -249,7 +269,6 @@ const AddProduct = () => {
                       name="color"
                       onChange={onChange}
                       value={formState.color}
-                      required
                     >
                       <option value="" disabled></option>
                       {colors.map((color, i) => (

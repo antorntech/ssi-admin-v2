@@ -21,6 +21,7 @@ const initialValues = {
   weight: 0,
   quantity: 0,
   serverImages: null,
+  scale: "gm",
 };
 
 const EditProduct = () => {
@@ -95,7 +96,8 @@ const EditProduct = () => {
     const body = new FormData(e.target);
     if (!body.has("color")) body.append("color", "#000000");
     if (!body.has("author")) body.append("author", author);
-    if (body.has("weight")) body.append("weight", `${body.get("weight")}gm`);
+    if (body.has("weight"))
+      body.append("weight", `${body.get("weight")}${formState.scale}`);
     if (!request) return;
     request(`products/${id}`, { method: "PATCH", body })
       .then((r) => r.json())
