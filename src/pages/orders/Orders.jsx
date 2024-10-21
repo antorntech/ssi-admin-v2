@@ -118,7 +118,7 @@ const Orders = () => {
                   ].map((heading) => (
                     <th
                       key={heading}
-                      className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700"
+                      className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap"
                     >
                       {heading}
                     </th>
