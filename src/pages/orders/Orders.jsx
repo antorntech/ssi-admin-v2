@@ -2,17 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
-import SearchBar from "../../components/searchbar/SearchBar";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
-import { Add, WalletCheck, Xrp } from "iconsax-react";
-import { CheckIcon } from "@heroicons/react/24/solid";
 
 const Orders = () => {
   const { page } = useParams();
   const navigate = useNavigate();
-  const currentPage = parseInt(page || 1, 10); // Ensure page is an integer
+  const currentPage = parseInt(page || 1, 10);
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,7 +20,7 @@ const Orders = () => {
   const fetchOrders = async (page) => {
     setLoading(true);
     try {
-      const limit = 5; // Set the limit to 5 orders per page
+      const limit = 5;
       const res = await request(
         `orders?skip=${(page - 1) * limit}&limit=${limit}`
       );
@@ -58,7 +55,6 @@ const Orders = () => {
     try {
       const res = await request(`orders/status`);
       const json = await res.json();
-      console.log(json);
       if (json) {
         setStatus(json);
       } else {
@@ -76,7 +72,6 @@ const Orders = () => {
   }, [currentPage]);
 
   const onCompleted = (id, status) => {
-    console.log(id, status);
     request(`orders/${id}/status`, {
       method: "PATCH",
       header: "Content-Type: application/json",
@@ -88,7 +83,7 @@ const Orders = () => {
       })
       .then(() => {
         toast.success("Order Updated Successfully!");
-        fetchOrders(currentPage); // Refetch orders after updating status
+        fetchOrders(currentPage);
       })
       .catch((error) => console.error("Error updating order:", error));
   };
@@ -116,6 +111,7 @@ const Orders = () => {
                     "Customer",
                     "Price",
                     "Quantity",
+                    "Points Used",
                     "Created At",
                     "Updated At",
                     "Actions",
@@ -136,10 +132,20 @@ const Orders = () => {
                       {order.customer_id}
                     </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      ${order.price}
+                      ৳{" "}
+                      {order.order_items.reduce(
+                        (acc, item) => acc + item.price * item.quantity,
+                        0
+                      )}
                     </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      {order.quantity}
+                      {order.order_items.reduce(
+                        (acc, item) => acc + item.quantity,
+                        0
+                      )}
+                    </td>
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                      {order.points_used}
                     </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(order.created_at).format("Do MMM, YYYY")}
