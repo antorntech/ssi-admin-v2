@@ -118,7 +118,7 @@ const Orders = () => {
                   ].map((heading) => (
                     <th
                       key={heading}
-                      className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700"
+                      className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700"
                     >
                       {heading}
                     </th>
@@ -128,32 +128,32 @@ const Orders = () => {
               <tbody>
                 {orders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
                       {order.customer_id}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
                       ৳{" "}
                       {order.order_items.reduce(
                         (acc, item) => acc + item.price * item.quantity,
                         0
                       )}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
                       {order.order_items.reduce(
                         (acc, item) => acc + item.quantity,
                         0
                       )}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
                       {order.points_used}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
                       {moment(order.created_at).format("Do MMM, YYYY")}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                    <td className="px-4 py-2 border-b">
                       <select
                         className={`capitalize border rounded-md px-2 py-2 
                         ${
