@@ -14,6 +14,7 @@ const Orders = () => {
   const navigate = useNavigate();
   const currentPage = parseInt(page || 1, 10); // Ensure page is an integer
   const [orders, setOrders] = useState([]);
+  const [status, setStatus] = useState([]);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
@@ -53,36 +54,40 @@ const Orders = () => {
     }
   };
 
+  const fetchStatus = async () => {
+    try {
+      const res = await request(`orders/status`);
+      const json = await res.json();
+      console.log(json);
+      if (json) {
+        setStatus(json);
+      } else {
+        console.error("Failed to fetch status");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // Refetch orders when the page number changes
   useEffect(() => {
     fetchOrders(currentPage);
+    fetchStatus();
   }, [currentPage]);
 
-  const onCompleted = (id) => {
-    request(`orders/${id}/completed`, {
+  const onCompleted = (id, status) => {
+    console.log(id, status);
+    request(`orders/${id}/status`, {
       method: "PATCH",
+      header: "Content-Type: application/json",
+      body: status,
     })
       .then((res) => {
         if (!res.ok) throw new Error(`Error: ${res.statusText}`);
         return res.json();
       })
       .then(() => {
-        toast.success("Order Completed Successfully!");
-        fetchOrders(currentPage); // Refetch orders after updating status
-      })
-      .catch((error) => console.error("Error updating order:", error));
-  };
-
-  const onCanceled = (id) => {
-    request(`orders/${id}/canceled`, {
-      method: "PATCH",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-        return res.json();
-      })
-      .then(() => {
-        toast.success("Order Canceled Successfully!");
+        toast.success("Order Updated Successfully!");
         fetchOrders(currentPage); // Refetch orders after updating status
       })
       .catch((error) => console.error("Error updating order:", error));
@@ -108,11 +113,9 @@ const Orders = () => {
               <thead>
                 <tr>
                   {[
-                    // "Product",
                     "Customer",
                     "Price",
                     "Quantity",
-                    "Status",
                     "Created At",
                     "Updated At",
                     "Actions",
@@ -129,9 +132,6 @@ const Orders = () => {
               <tbody>
                 {orders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-100">
-                    {/* <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      {order.id}
-                    </td> */}
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {order.customer_id}
                     </td>
@@ -141,33 +141,40 @@ const Orders = () => {
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       {order.quantity}
                     </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      <span
-                        className={`capitalize status ${order?.status?.toLowerCase()}`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(order.created_at).format("Do MMM, YYYY")}
                     </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
-                    {order?.status === "pending" ? (
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b flex items-center gap-3">
-                        <button onClick={() => onCompleted(order.id)}>
-                          <CheckIcon className="size-6 text-green-600" />
-                        </button>
-                        <button onClick={() => onCanceled(order.id)}>
-                          <Add size="32" className="text-red-600 rotate-45" />
-                        </button>
-                      </td>
-                    ) : (
-                      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                        N/A
-                      </td>
-                    )}
+                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                      <select
+                        className={`capitalize border rounded-md px-2 py-2 
+                        ${
+                          order.status === "pending"
+                            ? "bg-cyan-400 text-white"
+                            : order.status === "processed"
+                            ? "bg-yellow-400 text-black"
+                            : order.status === "shipped"
+                            ? "bg-blue-400 text-white"
+                            : order.status === "delivered"
+                            ? "bg-green-400 text-white"
+                            : order.status === "canceled"
+                            ? "bg-red-400 text-white"
+                            : order.status === "completed"
+                            ? "bg-green-600 text-white"
+                            : "bg-red-400 text-white" // Default fallback for unexpected status
+                        }`}
+                        value={order.status}
+                        onChange={(e) => onCompleted(order.id, e.target.value)}
+                      >
+                        {status?.map((status) => (
+                          <option key={status} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
                   </tr>
                 ))}
               </tbody>
