@@ -22,7 +22,7 @@ const initialValues = {
   weight: 0,
   quantity: 0,
   serverImages: null,
-  scale: "gm",
+  unit: "gm",
 };
 
 const EditProduct = () => {
@@ -97,10 +97,7 @@ const EditProduct = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
-    if (!body.has("color")) body.append("color", "#000000");
     if (!body.has("author")) body.append("author", author);
-    if (body.has("weight"))
-      body.append("weight", `${body.get("weight")}${formState.scale}`);
     if (!request) return;
     request(`products/${id}`, { method: "PATCH", body })
       .then((r) => r.json())
@@ -135,6 +132,8 @@ const EditProduct = () => {
       <form className="" onSubmit={onSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="w-full md:col-span-1 space-y-2">
+            <input type="hidden" name="author" value={author} className="" />
+
             <Legend>Name</Legend>
             <Input
               type="text"
@@ -189,7 +188,7 @@ const EditProduct = () => {
               onChange={onChange}
             />
 
-            <Legend>Weight in gm</Legend>
+            <Legend>Weight in {formState.unit}</Legend>
             <input
               type="number"
               size="md"
@@ -198,6 +197,22 @@ const EditProduct = () => {
               value={formState.weight}
               onChange={onChange}
             />
+
+            <Legend>Weight Unit</Legend>
+            <select
+              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="unit"
+              value={formState.unit}
+              onChange={onChange}
+              required
+            >
+              <option value="" disabled></option>
+              {["gm", "kg", "ml"].map((unit) => (
+                <option key={unit} value={unit}>
+                  {unit}
+                </option>
+              ))}
+            </select>
 
             <Legend>Quantity</Legend>
             <Input
@@ -217,7 +232,7 @@ const EditProduct = () => {
           <div className="w-full md:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
               <div>
-                <Legend>Points</Legend>
+                <Legend>Earn Points</Legend>
                 <input
                   type="number"
                   size="md"
@@ -228,7 +243,7 @@ const EditProduct = () => {
                   onChange={onChange}
                 />
 
-                <Legend>Points Max</Legend>
+                <Legend>Used Points Max</Legend>
                 <input
                   type="number"
                   size="md"

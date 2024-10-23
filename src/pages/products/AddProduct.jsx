@@ -7,7 +7,6 @@ import FetchContext from "../../context/FetchContext";
 import ImagePreviewWithRemove from "./ImagePreviewWithRemove";
 import { AuthContext } from "../../context/AuthContext";
 import colors from "../../utils/colors.js";
-import { Back } from "iconsax-react";
 
 const initialValues = {
   name: "",
@@ -19,9 +18,9 @@ const initialValues = {
   regular_price: 0,
   points: 0,
   points_max: 0,
-  weight: 0,
   quantity: 0,
-  scale: "gm",
+  weight: 0,
+  unit: "gm",
 };
 
 const AddProduct = () => {
@@ -79,10 +78,6 @@ const AddProduct = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
-    if (!body.has("color")) body.append("color", "#000000");
-    if (!body.has("author")) body.append("author", author);
-    if (body.has("weight"))
-      body.append("weight", `${body.get("weight")}${formState.scale}`);
     try {
       await request("products", {
         method: "POST",
@@ -112,7 +107,7 @@ const AddProduct = () => {
           onClick={() => window.history.back()}
           className="flex items-center justify-center gap-1 text-black border-2 border-black px-2 py-2 rounded-md text-sm hover:bg-black hover:text-white transition-all duration-500"
         >
-          <Back className="size-6" />
+          <i className="fa-solid fa-hand-point-left"></i>
         </button>
         <div>
           <h1 className="text-xl font-bold">Add Product</h1>
@@ -127,6 +122,8 @@ const AddProduct = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4">
           {/* Left Column */}
           <div className="w-full md:col-span-1">
+            <input type="hidden" name="author" value={author} className="" />
+
             <Legend>Name</Legend>
             <input
               type="text"
@@ -177,7 +174,7 @@ const AddProduct = () => {
               onChange={onChange}
               required
             />
-            <Legend>Weight in {formState.scale}</Legend>
+            <Legend>Weight in {formState.unit}</Legend>
             <input
               type="number"
               size="md"
@@ -187,23 +184,21 @@ const AddProduct = () => {
               onChange={onChange}
             />
 
-            <Legend>Weight Scale</Legend>
+            <Legend>Weight Unit</Legend>
             <select
               className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="scale"
-              value={formState.scale}
+              name="unit"
+              value={formState.unit}
               onChange={onChange}
               required
             >
               <option value="" disabled></option>
-              {["gm", "kg", "ml"].map((scale) => (
-                <option key={scale} value={scale}>
-                  {scale}
+              {["gm", "kg", "ml"].map((unit) => (
+                <option key={unit} value={unit}>
+                  {unit}
                 </option>
               ))}
             </select>
-
-            <Legend>Description</Legend>
 
             <Legend>Quantity</Legend>
             <input
@@ -214,6 +209,7 @@ const AddProduct = () => {
               value={formState.quantity}
               onChange={onChange}
               required
+              min={0}
             />
           </div>
 
@@ -221,7 +217,7 @@ const AddProduct = () => {
           <div className="w-full md:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
               <div>
-                <Legend>Points</Legend>
+                <Legend>Earn Points</Legend>
                 <input
                   type="number"
                   size="md"
@@ -233,7 +229,7 @@ const AddProduct = () => {
                   required
                 />
 
-                <Legend>Points Max</Legend>
+                <Legend>Used Points Max</Legend>
                 <input
                   type="number"
                   size="md"

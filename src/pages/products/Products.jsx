@@ -127,8 +127,8 @@ const Products = () => {
                     "Price",
                     "Regular Price",
                     "Weight",
-                    "Points",
-                    "Points Max",
+                    "Earn Points",
+                    "Used Points Max",
                     "Quantity",
                     "Status",
                     "Date",
@@ -191,22 +191,22 @@ const Products = () => {
                           {category?.name}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {price}
+                          {parseFloat(price)}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {regular_price}
+                          {parseFloat(regular_price)}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {weight}
+                          {parseInt(weight)}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {points}
+                          {parseInt(points)}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {points_max}
+                          {parseInt(points_max)}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {quantity}
+                          {parseInt(quantity)}
                         </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           {active === false ? "Inactive" : "Active"}
@@ -292,7 +292,6 @@ const Products = () => {
               </tbody>
             </table>
           </div>
-
           {/* Pagination Component */}
           <Pagination
             endPoint="products"
