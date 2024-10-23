@@ -5,11 +5,21 @@ import { useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 
 const SendMessages = () => {
+  const uniqueByPhone = (arr) => {
+    const seen = new Set();
+    return arr.filter((item) => {
+      if (seen.has(item.phone)) {
+        return false;
+      }
+      seen.add(item.phone);
+      return true;
+    });
+  };
+
   const params = useParams();
   const page = params?.page || 1;
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [customers, setCustomers] = useState([]);
-  console.log(customers);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
 
@@ -17,41 +27,59 @@ const SendMessages = () => {
     try {
       const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
-      console.log(json);
       const { data, count } = json;
       if (!data) return;
       setResponse((prev) => ({ ...prev, data, count }));
       setCustomers(data);
     } catch (error) {
-      console.error;
+      console.error(error);
     }
   };
 
   useEffect(() => {
     fetchCustomers();
   }, [page]);
-
+  console.log(selectedPoints);
   // Handle row selection
-  const handleSelect = (pointId) => {
+  const handleSelect = (phone) => {
     setSelectedPoints(
       (prevSelected) =>
-        prevSelected.includes(pointId)
-          ? prevSelected.filter((id) => id !== pointId) // Deselect if already selected
-          : [...prevSelected, pointId] // Add to selected if not already selected
+        prevSelected.includes(phone)
+          ? prevSelected.filter((id) => id !== phone) // Deselect if already selected
+          : [...prevSelected, phone] // Add to selected if not already selected
     );
   };
-
   // Handle "Send" button click
-  const handleSend = () => {
-    const selectedPhones = customers
-      .filter((point) => selectedPoints.includes(point.id))
-      .map((point) => point.phone);
-
-    console.log("Selected Customer Phones:", selectedPhones);
-    toast.success("Messages sent successfully", {
-      autoClose: 1000,
-    });
-    setSelectedPoints([]);
+  const doSend = () => {
+    Promise.all(
+      selectedPoints.map((phone) => {
+        return fetch("https://www.24bulksmsbd.com/api/smsSendApi", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customer_id: parseInt(import.meta.env.VITE_SMS_CUSTOMER_ID),
+            api_key: import.meta.env.VITE_SMS_API_KEY,
+            message: `Hello, ${phone}, Welcome to the SSI Shopping Ecommerce.`,
+            mobile_no: phone,
+          }),
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json(); // Convert the response to JSON
+        });
+      })
+    )
+      .then((results) => {
+        console.log("All data fetched:", results);
+        toast.success("Messages sent successfully", {
+          autoClose: 1000,
+        });
+        setSelectedPoints([]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   return (
@@ -83,14 +111,14 @@ const SendMessages = () => {
           </thead>
 
           <tbody>
-            {customers.map((point) => (
+            {uniqueByPhone(customers).map((point) => (
               <tr key={point.id}>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   <input
                     type="checkbox"
                     className="w-5 h-5 cursor-pointer rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    checked={selectedPoints.includes(point.id)}
-                    onChange={() => handleSelect(point.id)}
+                    checked={selectedPoints.includes(point.phone)}
+                    onChange={() => handleSelect(point.phone)}
                   />
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
@@ -108,7 +136,6 @@ const SendMessages = () => {
         </table>
       </div>
 
-      {/* Pagination Component */}
       <Pagination
         endPoint="customers"
         currentPage={page}
@@ -118,7 +145,7 @@ const SendMessages = () => {
       <div className="mt-5">
         <button
           className="bg-[#6CB93B] text-white px-4 py-2 rounded"
-          onClick={handleSend}
+          onClick={doSend}
         >
           Send
         </button>
