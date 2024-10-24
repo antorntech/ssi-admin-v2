@@ -3,7 +3,7 @@ import Loader from "../../loader/Loader";
 import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 
 const Orders = () => {
@@ -180,6 +180,9 @@ const Orders = () => {
                           </option>
                         ))}
                       </select>
+                      <div>
+                        <Link to={`/orders/${order.id}`} className="hover:underline">View</Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
