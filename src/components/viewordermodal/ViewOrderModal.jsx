@@ -126,13 +126,13 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
           <table className="w-full border border-gray-300 rounded-md overflow-hidden">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700 whitespace-nowrap">
                   Item ID
                 </th>
-                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700 whitespace-nowrap">
                   Quantity
                 </th>
-                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700 whitespace-nowrap">
                   Price (৳)
                 </th>
               </tr>
@@ -140,13 +140,13 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
             <tbody>
               {order_items.map((item) => (
                 <tr key={item.id} className="odd:bg-white even:bg-gray-50">
-                  <td className="px-4 py-3 border-b text-gray-600">
+                  <td className="px-4 py-3 border-b text-gray-600 whitespace-nowrap">
                     {item.id}
                   </td>
-                  <td className="px-4 py-3 border-b text-gray-600">
+                  <td className="px-4 py-3 border-b text-gray-600 whitespace-nowrap">
                     {item.quantity}
                   </td>
-                  <td className="px-4 py-3 border-b text-gray-600">
+                  <td className="px-4 py-3 border-b text-gray-600 whitespace-nowrap">
                     ৳ {item.price}
                   </td>
                 </tr>
