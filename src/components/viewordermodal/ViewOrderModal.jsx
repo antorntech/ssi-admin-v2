@@ -56,7 +56,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
               <p className="text-gray-600 pt-2">
                 <span className="font-medium">Status:</span>{" "}
                 <span
-                  className={`capitalize border rounded-md px-2 py-2 
+                  className={`capitalize text-sm border rounded-md px-2 py-1 
                     ${
                       status === "pending"
                         ? "bg-cyan-400 text-white"
@@ -119,8 +119,8 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
         </section>
 
         {/* Order Items */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">
+        <section className="mb-4">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
             Order Items
           </h2>
           <table className="w-full border border-gray-300 rounded-md overflow-hidden">
@@ -173,7 +173,6 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
               <div className="w-[200px] font-medium">Points Used: </div>
               <div className="w-[200px]">{points_used}</div>
             </div>
-            <div className="h-[1px] w-full bg-gray-200 my-2"></div>
             <div className="text-gray-600 font-semibold flex items-center gap-12">
               <div className="w-[200px]">Total Price: </div>
               <div className="w-[200px]">৳ {totalPrice}</div>
