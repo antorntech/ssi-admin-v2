@@ -5,6 +5,42 @@ import { useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 
 const SendMessages = () => {
+  const params = useParams();
+  const page = params?.page || 1;
+  const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [response, setResponse] = useState({ data: [], count: 0 });
+  const { request } = useContext(FetchContext);
+  const [message, setMessage] = useState("");
+  const limit = 10;
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await request(
+          `users?skip=${(page - 1) * limit}&limit=${limit}`
+        );
+        const json = await response.json();
+        const { data, count } = json;
+        if (!data) return;
+        setResponse((prev) => ({ ...prev, data, count }));
+        setCustomers(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCustomers();
+  }, [page, request]);
+
+  const handleSelect = (phone) => {
+    setSelectedNumbers(
+      (prevSelected) =>
+        prevSelected.includes(phone)
+          ? prevSelected.filter((id) => id !== phone) // Deselect if already selected
+          : [...prevSelected, phone] // Add to selected if not already selected
+    );
+  };
+
   const uniqueByPhone = (arr) => {
     const seen = new Set();
     return arr.filter((item) => {
@@ -16,43 +52,9 @@ const SendMessages = () => {
     });
   };
 
-  const params = useParams();
-  const page = params?.page || 1;
-  const [selectedPoints, setSelectedPoints] = useState([]);
-  const [customers, setCustomers] = useState([]);
-  const [response, setResponse] = useState({ data: [], count: 0 });
-  const { request } = useContext(FetchContext);
-
-  const fetchCustomers = async () => {
-    try {
-      const response = await request(`users?skip=${(page - 1) * 5}&limit=5`);
-      const json = await response.json();
-      const { data, count } = json;
-      if (!data) return;
-      setResponse((prev) => ({ ...prev, data, count }));
-      setCustomers(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-  }, [page]);
-  console.log(selectedPoints);
-  // Handle row selection
-  const handleSelect = (phone) => {
-    setSelectedPoints(
-      (prevSelected) =>
-        prevSelected.includes(phone)
-          ? prevSelected.filter((id) => id !== phone) // Deselect if already selected
-          : [...prevSelected, phone] // Add to selected if not already selected
-    );
-  };
-  // Handle "Send" button click
   const doSend = () => {
     Promise.all(
-      selectedPoints.map((phone) => {
+      selectedNumbers.map((phone) => {
         return fetch("https://www.24bulksmsbd.com/api/smsSendApi", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -75,75 +77,98 @@ const SendMessages = () => {
         toast.success("Messages sent successfully", {
           autoClose: 1000,
         });
-        setSelectedPoints([]);
+        setSelectedNumbers([]);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
 
+  const uniqueCustomers = uniqueByPhone(customers);
+
   return (
-    <>
-      <div>
+    <div className="flex flex-wrap gap-4">
+      <div className="w-full">
         <h1 className="text-xl font-bold">Send Messages</h1>
       </div>
-
-      <div className="mt-5 overflow-x-auto">
-        <table className="min-w-[1200px] lg:min-w-full bg-white border">
+      <section className="">
+        <table className="overflow-x-auto bg-white border">
           <thead>
             <tr>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Select
+              <th
+                className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700"
+                width="80px"
+              >
+                <input
+                  type="checkbox"
+                  className="w-5 h-5 cursor-pointer rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  onChange={() => {
+                    if (selectedNumbers.length > 0) {
+                      setSelectedNumbers([]);
+                    } else {
+                      setSelectedNumbers(
+                        uniqueCustomers.map((item) => item?.phone || item)
+                      );
+                    }
+                  }}
+                />
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Name
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th
+                className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700"
+                width="280px"
+              >
                 Phone
+              </th>
+              <th
+                className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700"
+                width="280px"
+              >
+                Name
               </th>
             </tr>
           </thead>
-
-          <tbody>
+          <tbody className="divide-y">
             {uniqueByPhone(customers).map((point) => (
-              <tr key={point.id}>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+              <tr key={point?.id}>
+                <td className="px-4 py-2">
                   <input
                     type="checkbox"
                     className="w-5 h-5 cursor-pointer rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    checked={selectedPoints.includes(point.phone)}
-                    onChange={() => handleSelect(point.phone)}
+                    checked={selectedNumbers.includes(point?.phone)}
+                    onChange={() => handleSelect(point?.phone)}
                   />
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.name}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.phone}
-                </td>
+                <td className="px-4 py-2">{point?.phone}</td>
+                <td className="px-4 py-2">{point?.name}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <Pagination
+          endPoint="customers"
+          currentPage={page}
+          totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+        />
+      </section>
+      <div className="w-full max-w-sm">
+        <textarea
+          rows={5}
+          color={100}
+          className="w-full rounded p-3"
+          placeholder="Write message here"
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+        ></textarea>
+        <div className="mt-2">
+          <button
+            className="bg-[#6CB93B] text-white px-4 py-2 rounded"
+            onClick={doSend}
+          >
+            Send
+          </button>
+        </div>
       </div>
-
-      <Pagination
-        endPoint="customers"
-        currentPage={page}
-        totalPages={response.count ? Math.ceil(response.count / 5) : 0}
-      />
-      <textarea rows={4} color={50}>
-        Write message here
-      </textarea>
-      <div className="mt-5">
-        <button
-          className="bg-[#6CB93B] text-white px-4 py-2 rounded"
-          onClick={doSend}
-        >
-          Send
-        </button>
-      </div>
-    </>
+    </div>
   );
 };
 
