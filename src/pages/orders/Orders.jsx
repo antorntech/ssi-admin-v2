@@ -5,6 +5,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
+import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 
 const Orders = () => {
   const { page } = useParams();
@@ -88,6 +89,20 @@ const Orders = () => {
       .catch((error) => console.error("Error updating order:", error));
   };
 
+  // order-modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
+
   return (
     <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
@@ -153,7 +168,7 @@ const Orders = () => {
                     <td className="px-4 py-2 border-b whitespace-nowrap">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
                     </td>
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-2 border-b flex items-center gap-3">
                       <select
                         className={`capitalize border rounded-md px-2 py-2 
                         ${
@@ -181,7 +196,12 @@ const Orders = () => {
                         ))}
                       </select>
                       <div>
-                        <Link to={`/orders/${order.id}`} className="hover:underline">View</Link>
+                        <button
+                          onClick={() => handleOrderClick(order)}
+                          className="px-4 py-[6px] text-white bg-orange-500 rounded-md"
+                        >
+                          View
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -196,6 +216,13 @@ const Orders = () => {
             currentPage={currentPage}
             totalPages={Math.ceil(response.count / 5)}
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
+          />
+
+          {/* Order Modal */}
+          <ViewOrderModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            order={selectedOrder}
           />
         </>
       ) : (
