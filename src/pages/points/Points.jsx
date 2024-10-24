@@ -1,13 +1,44 @@
+/* eslint-disable react/prop-types */
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 
+const PointsRow = ({ point, handleOpen }) => {
+  const { request } = useContext(FetchContext);
+  const [customer, setCustomer] = useState({});
+
+  useEffect(() => {
+    request(`users/${point?.customer_id}`).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setCustomer(data);
+        });
+      }
+    });
+  }, []);
+
+  return (
+    <tr>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.email}</td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.phone}</td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{point.points}</td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+        {moment(point?.created_at).format("Do MMM, YYYY")}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        <button
+          onClick={handleOpen}
+          className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
+};
+
 const Points = () => {
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [points, setPoints] = useState(0);
   const [pointsData, setPointsData] = useState([]);
   const { request } = useContext(FetchContext);
   const [open, setOpen] = useState(false);
@@ -74,30 +105,15 @@ const Points = () => {
             </tr>
           </thead>
           <tbody>
-            {pointsData.map((point) => (
-              <tr key={point.id}>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.email}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.phone}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.points}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                  {moment(point.createdAt).format("Do MMM, YYYY")}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  <button
-                    onClick={() => handleOpen(point.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {pointsData.map((point) => {
+              return (
+                <PointsRow
+                  key={point?.id}
+                  point={point}
+                  onOpen={() => handleOpen(point?.id)}
+                />
+              );
+            })}
             {pointsData.length === 0 && (
               <tr>
                 <td colSpan="5" className="text-center py-4 text-gray-500">

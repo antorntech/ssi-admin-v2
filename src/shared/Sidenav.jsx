@@ -1,5 +1,5 @@
 import { HambergerMenu } from "iconsax-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
@@ -34,7 +34,7 @@ const menuItems = [
     icon: "/img/icons/order",
   },
   {
-    title: "Points",
+    title: "Manage Points",
     link: "/points",
     icon: "/img/icons/point",
   },
