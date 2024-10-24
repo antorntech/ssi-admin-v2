@@ -4,6 +4,8 @@ import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
+import { Add } from "iconsax-react";
+import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -77,6 +79,20 @@ const Customers = () => {
     }
   };
 
+  // add-points-modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const handlePointsClick = (order) => {
+    setSelectedCustomer(order);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPoints(null);
+  };
+
   return (
     <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
@@ -141,8 +157,18 @@ const Customers = () => {
                     </Link>
                   ) : null}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer?.points || 0}
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px]">
+                  <div className="flex items-center justify-between">
+                    <div>{customer?.points || 0}</div>
+                    <div>
+                      <button
+                        onClick={() => handlePointsClick(customer.id)}
+                        className="px-2 py-1 bg-[#6CB93B] rounded"
+                      >
+                        <Add size="16" color="#fff" />
+                      </button>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   <Orders customer={customer} />
@@ -155,6 +181,14 @@ const Customers = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Add Points Modal */}
+      <AddPointsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        customerId={selectedCustomer}
+        fetchCustomers={fetchCustomers}
+      />
 
       {/* Pagination Component */}
       <Pagination

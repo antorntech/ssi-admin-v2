@@ -86,9 +86,6 @@ const SendMessages = () => {
     <>
       <div>
         <h1 className="text-xl font-bold">Send Messages</h1>
-        <p className="text-sm text-gray-500">
-          Total Points: {customers.length}
-        </p>
       </div>
 
       <div className="mt-5 overflow-x-auto">
