@@ -17,6 +17,17 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
     order_items,
   } = order;
 
+  // Calculate Shipping Cost based on district
+  const shippingCost =
+    shipping_address.district.toLowerCase() === "dhaka" ? 60 : 120;
+
+  // Calculate Total Price: Sum of item prices + Shipping Cost
+  const totalItemPrice = order_items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const totalPrice = totalItemPrice + shippingCost;
+
   return (
     <div className="order-modal">
       <div className="modal-content">
@@ -46,21 +57,21 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
                 <span className="font-medium">Status:</span>{" "}
                 <span
                   className={`capitalize border rounded-md px-2 py-2 
-                        ${
-                          status === "pending"
-                            ? "bg-cyan-400 text-white"
-                            : status === "processed"
-                            ? "bg-yellow-400 text-black"
-                            : status === "shipped"
-                            ? "bg-blue-400 text-white"
-                            : status === "delivered"
-                            ? "bg-green-400 text-white"
-                            : status === "canceled"
-                            ? "bg-red-400 text-white"
-                            : status === "completed"
-                            ? "bg-green-600 text-white"
-                            : "bg-red-400 text-white" // Default fallback for unexpected status
-                        }`}
+                    ${
+                      status === "pending"
+                        ? "bg-cyan-400 text-white"
+                        : status === "processed"
+                        ? "bg-yellow-400 text-black"
+                        : status === "shipped"
+                        ? "bg-blue-400 text-white"
+                        : status === "delivered"
+                        ? "bg-green-400 text-white"
+                        : status === "canceled"
+                        ? "bg-red-400 text-white"
+                        : status === "completed"
+                        ? "bg-green-600 text-white"
+                        : "bg-red-400 text-white"
+                    }`}
                 >
                   {status}
                 </span>
@@ -118,14 +129,14 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
           <table className="w-full border border-gray-300 rounded-md overflow-hidden">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 border-b text-left text-gray-700 font-medium">
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
                   Item ID
                 </th>
-                <th className="px-4 py-2 border-b text-left text-gray-700 font-medium">
-                  Price
-                </th>
-                <th className="px-4 py-2 border-b text-left text-gray-700 font-medium">
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
                   Quantity
+                </th>
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                  Price (৳)
                 </th>
               </tr>
             </thead>
@@ -136,15 +147,37 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
                     {item.id}
                   </td>
                   <td className="px-4 py-3 border-b text-gray-600">
-                    ${item.price}
+                    {item.quantity}
                   </td>
                   <td className="px-4 py-3 border-b text-gray-600">
-                    {item.quantity}
+                    ৳ {item.price}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </section>
+
+        {/* Total Cost Section */}
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">
+            Total Cost
+          </h2>
+          <div className="space-y-2">
+            <div className="text-gray-600 flex items-center gap-12">
+              <div className="w-[200px] font-medium">Total Item Price: </div>
+              <div className="w-[200px]">৳ {totalItemPrice}</div>
+            </div>
+            <div className="text-gray-600 flex items-center gap-12">
+              <div className="w-[200px] font-medium">Shipping Cost: </div>
+              <div className="w-[200px]">৳ {shippingCost}</div>
+            </div>
+            <div className="h-[1px] w-full bg-gray-200 my-2"></div>
+            <div className="text-gray-600 font-semibold flex items-center gap-12">
+              <div className="w-[200px]">Total Price: </div>
+              <div className="w-[200px]">৳ {totalPrice}</div>
+            </div>
+          </div>
         </section>
       </div>
     </div>
