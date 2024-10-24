@@ -135,7 +135,9 @@ const SendMessages = () => {
         currentPage={page}
         totalPages={response.count ? Math.ceil(response.count / 5) : 0}
       />
-
+      <textarea rows={4} color={50}>
+        Write message here
+      </textarea>
       <div className="mt-5">
         <button
           className="bg-[#6CB93B] text-white px-4 py-2 rounded"
