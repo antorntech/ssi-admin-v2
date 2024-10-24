@@ -35,11 +35,6 @@ const Points = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !phone) {
-      toast.error("Email or Phone is required", { autoClose: 1000 });
-      return;
-    }
-
     const body = {
       email,
       phone,

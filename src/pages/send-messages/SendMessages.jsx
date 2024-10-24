@@ -104,9 +104,6 @@ const SendMessages = () => {
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                 Phone
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Email
-              </th>
             </tr>
           </thead>
 
@@ -126,9 +123,6 @@ const SendMessages = () => {
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   {point.phone}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.email}
                 </td>
               </tr>
             ))}
