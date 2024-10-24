@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
@@ -124,7 +125,7 @@ const Customers = () => {
                   {customer?.email ? (
                     <Link
                       to={`mailto:${customer?.email}`}
-                      className="blur-sm hover:blur-none hover:underline py-2"
+                      className="hover:underline py-2"
                     >
                       {customer?.email}
                     </Link>
@@ -134,7 +135,7 @@ const Customers = () => {
                   {customer?.phone ? (
                     <Link
                       to={`tel:${customer?.phone}`}
-                      className="blur-sm hover:blur-none hover:underline py-2"
+                      className="hover:underline py-2"
                     >
                       {customer?.phone}
                     </Link>

@@ -104,9 +104,6 @@ const SendMessages = () => {
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                 Phone
               </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                Email
-              </th>
             </tr>
           </thead>
 
@@ -127,9 +124,6 @@ const SendMessages = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   {point.phone}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                  {point.email}
-                </td>
               </tr>
             ))}
           </tbody>
@@ -141,7 +135,9 @@ const SendMessages = () => {
         currentPage={page}
         totalPages={response.count ? Math.ceil(response.count / 5) : 0}
       />
-
+      <textarea rows={4} color={50}>
+        Write message here
+      </textarea>
       <div className="mt-5">
         <button
           className="bg-[#6CB93B] text-white px-4 py-2 rounded"
