@@ -40,7 +40,7 @@ const AddPointsModal = ({ isOpen, onClose, customerId, fetchCustomers }) => {
 
   return (
     <div className="points-modal">
-      <div className="modal-content">
+      <div className="points-modal-content">
         <button onClick={onClose} className="close-button">
           <Add size="24" className="text-white rotate-45" />
         </button>

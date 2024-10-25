@@ -37,7 +37,7 @@
   background-color: #333;
 }
 
-.modal-content {
+.order-modal-content {
   position: relative;
   background-color: white;
   padding: 15px;
@@ -71,9 +71,23 @@
   }
 }
 
-@media screen and (max-width: 768px) {
-  .modal-content {
-    width: 350px;
-    height: 400px;
+@media screen and (768px <= width <= 1024px) {
+  .order-modal-content {
+    width: 650px;
+    height: 600px;
+  }
+}
+
+@media screen and (480px <= width <= 768px) {
+  .order-modal-content {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+@media screen and (320px <= width <= 480px) {
+  .order-modal-content {
+    width: 380px;
+    height: 600px;
   }
 }

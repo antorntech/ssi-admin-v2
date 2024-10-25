@@ -30,7 +30,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
 
   return (
     <div className="order-modal">
-      <div className="modal-content">
+      <div className="order-modal-content">
         <button onClick={onClose} className="close-button">
           <Add size="24" className="text-white rotate-45" />
         </button>
