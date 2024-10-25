@@ -14,7 +14,8 @@ const SendMessages = () => {
   const { request } = useContext(FetchContext);
   const [message, setMessage] = useState("");
   const limit = 10;
-  const [customNumbers, setCustomNumbers] = useState([""]);
+  const initialCustomNumbers = [""];
+  const [customNumbers, setCustomNumbers] = useState(initialCustomNumbers);
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -72,8 +73,10 @@ const SendMessages = () => {
         body: body,
       });
 
-      // Fetch categories if the callback is passed, otherwise reload the page
-      // fetchCategories ? fetchCategories() : window.location.reload();
+      // clear state
+      setMessage("");
+      setSelectedNumbers([]);
+      setCustomNumbers(initialCustomNumbers);
     } catch (error) {
       console.error("Failed to add category", error);
     }
