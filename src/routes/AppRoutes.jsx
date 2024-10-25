@@ -182,6 +182,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="send-messages/:page"
+          element={
+            <Protected>
+              <SendMessages />
+            </Protected>
+          }
+        />
+        <Route
           path="gallery"
           element={
             <Protected>

@@ -145,7 +145,7 @@ const SendMessages = () => {
           </tbody>
         </table>
         <Pagination
-          endPoint="customers"
+          endPoint="send-messages"
           currentPage={page}
           totalPages={response.count ? Math.ceil(response.count / 5) : 0}
         />
