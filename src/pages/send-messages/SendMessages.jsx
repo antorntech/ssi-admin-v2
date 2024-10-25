@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import { useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
+import CustomNumberInput from "../../components/customnumberinput/CustomNumberInput";
 
 const SendMessages = () => {
   const params = useParams();
@@ -13,6 +14,7 @@ const SendMessages = () => {
   const { request } = useContext(FetchContext);
   const [message, setMessage] = useState("");
   const limit = 10;
+  const [customNumbers, setCustomNumbers] = useState([""]);
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -52,36 +54,29 @@ const SendMessages = () => {
     });
   };
 
-  const doSend = () => {
-    Promise.all(
-      selectedNumbers.map((phone) => {
-        return fetch("https://www.24bulksmsbd.com/api/smsSendApi", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            customer_id: parseInt(import.meta.env.VITE_SMS_CUSTOMER_ID),
-            api_key: import.meta.env.VITE_SMS_API_KEY,
-            message: `Hello, ${phone}, Welcome to the SSI Shopping Ecommerce.`,
-            mobile_no: phone,
-          }),
-        }).then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json(); // Convert the response to JSON
-        });
-      })
-    )
-      .then((results) => {
-        console.log("All data fetched:", results);
-        toast.success("Messages sent successfully", {
-          autoClose: 1000,
-        });
-        setSelectedNumbers([]);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
+  const doSend = async () => {
+    const body = JSON.stringify({
+      mobile_no: [...selectedNumbers, ...customNumbers]
+        .filter(Boolean)
+        .join(","),
+      message,
+    });
+
+    console.log(body);
+    try {
+      await request("sms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body,
       });
+
+      // Fetch categories if the callback is passed, otherwise reload the page
+      // fetchCategories ? fetchCategories() : window.location.reload();
+    } catch (error) {
+      console.error("Failed to add category", error);
+    }
   };
 
   const uniqueCustomers = uniqueByPhone(customers);
@@ -151,21 +146,50 @@ const SendMessages = () => {
         />
       </section>
       <div className="w-full max-w-sm">
-        <textarea
-          rows={5}
-          color={100}
-          className="w-full rounded p-3"
-          placeholder="Write message here"
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
-        ></textarea>
-        <div className="mt-2">
-          <button
-            className="bg-[#6CB93B] text-white px-4 py-2 rounded"
-            onClick={doSend}
-          >
-            Send
-          </button>
+        <div className="mb-4">
+          {customNumbers.map((number, index) => (
+            <CustomNumberInput
+              key={index}
+              number={number}
+              newInput={index === customNumbers.length - 1}
+              onChange={(e) => {
+                const value = e.target.value;
+                setCustomNumbers((prev) => {
+                  const updatedNumbers = [...prev];
+                  updatedNumbers[index] = value;
+                  return updatedNumbers;
+                });
+              }}
+              addInput={() => {
+                setCustomNumbers((prev) => [...prev, ""]);
+              }}
+              removeInput={() => {
+                setCustomNumbers((prev) => {
+                  const updatedNumbers = [...prev];
+                  updatedNumbers.splice(index, 1);
+                  return updatedNumbers;
+                });
+              }}
+            />
+          ))}
+        </div>
+        <div className="w-full max-w-sm">
+          <textarea
+            rows={5}
+            color={100}
+            className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+            placeholder="Write message here"
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+          ></textarea>
+          <div className="mt-2">
+            <button
+              className="bg-[#6CB93B] text-white px-4 py-2 rounded"
+              onClick={doSend}
+            >
+              Send
+            </button>
+          </div>
         </div>
       </div>
     </div>
