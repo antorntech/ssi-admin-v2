@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+
 import "./ViewOrderModal.css";
 import { Add } from "iconsax-react";
 import moment from "moment";
@@ -50,8 +51,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
                 <span className="font-medium">Order ID:</span> {id}
               </p>
               <p className="text-gray-600">
-                <span className="font-medium">Customer Email:</span>{" "}
-                {customer_id}
+                <span className="font-medium">Customer Id:</span> {customer_id}
               </p>
               <p className="text-gray-600 pt-2">
                 <span className="font-medium">Status:</span>{" "}
@@ -97,23 +97,28 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
           </h2>
           <div className="space-y-2">
             <p className="text-gray-600">
-              <span className="font-medium">Name:</span> {shipping_address.name}
+              <span className="font-medium">Name:</span>{" "}
+              {shipping_address?.name}
+            </p>
+            <p className="text-gray-600">
+              <span className="font-medium">Phone:</span>{" "}
+              {shipping_address?.phone}
             </p>
             <p className="text-gray-600">
               <span className="font-medium">Address Line 1:</span>{" "}
-              {shipping_address.address_line1 || "N/A"}
+              {shipping_address?.address_line1 || "N/A"}
             </p>
             <p className="text-gray-600">
               <span className="font-medium">District:</span>{" "}
-              {shipping_address.district}
+              {shipping_address?.district}
             </p>
             <p className="text-gray-600">
               <span className="font-medium">Upazila:</span>{" "}
-              {shipping_address.upazila}
+              {shipping_address?.upazila}
             </p>
             <p className="text-gray-600">
               <span className="font-medium">Delivery Instructions:</span>{" "}
-              {shipping_address.delivery_instructions || "N/A"}
+              {shipping_address?.delivery_instructions || "N/A"}
             </p>
           </div>
         </section>

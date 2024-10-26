@@ -10,8 +10,7 @@ import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
   const { request } = useFetch();
-  const { email, phone } = customer;
-  const id = email || phone;
+  const { id } = customer;
 
   useEffect(() => {
     if (!id) return;
@@ -90,7 +89,7 @@ const Customers = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedPoints(null);
+    setSelectedCustomer(null);
   };
 
   return (

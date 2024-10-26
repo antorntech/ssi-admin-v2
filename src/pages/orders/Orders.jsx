@@ -1,11 +1,37 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
-import FetchContext from "../../context/FetchContext";
+import FetchContext, { useFetch } from "../../context/FetchContext";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
+
+function Customer({ id="" }) {
+  const [customer, setCustomer] = useState(null);
+  const { request } = useFetch();
+
+  useEffect(() => {
+    async function fetchCustomer() {
+      try {
+        const response = await request(`users/${id}`);
+        const data = await response.json();
+        setCustomer(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCustomer();
+  }, [id]);
+  if (!customer) return;
+  return (
+    <div>
+      <p className="opacity-50">{customer?.id}</p>
+      <p className="font-semibold">{customer?.name}</p>
+    </div>
+  );
+}
 
 const Orders = () => {
   const { page } = useParams();
@@ -21,7 +47,7 @@ const Orders = () => {
   const fetchOrders = async (page) => {
     setLoading(true);
     try {
-      const limit = 5;
+      const limit = 10;
       const res = await request(
         `orders?skip=${(page - 1) * limit}&limit=${limit}`
       );
@@ -72,7 +98,7 @@ const Orders = () => {
     fetchStatus();
   }, [currentPage]);
 
-  const onCompleted = (id, status) => {
+  const switchStatus = (id, status) => {
     request(`orders/${id}/status`, {
       method: "PATCH",
       header: "Content-Type: application/json",
@@ -144,7 +170,7 @@ const Orders = () => {
                 {orders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-100">
                     <td className="px-4 py-2 border-b whitespace-nowrap">
-                      {order.customer_id}
+                      <Customer id={order.customer_id} />
                     </td>
                     <td className="px-4 py-2 border-b whitespace-nowrap">
                       ৳{" "}
@@ -187,7 +213,7 @@ const Orders = () => {
                             : "bg-red-400 text-white" // Default fallback for unexpected status
                         }`}
                         value={order.status}
-                        onChange={(e) => onCompleted(order.id, e.target.value)}
+                        onChange={(e) => switchStatus(order.id, e.target.value)}
                       >
                         {status?.map((status) => (
                           <option key={status} value={status}>
