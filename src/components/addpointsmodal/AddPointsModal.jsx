@@ -1,4 +1,6 @@
-import React, { useContext, useState } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react/prop-types */
+import { useContext, useState } from "react";
 import "./AddPointsModal.css";
 import { Add } from "iconsax-react";
 import FetchContext from "../../context/FetchContext";
@@ -45,9 +47,11 @@ const AddPointsModal = ({ isOpen, onClose, customerId, fetchCustomers }) => {
           <Add size="24" className="text-white rotate-45" />
         </button>
         <div className="mb-4">
-          <h1 className="text-xl font-bold text-black">Add Points</h1>
+          <h1 className="text-xl font-bold text-black">
+            Add or Subtract Points
+          </h1>
           <p className="text-gray-500">
-            You can add points to customer account!
+            You can add or subtract points to customer account!
           </p>
         </div>
         <form action="#" onSubmit={onSubmit}>
@@ -59,7 +63,7 @@ const AddPointsModal = ({ isOpen, onClose, customerId, fetchCustomers }) => {
             value={points}
           />
           <button className="px-2 py-1 bg-[#6CB93B] rounded text-white mt-3">
-            Add Points
+            Submit
           </button>
         </form>
       </div>

@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
-import { Add } from "iconsax-react";
+import { Edit } from "iconsax-react";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 import moment from "moment";
 
@@ -164,12 +164,12 @@ const Customers = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px]">
                   <div className="flex items-center justify-between">
                     <div>{customer?.points || 0}</div>
-                    <div>
+                    <div className="flex gap-1">
                       <button
                         onClick={() => handlePointsClick(customer.id)}
-                        className="px-2 py-1 bg-[#6CB93B] rounded"
+                        className="size-7 flex items-center justify-center bg-[#6CB93B] rounded"
                       >
-                        <Add size="16" color="#fff" />
+                        <Edit className="size-4" color="#fff" />
                       </button>
                     </div>
                   </div>
