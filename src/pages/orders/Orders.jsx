@@ -9,25 +9,25 @@ import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 
-function Customer({ id = "" }) {
-  const [customer, setCustomer] = useState(null);
-  const { request } = useFetch();
+// function Customer({ id = "" }) {
+//   const [customer, setCustomer] = useState(null);
+//   const { request } = useFetch();
 
-  useEffect(() => {
-    async function fetchCustomer() {
-      try {
-        const response = await request(`users/${id}`);
-        const data = await response.json();
-        setCustomer(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchCustomer();
-  }, [id]);
-  if (!customer) return;
-  return <p className="font-semibold">{customer?.name}</p>;
-}
+//   useEffect(() => {
+//     async function fetchCustomer() {
+//       try {
+//         const response = await request(`users/${id}`);
+//         const data = await response.json();
+//         setCustomer(data);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+//     fetchCustomer();
+//   }, [id]);
+//   if (!customer) return;
+//   return <p className="font-semibold">{customer?.name}</p>;
+// }
 
 const Orders = () => {
   const { page } = useParams();
@@ -35,6 +35,7 @@ const Orders = () => {
   const currentPage = parseInt(page || 1, 10);
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
@@ -71,6 +72,24 @@ const Orders = () => {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const doSearch = async (e) => {
+    e.preventDefault();
+    try {
+      if (!searchText.trim()) {
+        fetchOrders(currentPage ? currentPage : 1);
+        return;
+      }
+      const res = await request(`orders?q=${searchText}`);
+      const order = await res.json();
+      if (!order) {
+        throw new Error("No order found");
+      }
+      setOrders(order?.data);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
     }
   };
 
@@ -135,13 +154,17 @@ const Orders = () => {
           </p>
         </div>
         <div>
-          <SearchBar />
+          <SearchBar
+            searchText={searchText}
+            handleSearch={setSearchText}
+            doSearch={doSearch}
+          />
         </div>
       </div>
 
       {loading ? (
         <Loader />
-      ) : orders.length > 0 ? (
+      ) : orders?.length > 0 ? (
         <>
           <div className="mt-5 overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
@@ -175,7 +198,7 @@ const Orders = () => {
                   return (
                     <tr key={order.id} className="hover:bg-gray-100">
                       <td className="px-4 py-2 border-b whitespace-nowrap">
-                        <Customer id={order.customer_id} />
+                        {order?.shipping_address?.name}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         ৳{" "}

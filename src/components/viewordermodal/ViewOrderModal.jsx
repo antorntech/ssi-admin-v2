@@ -9,6 +9,7 @@ import { UPLOADS_URL } from "../../utils/API";
 
 const ViewOrderModal = ({ isOpen, onClose, order }) => {
   if (!isOpen) return null;
+  console.log(order);
 
   const [productDetails, setProductDetails] = useState([]);
   const { request } = useContext(FetchContext);
@@ -18,7 +19,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
   // Fetch product details for multiple product IDs in parallel
   const fetchProducts = async () => {
     try {
-      const promises = productIds.map((id) =>
+      const promises = productIds?.map((id) =>
         request(`products/${id}`).then((r) => r.json())
       );
       const results = await Promise.all(promises);

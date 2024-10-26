@@ -14,10 +14,7 @@ const SearchBar = ({ searchText, handleSearch, doSearch }) => {
         onChange={(e) => handleSearch(e.target.value)}
         className="flex-grow focus:outline-none px-3 rounded-lg"
       />
-      <button
-        disabled={!searchText}
-        className="size-10 grid place-items-center bg-main-5 hover:bg-main-7 text-white rounded-r-md cursor-pointer"
-      >
+      <button className="size-10 grid place-items-center bg-main-5 hover:bg-main-7 text-white rounded-r-md cursor-pointer">
         <SearchNormal className="size-4" />
       </button>
     </form>

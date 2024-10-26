@@ -6,6 +6,7 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
 import { Add } from "iconsax-react";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
+import moment from "moment";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -60,8 +61,6 @@ const Customers = () => {
   useEffect(() => {
     fetchCustomers();
   }, [page]);
-
-  console.log(response);
 
   const handleOpen = () => setOpen(!open);
 
@@ -125,6 +124,12 @@ const Customers = () => {
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Address
               </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Created At
+              </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Updated At
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -174,6 +179,12 @@ const Customers = () => {
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.address}
+                </td>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  {moment(customer?.created_at).format("Do MMM, YYYY")}
+                </td>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  {moment(customer?.updated_at).format("Do MMM, YYYY")}
                 </td>
               </tr>
             ))}
