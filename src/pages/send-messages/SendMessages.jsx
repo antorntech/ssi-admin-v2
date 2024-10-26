@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import FetchContext from "../../context/FetchContext";
 import { useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
@@ -47,11 +46,13 @@ const SendMessages = () => {
   const uniqueByPhone = (arr) => {
     const seen = new Set();
     return arr.filter((item) => {
-      if (seen.has(item.phone)) {
-        return false;
+      if (item.phone) {
+        if (seen.has(item.phone)) {
+          return false;
+        }
+        seen.add(item.phone);
+        return true;
       }
-      seen.add(item.phone);
-      return true;
     });
   };
 
