@@ -145,7 +145,7 @@ const Orders = () => {
                 <tr>
                   {[
                     "Customer",
-                    "Price",
+                    "Price Total",
                     "Quantity",
                     "Points Used",
                     "Created At",
@@ -163,43 +163,47 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      <Customer id={order.customer_id} />
-                    </td>
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      ৳{" "}
-                      {order.order_items.reduce((acc, item) => {
-                        return (
-                          acc +
-                          item.price * item.quantity -
-                          (parseInt(item?.points_used) || 0) +
-                          (parseInt(item?.shipping_cost) || 0)
-                        );
-                      }, 0)}
-                    </td>
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      {order.order_items.reduce(
-                        (acc, item) => acc + item.quantity,
-                        0
-                      )}
-                    </td>
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      {order.points_used}
-                    </td>
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      {moment(order.created_at).format("Do MMM, YYYY")}
-                    </td>
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      {new Date(order.created_at).toLocaleTimeString()}
-                    </td>
-                    <td className="px-4 py-2 border-b whitespace-nowrap">
-                      {moment(order.updated_at).format("Do MMM, YYYY")}
-                    </td>
-                    <td className="px-4 py-2 border-b flex items-center gap-3">
-                      <select
-                        className={`capitalize border rounded-md px-2 py-2 
+                {orders.map((order) => {
+                  const shippingCost =
+                    order.shipping_address.district.toLowerCase() === "dhaka"
+                      ? 60
+                      : 120;
+                  return (
+                    <tr key={order.id} className="hover:bg-gray-100">
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        <Customer id={order.customer_id} />
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        ৳{" "}
+                        {order.order_items.reduce((acc, item) => {
+                          const price = parseInt(item?.price) || 0;
+                          const points_used = parseInt(order?.points_used) || 0;
+
+                          const items_items = price * item.quantity;
+                          return acc + items_items + shippingCost - points_used;
+                        }, 0)}
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        {order.order_items.reduce(
+                          (acc, item) => acc + item.quantity,
+                          0
+                        )}
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        {order.points_used}
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        {moment(order.created_at).format("Do MMM, YYYY")}
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        {new Date(order.created_at).toLocaleTimeString()}
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        {moment(order.updated_at).format("Do MMM, YYYY")}
+                      </td>
+                      <td className="px-4 py-2 border-b flex items-center gap-3">
+                        <select
+                          className={`capitalize border rounded-md px-2 py-2 
                         ${
                           order.status === "pending"
                             ? "bg-cyan-400 text-white"
@@ -215,26 +219,29 @@ const Orders = () => {
                             ? "bg-green-600 text-white"
                             : "bg-red-400 text-white" // Default fallback for unexpected status
                         }`}
-                        value={order.status}
-                        onChange={(e) => switchStatus(order.id, e.target.value)}
-                      >
-                        {status?.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                      <div>
-                        <button
-                          onClick={() => handleOrderClick(order)}
-                          className="px-4 py-[6px] text-white bg-orange-500 rounded-md"
+                          value={order.status}
+                          onChange={(e) =>
+                            switchStatus(order.id, e.target.value)
+                          }
                         >
-                          View
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {status?.map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
+                          ))}
+                        </select>
+                        <div>
+                          <button
+                            onClick={() => handleOrderClick(order)}
+                            className="px-4 py-[6px] text-white bg-orange-500 rounded-md"
+                          >
+                            View
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
