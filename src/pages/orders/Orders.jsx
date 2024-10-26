@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
+import SearchBar from "../../components/searchbar/SearchBar";
 
 function Customer({ id = "" }) {
   const [customer, setCustomer] = useState(null);
@@ -132,6 +133,9 @@ const Orders = () => {
           <p className="text-sm text-gray-500">
             Total Orders: {response.count}
           </p>
+        </div>
+        <div>
+          <SearchBar />
         </div>
       </div>
 
