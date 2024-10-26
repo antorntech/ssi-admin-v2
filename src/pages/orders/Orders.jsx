@@ -8,7 +8,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 
-function Customer({ id="" }) {
+function Customer({ id = "" }) {
   const [customer, setCustomer] = useState(null);
   const { request } = useFetch();
 
@@ -25,12 +25,7 @@ function Customer({ id="" }) {
     fetchCustomer();
   }, [id]);
   if (!customer) return;
-  return (
-    <div>
-      <p className="opacity-50">{customer?.id}</p>
-      <p className="font-semibold">{customer?.name}</p>
-    </div>
-  );
+  return <p className="font-semibold">{customer?.name}</p>;
 }
 
 const Orders = () => {
