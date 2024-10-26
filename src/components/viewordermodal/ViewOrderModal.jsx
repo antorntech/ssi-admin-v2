@@ -27,7 +27,8 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const totalPrice = totalItemPrice + shippingCost;
+  const totalPrice =
+    totalItemPrice + shippingCost - (parseInt(points_used) || 0);
 
   return (
     <div className="order-modal">

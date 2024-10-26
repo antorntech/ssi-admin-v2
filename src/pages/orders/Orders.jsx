@@ -149,6 +149,7 @@ const Orders = () => {
                     "Quantity",
                     "Points Used",
                     "Created At",
+                    "Time",
                     "Updated At",
                     "Actions",
                   ].map((heading) => (
@@ -169,10 +170,14 @@ const Orders = () => {
                     </td>
                     <td className="px-4 py-2 border-b whitespace-nowrap">
                       ৳{" "}
-                      {order.order_items.reduce(
-                        (acc, item) => acc + item.price * item.quantity,
-                        0
-                      )}
+                      {order.order_items.reduce((acc, item) => {
+                        return (
+                          acc +
+                          item.price * item.quantity -
+                          (parseInt(item?.points_used) || 0) +
+                          (parseInt(item?.shipping_cost) || 0)
+                        );
+                      }, 0)}
                     </td>
                     <td className="px-4 py-2 border-b whitespace-nowrap">
                       {order.order_items.reduce(
@@ -185,6 +190,9 @@ const Orders = () => {
                     </td>
                     <td className="px-4 py-2 border-b whitespace-nowrap">
                       {moment(order.created_at).format("Do MMM, YYYY")}
+                    </td>
+                    <td className="px-4 py-2 border-b whitespace-nowrap">
+                      {new Date(order.created_at).toLocaleTimeString()}
                     </td>
                     <td className="px-4 py-2 border-b whitespace-nowrap">
                       {moment(order.updated_at).format("Do MMM, YYYY")}
