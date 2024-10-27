@@ -11,7 +11,7 @@ const ProtectedLayout = ({ children }) => {
       }
     }
   }, [user?.email]);
-  if (!user) return null;
+  // if (!user) return null;
   return children;
 };
 
