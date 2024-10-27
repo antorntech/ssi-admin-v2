@@ -1,14 +1,17 @@
-import { AuthContext } from "../context/AuthContext";
-import { useContext, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const ProtectedLayout = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   useEffect(() => {
     if (user?.email == false) {
-      window.location.href = "/auth/login";
+      if (window.location.pathname != "/auth/login") {
+        window.location.href = "/auth/login";
+      }
     }
   }, [user?.email]);
-
+  if (!user) return null;
   return children;
 };
 

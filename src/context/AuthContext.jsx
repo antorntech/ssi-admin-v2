@@ -79,13 +79,11 @@ const AuthProvider = ({ children }) => {
     window.location.href = "/auth/login";
   }
 
-  if (loading) return null; // Return null while loading
-
   return (
     <AuthContext.Provider
       value={{ user, isAuthenticated: !!user, loading, logout }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

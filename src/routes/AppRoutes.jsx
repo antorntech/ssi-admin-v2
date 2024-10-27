@@ -24,7 +24,6 @@ import { AuthProvider } from "../context/AuthContext";
 import MetaPixel from "../pages/pixel/MetaPixel";
 import Banners from "../pages/banners/Banners";
 import AddBanner from "../pages/banners/AddBanner";
-import EditBanner from "../pages/banners/EditBanner";
 
 const AppRoutes = () => {
   return (
@@ -138,7 +137,7 @@ const AppRoutes = () => {
           element={
             <Protected>
               <Orders />
-            </Protected>
+            </Protected>  
           }
         />
         <Route
@@ -273,9 +272,9 @@ const AppRoutes = () => {
         <Route
           path="signup"
           element={
-            <UnProtected>
+            <Protected>
               <SignUp />
-            </UnProtected>
+            </Protected>
           }
         />
         <Route

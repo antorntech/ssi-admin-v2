@@ -6,7 +6,7 @@ const UnProtected = ({ children }) => {
   const { isAuthenticated = false, loading } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated == false) {
       window.location.href = "/";
     }
   }, [isAuthenticated]);
