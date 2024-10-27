@@ -187,7 +187,7 @@ const Customers = () => {
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.updated_at
-                    ? moment(customer?.updated_at).format("Do MMM, YYYY")
+                    ? new Date(customer?.updated_at).toLocaleString()
                     : ""}
                 </td>
               </tr>
