@@ -180,9 +180,9 @@ const Customers = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.address}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   {customer?.created_at
-                    ? moment(customer?.created_at).format("Do MMM, YYYY")
+                    ? new Date(customer?.created_at).toLocaleString()
                     : ""}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
