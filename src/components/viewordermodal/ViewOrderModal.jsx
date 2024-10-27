@@ -5,44 +5,50 @@ import { Add } from "iconsax-react";
 import moment from "moment";
 import FetchContext from "../../context/FetchContext";
 import { useContext, useEffect, useState } from "react";
-import { UPLOADS_URL } from "../../utils/API";
+import { srcBuilder } from "../../utils/src";
+import { Link } from "react-router-dom";
+
+const ProductPreview = ({ id }) => {
+  const [product, setProduct] = useState(null);
+  const { request } = useContext(FetchContext);
+
+  useEffect(() => {
+    async function fetchProduct() {
+      try {
+        const response = await request(`products/${id}`);
+        const data = await response.json();
+        setProduct(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchProduct();
+  }, [id, request]);
+
+  if (!product) return;
+
+  return (
+    <div className="flex gap-2 items-center">
+      <div className="product-image">
+        <img
+          src={srcBuilder(product?.images[0])}
+          alt={product?.name}
+          className="size-16"
+        />
+      </div>
+      <div className="">
+        <Link to={`/products/${product?.id}`} className="font-semibold">
+          {product?.name}
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 const ViewOrderModal = ({ isOpen, onClose, order }) => {
   if (!isOpen) return null;
-  console.log(order);
 
-  const [productDetails, setProductDetails] = useState([]);
-  const { request } = useContext(FetchContext);
-
-  const productIds = order?.order_items?.map((item) => item.id) || [];
-
-  // Fetch product details for multiple product IDs in parallel
-  const fetchProducts = async () => {
-    try {
-      const promises = productIds?.map((id) =>
-        request(`products/${id}`).then((r) => r.json())
-      );
-      const results = await Promise.all(promises);
-      setProductDetails(results);
-    } catch (error) {
-      console.error("Failed to fetch product details:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (productIds.length) fetchProducts();
-  }, [order?.id]);
-
-  const {
-    id,
-    customer_id,
-    created_at,
-    updated_at,
-    status,
-    points_used,
-    shipping_address,
-    order_items,
-  } = order;
+  const { status, shipping_address, order_items } = order;
 
   const shippingCost =
     shipping_address.district.toLowerCase() === "dhaka" ? 60 : 120;
@@ -53,7 +59,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
   );
 
   const totalPrice =
-    totalItemPrice + shippingCost - (parseInt(points_used) || 0);
+    totalItemPrice + shippingCost - (parseInt(order?.points_used) || 0);
 
   return (
     <div className="order-modal">
@@ -74,10 +80,11 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <p className="text-gray-600">
-                <span className="font-medium">Order ID:</span> {id}
+                <span className="font-medium">Order ID:</span> {order?.id}
               </p>
               <p className="text-gray-600">
-                <span className="font-medium">Customer ID:</span> {customer_id}
+                <span className="font-medium">Customer ID:</span>{" "}
+                {order?.customer_id}
               </p>
               <p className="text-gray-600 pt-2">
                 <span className="font-medium">Status:</span>{" "}
@@ -105,11 +112,11 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
             <div className="space-y-2">
               <p className="text-gray-600">
                 <span className="font-medium">Created At:</span>{" "}
-                {moment(created_at).format("Do MMM, YYYY")}
+                {moment(order?.created_at).format("Do MMM, YYYY")}
               </p>
               <p className="text-gray-600">
                 <span className="font-medium">Updated At:</span>{" "}
-                {moment(updated_at).format("Do MMM, YYYY")}
+                {moment(order?.updated_at).format("Do MMM, YYYY")}
               </p>
             </div>
           </div>
@@ -157,10 +164,10 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
-                  Image
+                  Product
                 </th>
                 <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
-                  Product Name
+                  Weight
                 </th>
                 <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
                   Quantity
@@ -171,24 +178,14 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
               </tr>
             </thead>
             <tbody>
-              {order_items.map((item, index) => {
-                const product = productDetails[index];
-                const imageUrl = product?.images?.[0]
-                  ? `${UPLOADS_URL}${product?.images[0]}`
-                  : "";
+              {order_items.map((item) => {
                 return (
                   <tr key={item.id} className="odd:bg-white even:bg-gray-50">
                     <td className="px-4 py-3 border-b">
-                      {imageUrl && (
-                        <img
-                          src={imageUrl}
-                          alt={product?.name}
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
-                      )}
+                      <ProductPreview id={item.id} key={item.id} />
                     </td>
                     <td className="px-4 py-3 border-b text-gray-600">
-                      {product?.name || "N/A"}
+                      {item.weight ? item.weight + item.unit : ""}
                     </td>
                     <td className="px-4 py-3 border-b text-gray-600">
                       {item.quantity}
@@ -219,7 +216,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
             </div>
             <div className="flex items-center gap-12">
               <div className="w-[200px] font-medium">Points Used:</div>
-              <div className="w-[200px]">{points_used}</div>
+              <div className="w-[200px]">{order?.points_used}</div>
             </div>
             <div className="flex items-center gap-12 font-semibold">
               <div className="w-[200px]">Total Price:</div>
