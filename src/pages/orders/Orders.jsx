@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
-import FetchContext, { useFetch } from "../../context/FetchContext";
+import FetchContext from "../../context/FetchContext";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
