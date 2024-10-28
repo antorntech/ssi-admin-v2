@@ -5,7 +5,12 @@ import "./AddPointsModal.css";
 import { Add } from "iconsax-react";
 import FetchContext from "../../context/FetchContext";
 
-const AddPointsModal = ({ isOpen, onClose, customerId, fetchCustomers }) => {
+const AddPointsModal = ({
+  isOpen,
+  onClose = () => {},
+  customerId,
+  fetchCustomers = () => {},
+}) => {
   if (!isOpen) return null;
   const [points, setPoints] = useState(0);
   const { request } = useContext(FetchContext);
@@ -13,11 +18,19 @@ const AddPointsModal = ({ isOpen, onClose, customerId, fetchCustomers }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    if (points == 0) {
+      console.error("Points cannot be 0");
+      return;
+    }
+    if (!customerId) {
+      console.error("Customer ID is required");
+      return;
+    }
+
     const body = {
       customer_id: customerId,
       points: parseInt(points),
     };
-    console.log(body);
 
     try {
       const response = await request("points", {
@@ -54,7 +67,7 @@ const AddPointsModal = ({ isOpen, onClose, customerId, fetchCustomers }) => {
             You can add or subtract points to customer account!
           </p>
         </div>
-        <form action="#" onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>
           <input
             type="number"
             placeholder="Enter points"
