@@ -55,11 +55,11 @@ const AddPointsModal = ({
 
   return (
     <div className="points-modal">
-      <div className="points-modal-content">
+      <div className="points-modal-content clear-start p-4 space-y-2">
         <button onClick={onClose} className="close-button">
           <Add size="24" className="text-white rotate-45" />
         </button>
-        <div className="mb-4">
+        <div className="">
           <h1 className="text-xl font-bold text-black">
             Add or Subtract Points
           </h1>

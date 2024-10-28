@@ -6,7 +6,6 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
 import { Edit } from "iconsax-react";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
-import moment from "moment";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
