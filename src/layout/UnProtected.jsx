@@ -1,17 +1,16 @@
-/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const UnProtected = ({ children }) => {
-  const { isAuthenticated = false, loading } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated == false) {
-      window.location.href = "/";
+    if (isAuthenticated) {
+      navigate("/"); // Redirect to home if already authenticated
     }
-  }, [isAuthenticated]);
-
-  if (loading) return;
+  }, [isAuthenticated, navigate]);
 
   return children;
 };

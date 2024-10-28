@@ -1,18 +1,20 @@
-/* eslint-disable react/prop-types */
-import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ProtectedLayout = ({ children }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (user?.email == false) {
-      if (window.location.pathname != "/auth/login") {
-        window.location.href = "/auth/login";
-      }
+    if (!loading && !user) {
+      navigate("/auth/login"); // Redirect to login if unauthenticated
     }
-  }, [user?.email]);
-  // if (!user) return null;
-  return children;
+  }, [user, loading, navigate]);
+
+  if (loading) return <div>Loading...</div>; // Avoid rendering during loading
+
+  return children; // Render content if authenticated
 };
 
 export default ProtectedLayout;
