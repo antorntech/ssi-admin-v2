@@ -146,7 +146,7 @@ const SendMessages = () => {
         <Pagination
           endPoint="send-messages"
           currentPage={page}
-          totalPages={response.count ? Math.ceil(response.count / 5) : 0}
+          totalPages={response.count ? Math.ceil(response.count / limit) : 0}
         />
       </section>
       <div className="w-full max-w-sm">
