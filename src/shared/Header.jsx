@@ -31,7 +31,6 @@ const Header = () => {
                   </Button>
                 </PopoverHandler>
                 <PopoverContent className="mt-2 w-[150px]">
-                  <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   {/* <Link
                     to={"/profile"}
                     className="w-full flex items-center gap-2 hover:text-[#6CB93B] transition-all duration-300"
@@ -39,7 +38,6 @@ const Header = () => {
                     <User size="20" className="text-whtie" />
                     <p>Profile</p>
                   </Link> */}
-                  <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <div
                     className="w-full flex items-center gap-2 hover:text-[#6CB93B] cursor-pointer transition-all duration-300"
                     onClick={() => {

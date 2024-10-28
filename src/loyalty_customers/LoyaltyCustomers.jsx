@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Edit } from "iconsax-react";
+// import { Edit } from "iconsax-react";
 import Pagination from "../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../context/FetchContext";
@@ -76,14 +76,13 @@ const LoyaltyCustomers = () => {
     }
   };
 
-  // add-points-modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const handlePointsClick = (order) => {
-    setSelectedCustomer(order);
-    setIsModalOpen(true);
-  };
+  // const handlePointsClick = (order) => {
+  //   setSelectedCustomer(order);
+  //   setIsModalOpen(true);
+  // };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -119,9 +118,6 @@ const LoyaltyCustomers = () => {
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Orders
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                Address
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Created At
@@ -163,21 +159,18 @@ const LoyaltyCustomers = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px]">
                   <div className="flex items-center justify-between">
                     <div>{customer?.points || 0}</div>
-                    <div className="flex gap-1">
+                    {/* <div className="flex gap-1">
                       <button
                         onClick={() => handlePointsClick(customer.id)}
                         className="size-7 flex items-center justify-center bg-[#6CB93B] rounded"
                       >
                         <Edit className="size-4" color="#fff" />
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   <Orders customer={customer} />
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer?.address}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   {customer?.created_at
