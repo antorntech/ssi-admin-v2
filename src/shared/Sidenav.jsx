@@ -49,6 +49,11 @@ const menuItems = [
     icon: "/img/icons/precustomer",
   },
   {
+    title: "Loyalty Customers",
+    link: "/loyalty-customers",
+    icon: "/img/icons/loyaltycustomer",
+  },
+  {
     title: "Send Messages",
     link: "/send-messages",
     icon: "/img/icons/message",

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Login from "../pages/auth/Login";
@@ -17,225 +17,294 @@ import Customers from "../pages/customers/Customers";
 import PreviousCustomers from "../pages/previous-customers/PreviousCustomers";
 import Gallery from "../pages/gallery/Gallery";
 import IndividualGallery from "../pages/gallery/IndividualGallery";
+import RootLayout from "../layout/RootLayout";
+import Protected from "../layout/Protected";
+import UnProtected from "../layout/UnProtected";
+import { AuthProvider } from "../context/AuthContext";
 import MetaPixel from "../pages/pixel/MetaPixel";
 import Banners from "../pages/banners/Banners";
 import AddBanner from "../pages/banners/AddBanner";
-import UnProtected from "../layout/UnProtected";
-import ProtectedLayout from "../layout/Protected";
-import { AuthProvider } from "../context/AuthContext";
-import RootLayout from "../layout/RootLayout";
+import LoyaltyCustomers from "../loyalty_customers/LoyaltyCustomers";
 
 const AppRoutes = () => {
   return (
-    <AuthProvider>
-      <Routes>
-        {/* Public Auth Routes */}
-        <Route path="auth" element={<Outlet />}>
-          <Route
-            path="login"
-            element={
-              <UnProtected>
-                <Login />
-              </UnProtected>
-            }
-          />
-          <Route
-            path="signup"
-            element={
-              <UnProtected>
-                <SignUp />
-              </UnProtected>
-            }
-          />
-          <Route
-            path="forgot-password"
-            element={
-              <UnProtected>
-                <ForgotPassword />
-              </UnProtected>
-            }
-          />
-        </Route>
-
+    <Routes>
+      <Route
+        path=""
+        element={
+          <AuthProvider>
+            <RootLayout />
+          </AuthProvider>
+        }
+      >
         <Route
+          index
           element={
-            <AuthProvider>
-              <RootLayout />
-            </AuthProvider>
+            <Protected>
+              <Home />
+            </Protected>
           }
-        >
-          {/* Protected Routes */}
-          <Route
-            path="/"
-            element={
-              <ProtectedLayout>
-                <Home />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="profile"
-            element={
-              <ProtectedLayout>
-                <Profile />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="products"
-            element={
-              <ProtectedLayout>
-                <Products />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="products/add-product"
-            element={
-              <ProtectedLayout>
-                <AddProduct />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="products/edit/:id"
-            element={
-              <ProtectedLayout>
-                <EditProduct />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="gifts"
-            element={
-              <ProtectedLayout>
-                <Gifts />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="orders"
-            element={
-              <ProtectedLayout>
-                <Orders />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="points"
-            element={
-              <ProtectedLayout>
-                <Points />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="categories"
-            element={
-              <ProtectedLayout>
-                <Categories />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="brands"
-            element={
-              <ProtectedLayout>
-                <Brands />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="send-messages"
-            element={
-              <ProtectedLayout>
-                <SendMessages />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="customers"
-            element={
-              <ProtectedLayout>
-                <Customers />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="previous-customers"
-            element={
-              <ProtectedLayout>
-                <PreviousCustomers />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="gallery"
-            element={
-              <ProtectedLayout>
-                <Gallery />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="gallerys/:slug"
-            element={
-              <ProtectedLayout>
-                <IndividualGallery />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="pixel-id"
-            element={
-              <ProtectedLayout>
-                <MetaPixel />
-              </ProtectedLayout>
-            }
-          />
-
-          <Route
-            path="banners"
-            element={
-              <ProtectedLayout>
-                <Banners />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="banners/add"
-            element={
-              <ProtectedLayout>
-                <AddBanner />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="banners/edit/:id"
-            element={
-              <ProtectedLayout>
-                <AddBanner />
-              </ProtectedLayout>
-            }
-          />
-        </Route>
-
-        {/* Fallback Route */}
-        <Route path="*" element={<Navigate to="/auth/login" />} />
-      </Routes>
-    </AuthProvider>
+        />
+        <Route
+          path="products"
+          element={
+            <Protected>
+              <Products />
+            </Protected>
+          }
+        />
+        <Route
+          path="products/:page"
+          element={
+            <Protected>
+              <Products />
+            </Protected>
+          }
+        />
+        <Route
+          path="products/add-product"
+          element={
+            <Protected>
+              <AddProduct />
+            </Protected>
+          }
+        />
+        <Route
+          path="products/edit/:id"
+          element={
+            <Protected>
+              <EditProduct />
+            </Protected>
+          }
+        />
+        <Route
+          path="categories"
+          element={
+            <Protected>
+              <Categories />
+            </Protected>
+          }
+        />
+        <Route
+          path="categories/:page"
+          element={
+            <Protected>
+              <Categories />
+            </Protected>
+          }
+        />
+        <Route
+          path="brands"
+          element={
+            <Protected>
+              <Brands />
+            </Protected>
+          }
+        />
+        <Route
+          path="brands/:page"
+          element={
+            <Protected>
+              <Brands />
+            </Protected>
+          }
+        />
+        <Route
+          path="gifts"
+          element={
+            <Protected>
+              <Gifts />
+            </Protected>
+          }
+        />
+        <Route
+          path="gifts/:page"
+          element={
+            <Protected>
+              <Gifts />
+            </Protected>
+          }
+        />
+        <Route
+          path="orders"
+          element={
+            <Protected>
+              <Orders />
+            </Protected>
+          }
+        />
+        <Route
+          path="orders/:page"
+          element={
+            <Protected>
+              <Orders />
+            </Protected>
+          }
+        />
+        <Route
+          path="points"
+          element={
+            <Protected>
+              <Points />
+            </Protected>
+          }
+        />
+        <Route
+          path="customers"
+          element={
+            <Protected>
+              <Customers />
+            </Protected>
+          }
+        />
+        <Route
+          path="customers/:page"
+          element={
+            <Protected>
+              <Customers />
+            </Protected>
+          }
+        />
+        <Route
+          path="previous-customers"
+          element={
+            <Protected>
+              <PreviousCustomers />
+            </Protected>
+          }
+        />
+        <Route
+          path="loyalty-customers"
+          element={
+            <Protected>
+              <LoyaltyCustomers />
+            </Protected>
+          }
+        />
+        <Route
+          path="loyalty-customers/:page"
+          element={
+            <Protected>
+              <LoyaltyCustomers />
+            </Protected>
+          }
+        />
+        <Route
+          path="send-messages"
+          element={
+            <Protected>
+              <SendMessages />
+            </Protected>
+          }
+        />
+        <Route
+          path="send-messages/:page"
+          element={
+            <Protected>
+              <SendMessages />
+            </Protected>
+          }
+        />
+        <Route
+          path="gallery"
+          element={
+            <Protected>
+              <Gallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="gallery/:page"
+          element={
+            <Protected>
+              <Gallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="gallerys/:slug"
+          element={
+            <Protected>
+              <IndividualGallery />
+            </Protected>
+          }
+        />
+        <Route
+          path="pixel-id"
+          element={
+            <Protected>
+              <MetaPixel />
+            </Protected>
+          }
+        />
+        <Route
+          path="banners"
+          element={
+            <Protected>
+              <Banners />
+            </Protected>
+          }
+        />
+        <Route
+          path="banners/add"
+          element={
+            <Protected>
+              <AddBanner />
+            </Protected>
+          }
+        />
+        <Route
+          path="banners/edit/:id"
+          element={
+            <Protected>
+              <AddBanner />
+            </Protected>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <Protected>
+              <Profile />
+            </Protected>
+          }
+        />
+      </Route>
+      <Route
+        path="auth"
+        element={
+          <AuthProvider>
+            <Outlet />
+          </AuthProvider>
+        }
+      >
+        <Route
+          path="login"
+          element={
+            <UnProtected>
+              <Login />
+            </UnProtected>
+          }
+        />
+        <Route
+          path="signup"
+          element={
+            <Protected>
+              <SignUp />
+            </Protected>
+          }
+        />
+        <Route
+          path="forgot-password"
+          element={
+            <UnProtected>
+              <ForgotPassword />
+            </UnProtected>
+          }
+        />
+      </Route>
+      <Route path="*" element={<Navigate to="auth/login" />} />
+    </Routes>
   );
 };
 
