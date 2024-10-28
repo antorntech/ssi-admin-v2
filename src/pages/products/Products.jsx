@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -5,10 +6,134 @@ import Loader from "../../loader/Loader";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Pagination from "../../components/pagination/Pagination";
-import FetchContext from "../../context/FetchContext";
-import { UPLOADS_URL } from "../../utils/API";
+import FetchContext, { useFetch } from "../../context/FetchContext";
 import { Edit2, Pause, Play, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
+import { srcBuilder } from "../../utils/src";
+
+const ProductRow = ({ product = null, openModal = () => {} }) => {
+  const { request } = useFetch();
+  const [data, setData] = useState(product);
+  const [loading, setLoading] = useState(false);
+
+  async function fetchProduct(id = null) {
+    if (!id) return;
+
+    setLoading(true);
+    try {
+      const response = await request(`products/${id}`);
+      const data = await response.json();
+      if (!data) return;
+      setData(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <tr className="hover:bg-gray-100">
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        <div className="flex gap-2 items-center">
+          {data?.active === false ? (
+            <button
+              onClick={async () => {
+                try {
+                  await request(`products/${data?.id}/activate`, {
+                    method: "PATCH",
+                  });
+                  await fetchProduct(data?.id); // We are not changing order with updated_at that is why does not require re render
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+              className="text-green-500 hover:text-green-700"
+            >
+              <Play size="22" className="text-green-600" variant="Bold" />
+            </button>
+          ) : (
+            <button
+              onClick={async () => {
+                try {
+                  await request(`products/${data?.id}/deactivate`, {
+                    method: "PATCH",
+                  });
+                  await fetchProduct(data?.id); // We are not changing order with updated_at that is why does not require re render
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+              className="text-green-500 hover:text-green-700"
+            >
+              <Pause size="22" className="text-red-600" variant="Bold" />
+            </button>
+          )}
+          <Link
+            to={`/products/edit/${data?.id}`}
+            className="text-orange-500 hover:text-orange-700"
+          >
+            <Edit2 size="22" className="text-orange-600" variant="Bold" />
+          </Link>
+          <button
+            onClick={() => openModal(data?.id)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <Trash size="22" className="text-red-600" variant="Bold" />
+          </button>
+        </div>
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {data?.images?.[0] && (
+          <img
+            src={srcBuilder(data?.images?.[0])}
+            alt={data?.name}
+            className="h-12 w-12 object-cover border"
+          />
+        )}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+        {data?.name}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+        {data?.brand?.name}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize">
+        {data?.color}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+        {data?.category?.name}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {parseFloat(data?.price)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {parseFloat(data?.regular_price)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {parseInt(data?.weight)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {parseInt(data?.points)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {parseInt(data?.points_max)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {parseInt(data?.quantity)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+        {data?.active === false ? "Inactive" : "Active"}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
+        {formatDate(product?.created_at)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
+        {formatDate(product?.updated_at)}
+      </td>
+    </tr>
+  );
+};
 
 const Products = () => {
   const limit = 10;
@@ -146,146 +271,13 @@ const Products = () => {
               </thead>
               <tbody>
                 {filteredProducts.length > 0 ? (
-                  filteredProducts.map((product) => {
-                    const {
-                      id,
-                      images,
-                      name,
-                      brand,
-                      color,
-                      category,
-                      price,
-                      regular_price,
-                      weight,
-                      points,
-                      points_max,
-                      quantity,
-                      active,
-                      created_at,
-                    } = product;
-
-                    const imageUrl = images?.[0]
-                      ? `${UPLOADS_URL}${images[0]}`
-                      : "";
-
-                    return (
-                      <tr key={id} className="hover:bg-gray-100">
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          <div className="flex gap-2 items-center">
-                            {active === false ? (
-                              <button
-                                onClick={async () => {
-                                  try {
-                                    await request(`products/${id}/activate`, {
-                                      method: "PATCH",
-                                    });
-                                    await fetchProducts(); // We are not changing order with updated_at that is why does not require re render
-                                  } catch (error) {
-                                    console.error(error);
-                                  }
-                                }}
-                                className="text-green-500 hover:text-green-700"
-                              >
-                                <Play
-                                  size="22"
-                                  className="text-green-600"
-                                  variant="Bold"
-                                />
-                              </button>
-                            ) : (
-                              <button
-                                onClick={async () => {
-                                  try {
-                                    await request(`products/${id}/deactivate`, {
-                                      method: "PATCH",
-                                    });
-                                    await fetchProducts(); // We are not changing order with updated_at that is why does not require re render
-                                  } catch (error) {
-                                    console.error(error);
-                                  }
-                                }}
-                                className="text-green-500 hover:text-green-700"
-                              >
-                                <Pause
-                                  size="22"
-                                  className="text-red-600"
-                                  variant="Bold"
-                                />
-                              </button>
-                            )}
-                            <Link
-                              to={`/products/edit/${id}`}
-                              className="text-orange-500 hover:text-orange-700"
-                            >
-                              <Edit2
-                                size="22"
-                                className="text-orange-600"
-                                variant="Bold"
-                              />
-                            </Link>
-                            <button
-                              onClick={() => handleOpen(id)}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <Trash
-                                size="22"
-                                className="text-red-600"
-                                variant="Bold"
-                              />
-                            </button>
-                          </div>
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {imageUrl && (
-                            <img
-                              src={imageUrl}
-                              alt={name}
-                              className="h-12 w-12 object-cover border"
-                            />
-                          )}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-                          {name}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-                          {brand?.name}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize">
-                          {color}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-                          {category?.name}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseFloat(price)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseFloat(regular_price)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(weight)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(points)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(points_max)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(quantity)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {active === false ? "Inactive" : "Active"}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
-                          {formatDate(product?.created_at)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
-                          {formatDate(product?.updated_at)}
-                        </td>
-                      </tr>
-                    );
-                  })
+                  filteredProducts.map((product) => (
+                    <ProductRow
+                      key={product.id}
+                      product={product}
+                      openModal={handleOpen}
+                    />
+                  ))
                 ) : (
                   <tr>
                     <td colSpan="9" className="text-center py-4">
@@ -296,14 +288,13 @@ const Products = () => {
               </tbody>
             </table>
           </div>
-          {/* Pagination Component */}
+
           <Pagination
             endPoint="products"
             currentPage={page}
             totalPages={response.count ? Math.ceil(response.count / limit) : 1}
           />
 
-          {/* Delete Confirmation Modal */}
           <DeleteConfirmModal
             open={open}
             handleOpen={() => handleOpen(null)}
