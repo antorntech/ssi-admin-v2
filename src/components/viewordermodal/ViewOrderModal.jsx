@@ -2,11 +2,11 @@
 
 import "./ViewOrderModal.css";
 import { Add } from "iconsax-react";
-import moment from "moment";
 import FetchContext from "../../context/FetchContext";
 import { useContext, useEffect, useState } from "react";
 import { srcBuilder } from "../../utils/src";
 import { Link } from "react-router-dom";
+import { formatDate } from "../../utils/date";
 
 const ProductPreview = ({ id }) => {
   const [product, setProduct] = useState(null);
@@ -112,11 +112,11 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
             <div className="space-y-2">
               <p className="text-gray-600">
                 <span className="font-medium">Created At:</span>{" "}
-                {moment(order?.created_at).format("Do MMM, YYYY")}
+                {formatDate(order?.created_at)}
               </p>
               <p className="text-gray-600">
                 <span className="font-medium">Updated At:</span>{" "}
-                {moment(order?.updated_at).format("Do MMM, YYYY")}
+                {formatDate(order?.updated_at)}
               </p>
             </div>
           </div>

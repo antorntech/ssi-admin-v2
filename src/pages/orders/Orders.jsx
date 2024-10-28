@@ -2,12 +2,12 @@
 import { useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
 import FetchContext from "../../context/FetchContext";
-import moment from "moment";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 import SearchBar from "../../components/searchbar/SearchBar";
+import { formatDate } from "../../utils/date";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -176,7 +176,6 @@ const Orders = () => {
                     "Quantity",
                     "Points Used",
                     "Created At",
-                    "Time",
                     "Updated At",
                     "Actions",
                   ].map((heading) => (
@@ -220,13 +219,10 @@ const Orders = () => {
                         {order.points_used}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {moment(order.created_at).format("Do MMM, YYYY")}
+                        {formatDate(order?.created_at)}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {new Date(order.created_at).toLocaleTimeString()}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {moment(order.updated_at).format("Do MMM, YYYY")}
+                        {formatDate(order?.updated_at)}
                       </td>
                       <td className="px-4 py-2 border-b flex items-center gap-3">
                         <select
@@ -273,7 +269,6 @@ const Orders = () => {
             </table>
           </div>
 
-          {/* Pagination Controls */}
           <Pagination
             endPoint="orders"
             currentPage={currentPage}
@@ -281,7 +276,6 @@ const Orders = () => {
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
 
-          {/* Order Modal */}
           <ViewOrderModal
             isOpen={isModalOpen}
             onClose={closeModal}

@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useContext } from "react";
 import AddGift from "./AddGift";
 import EditGift from "./EditGift";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
-import moment from "moment";
 import { useParams } from "react-router-dom";
 import { Edit2, Trash } from "iconsax-react";
+import { formatDate } from "../../utils/date";
 
 const Gifts = () => {
   const params = useParams();
@@ -25,7 +26,7 @@ const Gifts = () => {
       setResponse((prev) => ({ ...prev, data, count }));
       setGifts(json.data);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -109,11 +110,11 @@ const Gifts = () => {
                     </td>
 
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                      {moment(gift.created_at).format("Do MMM, YYYY")}
+                      {formatDate(gift?.created_at)}
                     </td>
 
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                      {moment(gift.updated_at).format("Do MMM, YYYY")}
+                      {formatDate(gift?.updated_at)}
                     </td>
                     <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                       <div className="flex items-center gap-2">

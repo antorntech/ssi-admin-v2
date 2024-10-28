@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import { srcBuilder } from "../../utils/src";
-import moment from "moment";
 import { Edit2, Trash } from "iconsax-react";
+import { formatDate } from "../../utils/date";
 
 const Banners = () => {
   const [banners, setBanners] = useState([]);
@@ -119,10 +119,10 @@ const Banners = () => {
                   {banner.size}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                  {moment(banner.created_at).format("Do MMM, YYYY")}
+                  {formatDate(banner?.created_at)}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                  {moment(banner.updated_at).format("Do MMM, YYYY")}
+                  {formatDate(banner?.updated_at)}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                   <div className="flex items-center gap-3">

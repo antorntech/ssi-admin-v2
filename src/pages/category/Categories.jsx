@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useContext } from "react";
 import AddCategory from "./AddCategory";
 import EditCategory from "./EditCategory";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext from "../../context/FetchContext";
-import moment from "moment";
 import { UPLOADS_URL } from "../../utils/API";
 import { useParams } from "react-router-dom";
 import { Edit2, Trash } from "iconsax-react";
+import { formatDate } from "../../utils/date";
 
 const Categories = () => {
   const params = useParams();
@@ -27,7 +28,7 @@ const Categories = () => {
       setResponse((prev) => ({ ...prev, data, count }));
       setCategories(json.data);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -112,10 +113,10 @@ const Categories = () => {
                     {category.name}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                    {moment(category.created_at).format("Do MMM, YYYY")}
+                    {formatDate(category?.created_at)}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                    {moment(category.updated_at).format("Do MMM, YYYY")}
+                    {formatDate(category?.updated_at)}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     <div className="flex items-center gap-2">

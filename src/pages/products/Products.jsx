@@ -7,8 +7,8 @@ import SearchBar from "../../components/searchbar/SearchBar";
 import Pagination from "../../components/pagination/Pagination";
 import FetchContext from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
-import moment from "moment";
 import { Edit2, Pause, Play, Trash } from "iconsax-react";
+import { formatDate } from "../../utils/date";
 
 const Products = () => {
   const limit = 10;
@@ -119,6 +119,7 @@ const Products = () => {
               <thead>
                 <tr>
                   {[
+                    "Action",
                     "Banner",
                     "Name",
                     "Brand",
@@ -131,8 +132,8 @@ const Products = () => {
                     "Used Points Max",
                     "Quantity",
                     "Status",
-                    "Date",
-                    "Action",
+                    "Ceated At",
+                    "Updated At",
                   ].map((heading) => (
                     <th
                       key={heading}
@@ -169,51 +170,6 @@ const Products = () => {
 
                     return (
                       <tr key={id} className="hover:bg-gray-100">
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {imageUrl && (
-                            <img
-                              src={imageUrl}
-                              alt={name}
-                              className="h-12 w-12 object-cover border"
-                            />
-                          )}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-                          {name}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-                          {brand?.name}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize">
-                          {color}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-                          {category?.name}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseFloat(price)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseFloat(regular_price)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(weight)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(points)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(points_max)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {parseInt(quantity)}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-                          {active === false ? "Inactive" : "Active"}
-                        </td>
-                        <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
-                          {moment(created_at).format("Do MMM, YYYY")}
-                        </td>
                         <td className="px-4 py-2 md:px-6 md:py-2 border-b">
                           <div className="flex gap-2 items-center">
                             {active === false ? (
@@ -278,6 +234,54 @@ const Products = () => {
                               />
                             </button>
                           </div>
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {imageUrl && (
+                            <img
+                              src={imageUrl}
+                              alt={name}
+                              className="h-12 w-12 object-cover border"
+                            />
+                          )}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+                          {name}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+                          {brand?.name}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize">
+                          {color}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
+                          {category?.name}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {parseFloat(price)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {parseFloat(regular_price)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {parseInt(weight)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {parseInt(points)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {parseInt(points_max)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {parseInt(quantity)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b">
+                          {active === false ? "Inactive" : "Active"}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
+                          {formatDate(product?.created_at)}
+                        </td>
+                        <td className="px-4 py-2 md:px-6 md:py-2 border-b whitespace-nowrap">
+                          {formatDate(product?.updated_at)}
                         </td>
                       </tr>
                     );

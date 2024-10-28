@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
+import { formatDate } from "../../utils/date";
 
 const PointsRow = ({ point, handleOpen }) => {
   const { request } = useContext(FetchContext);
@@ -24,7 +24,10 @@ const PointsRow = ({ point, handleOpen }) => {
       <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.phone}</td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b">{point.points}</td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-        {moment(point?.created_at).format("Do MMM, YYYY")}
+        {formatDate(point?.created_at)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+        {formatDate(point?.updated_at)}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b">
         <button
@@ -97,7 +100,10 @@ const Points = () => {
                 Points
               </th>
               <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
-                CreatedAt
+                Created At
+              </th>
+              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+                Updated At
               </th>
               <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
                 Action

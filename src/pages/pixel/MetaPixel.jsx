@@ -1,8 +1,8 @@
-import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import { Trash } from "iconsax-react";
+import { formatDate } from "../../utils/date";
 
 const MetaPixel = () => {
   const [metaId, setMetaId] = useState("");
@@ -133,7 +133,7 @@ const MetaPixel = () => {
                     {meta?.pixel_id}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                    {moment(meta.createdAt).format("Do MMM, YYYY")}
+                    {formatDate(meta?.created_at)}
                   </td>
                   <td className="px-4 py-2 md:px-6 md:py-4 border-b">
                     <button onClick={() => handleOpen(meta.id)} className="">
