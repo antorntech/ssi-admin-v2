@@ -6,7 +6,7 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { Logout, User } from "iconsax-react";
 
@@ -32,13 +32,13 @@ const Header = () => {
                 </PopoverHandler>
                 <PopoverContent className="mt-2 w-[150px]">
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
-                  <Link
+                  {/* <Link
                     to={"/profile"}
                     className="w-full flex items-center gap-2 hover:text-[#6CB93B] transition-all duration-300"
                   >
                     <User size="20" className="text-whtie" />
                     <p>Profile</p>
-                  </Link>
+                  </Link> */}
                   <div className="h-[1px] w-full bg-gray-200 my-2"></div>
                   <div
                     className="w-full flex items-center gap-2 hover:text-[#6CB93B] cursor-pointer transition-all duration-300"
