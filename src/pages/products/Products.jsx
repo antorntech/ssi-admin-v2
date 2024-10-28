@@ -243,7 +243,7 @@ const Products = () => {
                                     await request(`products/${id}/deactivate`, {
                                       method: "PATCH",
                                     });
-                                    // await fetchProducts(); // We are not changing order with updated_at that is why does not require re render
+                                    await fetchProducts(); // We are not changing order with updated_at that is why does not require re render
                                   } catch (error) {
                                     console.error(error);
                                   }
