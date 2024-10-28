@@ -39,12 +39,12 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
+  const limit = 10;
 
   // Fetch orders with pagination
   const fetchOrders = async (page) => {
     setLoading(true);
     try {
-      const limit = 10;
       const res = await request(
         `orders?skip=${(page - 1) * limit}&limit=${limit}`
       );
@@ -277,7 +277,7 @@ const Orders = () => {
           <Pagination
             endPoint="orders"
             currentPage={currentPage}
-            totalPages={Math.ceil(response.count / 5)}
+            totalPages={Math.ceil(response.count / limit)}
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
 
