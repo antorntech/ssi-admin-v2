@@ -1,16 +1,12 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
-import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
-import { Edit } from "iconsax-react";
 
 const PointsRow = ({ point, handleOpen }) => {
   const { request } = useContext(FetchContext);
   const [customer, setCustomer] = useState({});
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     request(`users/${point?.customer_id}`).then((res) => {
@@ -26,23 +22,7 @@ const PointsRow = ({ point, handleOpen }) => {
     <tr>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.email}</td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.phone}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-        <div className="flex items-center gap-4 justify-between w-24">
-          {point?.points}
-          <button
-            onClick={() => setIsOpen(true)}
-            className="size-7 bg-green-500 hover:bg-green-600 rounded-lg flex justify-center items-center"
-          >
-            <Edit className="text-white size-4" />
-          </button>
-          <AddPointsModal
-            point={point?.points}
-            customerId={customer?.id}
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-          />
-        </div>
-      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{point.points}</td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
         {moment(point?.created_at).format("Do MMM, YYYY")}
       </td>
