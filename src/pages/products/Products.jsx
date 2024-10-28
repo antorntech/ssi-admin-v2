@@ -111,7 +111,7 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
         {parseFloat(data?.regular_price)}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b">
-        {parseInt(data?.weight)}
+        {parseInt(data?.weight)} {data?.unit}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b">
         {parseInt(data?.points)}
