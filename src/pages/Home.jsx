@@ -133,7 +133,7 @@ const Home = () => {
             },
             {
               label: "Repeated Customers",
-              value: `${dashboard?.repeated_percentage}%`,
+              value: `${dashboard?.repeated_percentage || ""}%`,
               icon: <UserTick size="30" className="text-white" />,
             },
           ].map((item, index) => (
