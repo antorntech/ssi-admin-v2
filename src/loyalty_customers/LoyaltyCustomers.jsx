@@ -5,10 +5,11 @@ import { Link, useParams } from "react-router-dom";
 import Pagination from "../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../context/FetchContext";
-import AddPointsModal from "../components/addpointsmodal/AddPointsModal";
+import { Trash } from "iconsax-react";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
+
   const { request } = useFetch();
   const { id } = customer;
 
@@ -34,55 +35,85 @@ const Orders = ({ customer = {} }) => {
 const LoyaltyCustomers = () => {
   const params = useParams();
   const page = params?.page || 1;
-  const [customers, setCustomers] = useState([]);
+  const [loyaltyCustomers, setLoyaltyCustomers] = useState([]);
+  const [level, setLevel] = useState(["silver", "gold", "platinum"]);
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
   const limit = 10;
 
-  const fetchCustomers = async () => {
+  const fetchLoyaltyCustomers = async () => {
     try {
       const response = await request(
-        `users?skip=${(page - 1) * limit}&limit=${limit}`
+        `loyalty/customers?skip=${(page - 1) * limit}&limit=${limit}`
       );
       const json = await response.json();
       console.log(json);
       const { data, count } = json;
       if (!data) return;
       setResponse((prev) => ({ ...prev, data, count }));
-      setCustomers(data);
+      setLoyaltyCustomers(data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [page]);
-
-  const handleOpen = () => setOpen(!open);
+  const handleOpen = (id = null) => {
+    setSelectedItemId(id);
+    setOpen(!open);
+  };
 
   const handleDelete = async (id) => {
     try {
       if (!id) throw new Error("Id is not defined");
-      const response = await request(`products/${id}`, { method: "DELETE" });
+      const response = await request(`loyalty/customers/${id}`, {
+        method: "DELETE",
+      });
       if (!response.ok) throw new Error("Failed to delete product");
       setSelectedItemId(null);
-      fetchCustomers();
+      fetchLoyaltyCustomers();
       setOpen(false);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const fetchLevel = async () => {
+    try {
+      const res = await request(`loyalty/level`);
+      const json = await res.json();
+      if (json) {
+        setLevel(json);
+      } else {
+        console.error("Failed to fetch status");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  // const handlePointsClick = (order) => {
-  //   setSelectedCustomer(order);
-  //   setIsModalOpen(true);
-  // };
+  useEffect(() => {
+    fetchLoyaltyCustomers();
+    fetchLevel();
+  }, [page]);
+
+  const switchLevel = (id, level) => {
+    request(`loyalty/customers/${id}/level`, {
+      method: "PATCH",
+      header: "Content-Type: application/json",
+      body: level,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Error: ${res.levelText}`);
+        return res.json();
+      })
+      .then(() => {
+        toast.success("Order Updated Successfully!");
+        fetchOrders(currentPage);
+      })
+      .catch((error) => console.error("Error updating order:", error));
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -125,10 +156,16 @@ const LoyaltyCustomers = () => {
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Updated At
               </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Level
+              </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            {customers?.map((customer) => (
+            {loyaltyCustomers?.map((customer) => (
               <tr
                 key={customer?.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
@@ -182,23 +219,45 @@ const LoyaltyCustomers = () => {
                     ? new Date(customer?.updated_at).toLocaleString()
                     : ""}
                 </td>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  <select
+                    className={`capitalize border rounded-md px-2 py-2 
+                        ${
+                          customer.level === "silver"
+                            ? "bg-[#A8A9AD] text-black"
+                            : customer.level === "gold"
+                            ? "bg-[#DAA511] text-black"
+                            : customer.level === "platinum"
+                            ? "bg-[#E5E3E0] text-black"
+                            : "bg-[#A8A9AD] text-black" // Default fallback for unexpected level
+                        }`}
+                    value={customer.level}
+                    onChange={(e) => switchLevel(customer.id, e.target.value)}
+                  >
+                    {level?.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  <button
+                    onClick={() => handleOpen(customer.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash size="22" className="text-red-600" variant="Bold" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Add Points Modal */}
-      <AddPointsModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        customerId={selectedCustomer}
-        fetchCustomers={fetchCustomers}
-      />
-
       {/* Pagination Component */}
       <Pagination
-        endPoint="customers"
+        endPoint="loyalty-customers"
         currentPage={page}
         totalPages={response.count ? Math.ceil(response.count / limit) : 0}
       />

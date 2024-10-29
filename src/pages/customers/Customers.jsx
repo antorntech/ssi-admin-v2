@@ -4,8 +4,9 @@ import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
-import { Edit } from "iconsax-react";
+import { Add, Edit } from "iconsax-react";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
+import { toast } from "react-toastify";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -40,6 +41,8 @@ const Customers = () => {
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
   const limit = 10;
+
+  console.log(customers);
 
   const fetchCustomers = async () => {
     try {
@@ -85,6 +88,28 @@ const Customers = () => {
     setIsModalOpen(true);
   };
 
+  const makeLoyaltyCustomer = async (id) => {
+    try {
+      const response = await request(`loyalty/customers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer_id: id,
+        }),
+      });
+      const json = await response.json();
+      if (!json) return;
+      toast.success("Loyalty customer added successfully", {
+        autoClose: 1000,
+      });
+      fetchCustomers();
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedCustomer(null);
@@ -128,6 +153,9 @@ const Customers = () => {
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Updated At
+              </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Action
               </th>
             </tr>
           </thead>
@@ -188,6 +216,28 @@ const Customers = () => {
                   {customer?.updated_at
                     ? new Date(customer?.updated_at).toLocaleString()
                     : ""}
+                </td>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                  {customer?.loyalty ? (
+                    <button
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 whitespace-nowrap"
+                      aria-label="User is already a loyalty member"
+                      title="Already Loyalty Member"
+                      disabled
+                    >
+                      Loyalty Member
+                    </button>
+                  ) : (
+                    <button
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap"
+                      aria-label="Make this user a loyalty member"
+                      title="Make Loyalty Member"
+                      onClick={() => makeLoyaltyCustomer(customer.id)}
+                    >
+                      <Add className="w-5 h-5" />
+                      Make Loyalty
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

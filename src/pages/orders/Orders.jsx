@@ -172,6 +172,7 @@ const Orders = () => {
                 <tr>
                   {[
                     "Customer",
+                    "Loyalty",
                     "Price Total",
                     "Quantity",
                     "Points Used",
@@ -198,6 +199,13 @@ const Orders = () => {
                     <tr key={order?.id} className="hover:bg-gray-100">
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         {order?.shipping_address?.name}
+                      </td>
+                      <td className="px-4 py-2 border-b whitespace-nowrap">
+                        {order?.loyalty?.level ? (
+                          <span className="text-black">
+                            {order?.loyalty?.level}
+                          </span>
+                        ) : null}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         ৳{" "}
