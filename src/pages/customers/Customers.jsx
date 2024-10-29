@@ -21,11 +21,9 @@ const Orders = ({ customer = {} }) => {
       try {
         const response = await request(`orders?customer_id=${id}`);
         const data = await response.json();
-        if (!data) return;
-        console.log(data);
-        setOrders(data);
+        if (!data) setOrders(data);
       } catch (error) {
-        console.error(error);
+        console.log(`Orders not found with the given customer id=${id}`);
       }
     }
     fetchOrders();
