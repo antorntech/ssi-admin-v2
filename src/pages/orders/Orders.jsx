@@ -9,6 +9,7 @@ import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 import { formatDate } from "../../utils/date";
 import cn from "../../utils/cn";
+import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -143,12 +144,6 @@ const Orders = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
-  };
-
-  const loyaltyColor = {
-    silver: "silver",
-    gold: "gold",
-    platinum: "platinum",
   };
 
   return (

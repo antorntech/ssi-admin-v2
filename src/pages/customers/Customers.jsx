@@ -4,10 +4,10 @@ import { Link, useParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
-import { Add, Edit } from "iconsax-react";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
-import { toast } from "react-toastify";
 import { formatDate } from "../../utils/date";
+import { Edit } from "iconsax-react";
+import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -36,27 +36,27 @@ const Orders = ({ customer = {} }) => {
 const Customers = () => {
   const params = useParams();
   const page = params?.page || 1;
-  const [customers, setCustomers] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [response, setResponse] = useState({ data: [], count: 0 });
+  const [response, setResponse] = useState({
+    data: [],
+    count: 0,
+    loading: false,
+  });
   const { request } = useContext(FetchContext);
   const limit = 10;
 
-  console.log(customers);
-
   const fetchCustomers = async () => {
     try {
-      const response = await request(
-        `users?skip=${(page - 1) * limit}&limit=${limit}`
-      );
+      setResponse((prev) => ({ ...prev, loading: true }));
+      const searchParams = new URLSearchParams({ skip: (page - 1) * limit });
+      const response = await request(`users?${searchParams.toString()}`);
       const json = await response.json();
-      console.log(json);
-      const { data, count } = json;
+      const { data } = json;
       if (!data) return;
-      setResponse((prev) => ({ ...prev, data, count }));
-      setCustomers(data);
+      setResponse({ ...json, loading: false });
     } catch (error) {
+      setResponse((prev) => ({ ...prev, loading: false }));
       console.error(error);
     }
   };
@@ -89,21 +89,14 @@ const Customers = () => {
     setIsModalOpen(true);
   };
 
-  const makeLoyaltyCustomer = async (id) => {
+  const makeLoyaltyCustomer = async (customer_id) => {
     try {
-      const response = await request(`loyalty/customers`, {
+      await request(`loyalty/customers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          customer_id: id,
-        }),
-      });
-      const json = await response.json();
-      if (!json) return;
-      toast.success("Loyalty customer added successfully", {
-        autoClose: 1000,
+        body: JSON.stringify({ customer_id }),
       });
       fetchCustomers();
     } catch (error) {
@@ -115,6 +108,8 @@ const Customers = () => {
     setIsModalOpen(false);
     setSelectedCustomer(null);
   };
+
+  if (response?.loading == true) return "Loading...";
 
   return (
     <>
@@ -156,17 +151,17 @@ const Customers = () => {
                 Updated At
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                Action
+                Loyalty
               </th>
             </tr>
           </thead>
           <tbody>
-            {customers?.map((customer) => (
+            {response?.data?.map((customer) => (
               <tr
                 key={customer?.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   {customer?.name}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b">
@@ -215,15 +210,15 @@ const Customers = () => {
                   {formatDate(customer?.updated_at)}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer?.loyalty ? (
-                    <button
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 whitespace-nowrap"
-                      aria-label="User is already a loyalty member"
-                      title="Already Loyalty Member"
-                      disabled
+                  {customer?.loyalty?.level ? (
+                    <span
+                      className=""
+                      style={{
+                        color: loyaltyColor[customer?.loyalty?.level],
+                      }}
                     >
-                      Loyalty Member
-                    </button>
+                      {customer?.loyalty?.level}
+                    </span>
                   ) : (
                     <button
                       className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap"
@@ -231,7 +226,6 @@ const Customers = () => {
                       title="Make Loyalty Member"
                       onClick={() => makeLoyaltyCustomer(customer.id)}
                     >
-                      <Add className="w-5 h-5" />
                       Make Loyalty
                     </button>
                   )}
@@ -254,7 +248,7 @@ const Customers = () => {
       <Pagination
         endPoint="customers"
         currentPage={page}
-        totalPages={response.count ? Math.ceil(response.count / limit) : 0}
+        totalPages={response?.count ? Math.ceil(response?.count / limit) : 0}
       />
 
       {/* Delete Confirmation Modal */}

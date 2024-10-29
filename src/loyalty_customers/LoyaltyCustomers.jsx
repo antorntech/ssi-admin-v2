@@ -1,7 +1,8 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-// import { Edit } from "iconsax-react";
 import Pagination from "../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../context/FetchContext";
@@ -27,9 +28,15 @@ const Orders = ({ customer = {} }) => {
       }
     }
     fetchOrders();
-  }, [id]);
+  }, [id, request]);
 
   return <div>{orders.count}</div>;
+};
+
+export const loyaltyColor = {
+  silver: "silver",
+  gold: "gold",
+  platinum: "platinum",
 };
 
 const LoyaltyCustomers = () => {
@@ -115,10 +122,10 @@ const LoyaltyCustomers = () => {
       .catch((error) => console.error("Error updating order:", error));
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedCustomer(null);
-  };
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  //   setSelectedCustomer(null);
+  // };
 
   return (
     <>
