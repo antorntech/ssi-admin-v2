@@ -1,7 +1,11 @@
 function formatDate(str = "") {
   if (!str) return "";
+
   const date = new Date(str);
-  return date.toLocaleString();
+  
+  if (isNaN(date.getTime())) return "Invalid date";
+
+  return date.toLocaleString("bn-BD");
 }
 
 export { formatDate };
