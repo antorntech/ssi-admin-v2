@@ -21,8 +21,6 @@ const Orders = ({ customer = {} }) => {
       try {
         const response = await request(`orders?customer_id=${id}`);
         const data = await response.json();
-        if (!data) return;
-        console.log(data);
         setOrders(data);
       } catch (error) {
         console.error(error);
@@ -40,10 +38,112 @@ export const loyaltyColor = {
   platinum: "#E5E3E0",
 };
 
+const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
+  const { request } = useFetch();
+  const [loyaltyCustomer, setLoyaltyCustomer] = useState(customer || null);
+
+  const onDelete = useCallback(async () => {
+    try {
+      const response = await request(
+        `loyalty/customers/${loyaltyCustomer.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      if (!data) return;
+      setLoyaltyCustomer(null);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [customer.id, request]);
+
+  return (
+    <tr
+      key={loyaltyCustomer?.id}
+      className="border-b border-gray-200 hover:bg-gray-100"
+    >
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        {loyaltyCustomer?.name}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+        {loyaltyCustomer?.email ? (
+          <Link
+            to={`mailto:${loyaltyCustomer?.email}`}
+            className="hover:underline py-2"
+          >
+            {loyaltyCustomer?.email}
+          </Link>
+        ) : null}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+        {loyaltyCustomer?.phone ? (
+          <Link
+            to={`tel:${loyaltyCustomer?.phone}`}
+            className="hover:underline py-2"
+          >
+            {loyaltyCustomer?.phone}
+          </Link>
+        ) : null}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
+        <div>{loyaltyCustomer?.points || 0}</div>
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <Orders loyaltyCustomer={loyaltyCustomer} />
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        {formatDate(loyaltyCustomer?.created_at)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        {formatDate(loyaltyCustomer?.updated_at)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <select
+          style={{
+            backgroundColor: loyaltyColor[loyaltyCustomer?.level] || "",
+          }}
+          className="capitalize border rounded-md px-2 py-2"
+          value={loyaltyCustomer?.level}
+          onChange={async (e) => {
+            if (!e.target.value) return;
+            try {
+              await request(`loyalty/customers/${loyaltyCustomer?.id}`, {
+                method: "PATCH",
+                body: e.target.value,
+              });
+              const response = await request(
+                `loyalty/customers/${loyaltyCustomer?.id}`
+              );
+              const data = await response.json();
+              setLoyaltyCustomer(data);
+            } catch (error) {
+              console.log(error);
+            }
+          }}
+        >
+          {levels.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <button
+          onClick={() => handleOpen(customer?.id)}
+          className="text-red-500 hover:text-red-700"
+        >
+          <Trash size="22" className="text-red-600" variant="Bold" />
+        </button>
+      </td>
+    </tr>
+  );
+};
+
 const LoyaltyCustomers = () => {
   const params = useParams();
   const page = params?.page || 1;
-  const [loyaltyCustomers, setLoyaltyCustomers] = useState([]);
   const [levels, setLevels] = useState(["silver", "gold", "platinum"]);
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -57,11 +157,7 @@ const LoyaltyCustomers = () => {
         `loyalty/customers?skip=${(page - 1) * limit}&limit=${limit}`
       );
       const json = await response.json();
-      console.log(json);
-      const { data, count } = json;
-      if (!data) return;
-      setResponse((prev) => ({ ...prev, data, count }));
-      setLoyaltyCustomers(data);
+      setResponse(json);
     } catch (error) {
       console.error(error);
     }
@@ -150,82 +246,13 @@ const LoyaltyCustomers = () => {
             </tr>
           </thead>
           <tbody>
-            {loyaltyCustomers?.map((customer) => (
-              <tr
+            {response?.data?.map((customer) => (
+              <LoyaltyCustomerRow
                 key={customer?.id}
-                className="border-b border-gray-200 hover:bg-gray-100"
-              >
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  {customer?.name}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                  {customer?.email ? (
-                    <Link
-                      to={`mailto:${customer?.email}`}
-                      className="hover:underline py-2"
-                    >
-                      {customer?.email}
-                    </Link>
-                  ) : null}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                  {customer?.phone ? (
-                    <Link
-                      to={`tel:${customer?.phone}`}
-                      className="hover:underline py-2"
-                    >
-                      {customer?.phone}
-                    </Link>
-                  ) : null}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
-                  <div>{customer?.points || 0}</div>
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  <Orders customer={customer} />
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  {formatDate(customer?.created_at)}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  {formatDate(customer?.updated_at)}
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  <select
-                    style={{
-                      backgroundColor: loyaltyColor[customer?.level] || "",
-                    }}
-                    className={`capitalize border rounded-md px-2 py-2 `}
-                    value={customer.level}
-                    onChange={async (e) => {
-                      if (!e.target.value) return;
-                      try {
-                        await request(`loyalty/customers/${customer.id}`, {
-                          method: "PATCH",
-                          body: e.target.value,
-                        });
-                        await fetchLoyaltyCustomers();
-                      } catch (error) {
-                        console.log(error);
-                      }
-                    }}
-                  >
-                    {levels?.map((item) => (
-                      <option key={item} value={item}>
-                        {item}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  <button
-                    onClick={() => handleOpen(customer.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash size="22" className="text-red-600" variant="Bold" />
-                  </button>
-                </td>
-              </tr>
+                customer={customer}
+                levels={levels}
+                handleOpen={handleOpen}
+              />
             ))}
           </tbody>
         </table>
