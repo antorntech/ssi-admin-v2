@@ -1,12 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
-import FetchContext, { useFetch } from "../context/FetchContext";
+import { useFetch } from "../context/FetchContext";
 import { Trash } from "iconsax-react";
+import { formatDate } from "../utils/date";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -34,23 +35,23 @@ const Orders = ({ customer = {} }) => {
 };
 
 export const loyaltyColor = {
-  silver: "silver",
-  gold: "gold",
-  platinum: "platinum",
+  silver: "#A8A9AD",
+  gold: "#DAA511",
+  platinum: "#E5E3E0",
 };
 
 const LoyaltyCustomers = () => {
   const params = useParams();
   const page = params?.page || 1;
   const [loyaltyCustomers, setLoyaltyCustomers] = useState([]);
-  const [level, setLevel] = useState(["silver", "gold", "platinum"]);
+  const [levels, setLevels] = useState(["silver", "gold", "platinum"]);
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState({ data: [], count: 0 });
-  const { request } = useContext(FetchContext);
+  const { request } = useFetch();
   const limit = 10;
 
-  const fetchLoyaltyCustomers = async () => {
+  const fetchLoyaltyCustomers = useCallback(async () => {
     try {
       const response = await request(
         `loyalty/customers?skip=${(page - 1) * limit}&limit=${limit}`
@@ -64,7 +65,7 @@ const LoyaltyCustomers = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [request, page, limit]);
 
   const handleOpen = (id = null) => {
     setSelectedItemId(id);
@@ -86,46 +87,23 @@ const LoyaltyCustomers = () => {
     }
   };
 
-  const fetchLevel = async () => {
-    try {
-      const res = await request(`loyalty/level`);
-      const json = await res.json();
-      if (json) {
-        setLevel(json);
-      } else {
-        console.error("Failed to fetch status");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
     fetchLoyaltyCustomers();
-    fetchLevel();
-  }, [page]);
-
-  const switchLevel = (id, level) => {
-    request(`loyalty/customers/${id}/level`, {
-      method: "PATCH",
-      header: "Content-Type: application/json",
-      body: level,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error: ${res.levelText}`);
-        return res.json();
-      })
-      .then(() => {
-        toast.success("Order Updated Successfully!");
-        fetchOrders(currentPage);
-      })
-      .catch((error) => console.error("Error updating order:", error));
-  };
-
-  // const closeModal = () => {
-  //   setIsModalOpen(false);
-  //   setSelectedCustomer(null);
-  // };
+    const fetchLevels = async () => {
+      try {
+        const res = await request(`loyalty/level`);
+        const json = await res.json();
+        if (json) {
+          setLevels(json);
+        } else {
+          console.error("Failed to fetch status");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLevels();
+  }, [fetchLoyaltyCustomers, page, request]);
 
   return (
     <>
@@ -164,7 +142,7 @@ const LoyaltyCustomers = () => {
                 Updated At
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                Level
+                Loyalty Level
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Action
@@ -177,10 +155,10 @@ const LoyaltyCustomers = () => {
                 key={customer?.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   {customer?.name}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                   {customer?.email ? (
                     <Link
                       to={`mailto:${customer?.email}`}
@@ -190,7 +168,7 @@ const LoyaltyCustomers = () => {
                     </Link>
                   ) : null}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
                   {customer?.phone ? (
                     <Link
                       to={`tel:${customer?.phone}`}
@@ -200,55 +178,46 @@ const LoyaltyCustomers = () => {
                     </Link>
                   ) : null}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px]">
-                  <div className="flex items-center justify-between">
-                    <div>{customer?.points || 0}</div>
-                    {/* <div className="flex gap-1">
-                      <button
-                        onClick={() => handlePointsClick(customer.id)}
-                        className="size-7 flex items-center justify-center bg-[#6CB93B] rounded"
-                      >
-                        <Edit className="size-4" color="#fff" />
-                      </button>
-                    </div> */}
-                  </div>
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
+                  <div>{customer?.points || 0}</div>
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   <Orders customer={customer} />
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  {customer?.created_at
-                    ? new Date(customer?.created_at).toLocaleString()
-                    : ""}
+                  {formatDate(customer?.created_at)}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer?.updated_at
-                    ? new Date(customer?.updated_at).toLocaleString()
-                    : ""}
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+                  {formatDate(customer?.updated_at)}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   <select
-                    className={`capitalize border rounded-md px-2 py-2 
-                        ${
-                          customer.level === "silver"
-                            ? "bg-[#A8A9AD] text-black"
-                            : customer.level === "gold"
-                            ? "bg-[#DAA511] text-black"
-                            : customer.level === "platinum"
-                            ? "bg-[#E5E3E0] text-black"
-                            : "bg-[#A8A9AD] text-black" // Default fallback for unexpected level
-                        }`}
+                    style={{
+                      backgroundColor: loyaltyColor[customer?.level] || "",
+                    }}
+                    className={`capitalize border rounded-md px-2 py-2 `}
                     value={customer.level}
-                    onChange={(e) => switchLevel(customer.id, e.target.value)}
+                    onChange={async (e) => {
+                      if (!e.target.value) return;
+                      try {
+                        await request(`loyalty/customers/${customer.id}`, {
+                          method: "PATCH",
+                          body: e.target.value,
+                        });
+                        await fetchLoyaltyCustomers();
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    }}
                   >
-                    {level?.map((item) => (
+                    {levels?.map((item) => (
                       <option key={item} value={item}>
                         {item}
                       </option>
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
                   <button
                     onClick={() => handleOpen(customer.id)}
                     className="text-red-500 hover:text-red-700"
