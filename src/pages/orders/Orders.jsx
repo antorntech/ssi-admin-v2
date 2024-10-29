@@ -8,6 +8,7 @@ import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 import { formatDate } from "../../utils/date";
+import cn from "../../utils/cn";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -144,6 +145,12 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  const loyaltyColor = {
+    silver: "silver",
+    gold: "gold",
+    platinum: "platinum",
+  };
+
   return (
     <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
@@ -202,7 +209,12 @@ const Orders = () => {
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         {order?.loyalty?.level ? (
-                          <span className="text-black">
+                          <span
+                            className={cn("text-black capitalize")}
+                            style={{
+                              color: loyaltyColor[order?.loyalty?.level],
+                            }}
+                          >
                             {order?.loyalty?.level}
                           </span>
                         ) : null}
