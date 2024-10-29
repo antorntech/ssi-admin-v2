@@ -7,6 +7,7 @@ import FetchContext, { useFetch } from "../../context/FetchContext";
 import { Add, Edit } from "iconsax-react";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 import { toast } from "react-toastify";
+import { formatDate } from "../../utils/date";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -208,14 +209,10 @@ const Customers = () => {
                   {customer?.address}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-                  {customer?.created_at
-                    ? new Date(customer?.created_at).toLocaleString()
-                    : ""}
+                  {formatDate(customer?.created_at)}
                 </td>
-                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-                  {customer?.updated_at
-                    ? new Date(customer?.updated_at).toLocaleString()
-                    : ""}
+                <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+                  {formatDate(customer?.updated_at)}
                 </td>
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.loyalty ? (
