@@ -8,6 +8,7 @@ import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 import { formatDate } from "../../utils/date";
 import { Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
+import Button from "../../components/shared/Button";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -212,7 +213,6 @@ const Customers = () => {
                 <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
                   {customer?.loyalty?.level ? (
                     <span
-                      className=""
                       style={{
                         color: loyaltyColor[customer?.loyalty?.level],
                       }}
@@ -220,14 +220,9 @@ const Customers = () => {
                       {customer?.loyalty?.level}
                     </span>
                   ) : (
-                    <button
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap"
-                      aria-label="Make this user a loyalty member"
-                      title="Make Loyalty Member"
-                      onClick={() => makeLoyaltyCustomer(customer.id)}
-                    >
+                    <Button onClick={() => makeLoyaltyCustomer(customer.id)}>
                       Make Loyalty
-                    </button>
+                    </Button>
                   )}
                 </td>
               </tr>
