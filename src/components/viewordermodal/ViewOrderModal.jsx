@@ -28,7 +28,10 @@ const ProductPreview = ({ id }) => {
   if (!product) return;
 
   return (
-    <div className="flex gap-2 items-center">
+    <div
+      className="flex gap-2 items-center"
+      title={JSON.stringify(product, null, 2)}
+    >
       <div className="product-image">
         <img
           src={srcBuilder(product?.images[0])}
@@ -40,6 +43,9 @@ const ProductPreview = ({ id }) => {
         <Link to={`/products/${product?.id}`} className="font-semibold">
           {product?.name}
         </Link>
+        <div className="text-sm">
+          {product?.weight} {product?.unit}
+        </div>
       </div>
     </div>
   );
