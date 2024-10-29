@@ -218,7 +218,7 @@ const Orders = () => {
                         }, 0)}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order?.order_items.reduce(
+                        {order?.order_items?.reduce(
                           (acc, item) => acc + item.quantity,
                           0
                         )}
