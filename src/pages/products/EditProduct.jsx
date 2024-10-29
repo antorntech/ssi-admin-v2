@@ -14,7 +14,7 @@ const initialValues = {
   description: "",
   color: "",
   brand: "",
-  category: "",
+  category: "", // Category will store the category ID
   price: 0,
   regular_price: 0,
   points: 0,
@@ -34,76 +34,67 @@ const EditProduct = () => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "google@gmail.com";
+
+  // Handle input changes
   function onChange(e) {
     const { name, value } = e.target;
-    setFormState({ ...formState, [name]: value });
+    setFormState((prevState) => ({ ...prevState, [name]: value }));
   }
+
+  // Fetch product by ID
   function fetchProductById() {
     if (!id) return;
     request(`products/${id}`)
       .then((r) => r.json())
       .then((data) => {
         if (!data) return;
-        setFormState(() => ({
-          name: data.name,
-          description: data.description,
-          color: data.color,
-          brand: data.brand,
-          category: data.category,
-          price: data.price,
-          regular_price: data.regular_price,
-          points: data.points,
-          points_max: data.points_max,
-          weight: data.weight,
-          quantity: data.quantity,
+        setFormState({
+          ...data,
+          category: data.category?.id || "", // Ensure category holds the ID
           serverImages: filterImages(data.images),
-          images: [],
-        }));
+        });
       })
       .catch(console.error);
   }
 
-  // fetch brands
+  // Fetch brands
   const fetchBrands = async () => {
     try {
       const response = await request("brands");
       const json = await response.json();
-      const { data } = json;
-      if (!data) return;
-      setBrands(json.data);
+      setBrands(json.data || []);
     } catch (error) {
       console.error(error);
     }
   };
 
-  // fetch categories
+  // Fetch categories
   const fetchCategories = async () => {
     try {
       const response = await request("categories");
       const json = await response.json();
-      const { data } = json;
-      if (!data) return;
-      setCategories(json.data);
+      setCategories(json.data || []);
     } catch (error) {
       console.error(error);
     }
   };
 
+  // Run on component mount or when ID changes
   useEffect(() => {
     fetchProductById();
     fetchBrands();
     fetchCategories();
   }, [id]);
+
+  // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
     const body = new FormData(e.target);
     if (!body.has("author")) body.append("author", author);
-    if (!request) return;
+
     request(`products/${id}`, { method: "PATCH", body })
       .then((r) => r.json())
-      .then(() => {
-        navigate("/products");
-      })
+      .then(() => navigate("/products"))
       .catch(console.error);
   };
 
@@ -112,6 +103,7 @@ const EditProduct = () => {
       {children}
     </Typography>
   );
+
   return (
     <div className="w-full">
       <div className="flex items-center gap-3 mb-5">
