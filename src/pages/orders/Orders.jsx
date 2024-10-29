@@ -191,17 +191,17 @@ const Orders = () => {
               <tbody>
                 {orders.map((order) => {
                   const shippingCost =
-                    order.shipping_address.district.toLowerCase() === "dhaka"
+                    order?.shipping_address?.district?.toLowerCase() === "dhaka"
                       ? 60
                       : 120;
                   return (
-                    <tr key={order.id} className="hover:bg-gray-100">
+                    <tr key={order?.id} className="hover:bg-gray-100">
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         {order?.shipping_address?.name}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         ৳{" "}
-                        {order.order_items.reduce((acc, item) => {
+                        {order?.order_items?.reduce((acc, item) => {
                           const price = parseInt(item?.price) || 0;
                           const points_used = parseInt(order?.points_used) || 0;
 
@@ -210,13 +210,13 @@ const Orders = () => {
                         }, 0)}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order.order_items.reduce(
+                        {order?.order_items.reduce(
                           (acc, item) => acc + item.quantity,
                           0
                         )}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order.points_used}
+                        {order?.points_used}
                       </td>
                       <td className="px-4 py-2 border-b whitespace-nowrap">
                         {formatDate(order?.created_at)}
@@ -228,23 +228,23 @@ const Orders = () => {
                         <select
                           className={`capitalize border rounded-md px-2 py-2 
                         ${
-                          order.status === "pending"
+                          order?.status === "pending"
                             ? "bg-cyan-400 text-white"
-                            : order.status === "processed"
+                            : order?.status === "processed"
                             ? "bg-yellow-400 text-black"
-                            : order.status === "shipped"
+                            : order?.status === "shipped"
                             ? "bg-blue-400 text-white"
-                            : order.status === "delivered"
+                            : order?.status === "delivered"
                             ? "bg-green-400 text-white"
-                            : order.status === "canceled"
+                            : order?.status === "canceled"
                             ? "bg-red-400 text-white"
-                            : order.status === "completed"
+                            : order?.status === "completed"
                             ? "bg-green-600 text-white"
                             : "bg-red-400 text-white" // Default fallback for unexpected status
                         }`}
-                          value={order.status}
+                          value={order?.status}
                           onChange={(e) =>
-                            switchStatus(order.id, e.target.value)
+                            switchStatus(order?.id, e.target.value)
                           }
                         >
                           {status?.map((status) => (
