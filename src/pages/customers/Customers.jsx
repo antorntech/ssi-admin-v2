@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
@@ -22,19 +22,21 @@ const Orders = ({ customer = {} }) => {
       try {
         const response = await request(`orders?customer_id=${id}`);
         const data = await response.json();
-        if (!data) setOrders(data);
+        setOrders(data);
       } catch (error) {
-        console.log(`Orders not found with the given customer id=${id}`, error);
+        // ignore
+        const message = error?.message;
       }
     }
     fetchOrders();
-  }, [id]);
+  }, [id, request]);
 
   return <div>{orders.count}</div>;
 };
 
 const Customers = () => {
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const page = params?.page || 1;
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -44,14 +46,18 @@ const Customers = () => {
     loading: false,
   });
   const { request } = useContext(FetchContext);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(searchParams.get("q") || "");
   const limit = 10;
 
   const fetchCustomers = async () => {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      const searchParams = new URLSearchParams({ skip: (page - 1) * limit });
-      const response = await request(`users?${searchParams.toString()}`);
+      const sp = new URLSearchParams({
+        q: searchText,
+        skip: (page - 1) * limit,
+        limit,
+      });
+      const response = await request(`users?${sp.toString()}`);
       const json = await response.json();
       const { data } = json;
       if (!data) return;
@@ -114,16 +120,8 @@ const Customers = () => {
 
   const doSearch = async (e) => {
     e.preventDefault();
-    try {
-      if (!searchText.trim()) {
-        fetchCustomers();
-        return;
-      }
-      const res = await request(`users?q=${searchText}`);
-      const data = await res.json();
-      setResponse(data);
-    } catch (error) {
-      console.error("Error fetching filtered data:", error);
+    if (searchText) {
+      window.location.search = `?q=${searchText}&skip=0&limit=${limit}`;
     }
   };
 

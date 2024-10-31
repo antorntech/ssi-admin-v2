@@ -11,7 +11,7 @@ const SearchBar = ({ searchText, handleSearch, doSearch }) => {
         type="search"
         placeholder="Search..."
         value={searchText}
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e) => handleSearch(e.target.value.trim())}
         className="flex-grow focus:outline-none px-3 rounded-lg"
       />
       <button className="size-10 grid place-items-center bg-main-5 hover:bg-main-7 text-white rounded-r-md cursor-pointer">
