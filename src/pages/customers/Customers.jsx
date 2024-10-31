@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import FetchContext, { useFetch } from "../../context/FetchContext";
@@ -9,7 +9,6 @@ import { formatDate } from "../../utils/date";
 import { Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import Button from "../../components/shared/Button";
-import Loader from "../../loader/Loader";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -22,19 +21,21 @@ const Orders = ({ customer = {} }) => {
       try {
         const response = await request(`orders?customer_id=${id}`);
         const data = await response.json();
-        if (!data) setOrders(data);
+        setOrders(data);
       } catch (error) {
-        console.log(`Orders not found with the given customer id=${id}`);
+        // ignore
+        const message = error?.message;
       }
     }
     fetchOrders();
-  }, [id]);
+  }, [id, request]);
 
   return <div>{orders.count}</div>;
 };
 
 const Customers = () => {
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const page = params?.page || 1;
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -44,13 +45,18 @@ const Customers = () => {
     loading: false,
   });
   const { request } = useContext(FetchContext);
+  const [searchText, setSearchText] = useState(searchParams.get("q") || "");
   const limit = 10;
 
   const fetchCustomers = async () => {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      const searchParams = new URLSearchParams({ skip: (page - 1) * limit });
-      const response = await request(`users?${searchParams.toString()}`);
+      const sp = new URLSearchParams({
+        q: searchText,
+        skip: (page - 1) * limit,
+        limit,
+      });
+      const response = await request(`users?${sp.toString()}`);
       const json = await response.json();
       const { data } = json;
       if (!data) return;
@@ -109,7 +115,7 @@ const Customers = () => {
     setSelectedCustomer(null);
   };
 
-  if (response?.loading == true) return <Loader />;
+  if (response?.loading == true) return "Loading...";
 
   return (
     <>
@@ -117,8 +123,15 @@ const Customers = () => {
         <div>
           <h1 className="text-xl font-bold">Customers</h1>
           <p className="text-sm text-gray-500">
-            Total Customers: {response?.count}
+            Total Customers: {response.count}
           </p>
+        </div>
+        <div>
+          <SearchBar
+            searchText={searchText}
+            handleSearch={setSearchText}
+            doSearch={doSearch}
+          />
         </div>
       </div>
 

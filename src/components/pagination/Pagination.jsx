@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const Pagination = ({ currentPage, totalPages, endPoint }) => {
+  const [searchParams] = useSearchParams();
   // Ensure currentPage is an integer
   currentPage = parseInt(currentPage);
 
@@ -13,7 +14,11 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
     <div className="flex justify-center mt-5">
       {/* Previous Page Link */}
       <Link
-        to={currentPage > 1 ? `/${endPoint}/${currentPage - 1}` : "#"}
+        to={
+          currentPage > 1
+            ? `/${endPoint}/${currentPage - 1}?${searchParams.toString()}`
+            : "#"
+        }
         className={`mx-1 px-1 py-1 rounded ${
           currentPage === 1
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -27,7 +32,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
       {pages.map((page) => (
         <Link
           key={page}
-          to={`/${endPoint}/${page}`}
+          to={`/${endPoint}/${page}?${searchParams.toString()}`}
           className={`mx-1 px-3 py-1 rounded ${
             currentPage === page
               ? "bg-[#6CB93B] text-white"
@@ -40,7 +45,11 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
 
       {/* Next Page Link */}
       <Link
-        to={currentPage < totalPages ? `/${endPoint}/${currentPage + 1}` : "#"}
+        to={
+          currentPage < totalPages
+            ? `/${endPoint}/${currentPage + 1}?${searchParams.toString()}`
+            : "#"
+        }
         className={`mx-1 px-1 py-1 rounded ${
           currentPage === totalPages
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
