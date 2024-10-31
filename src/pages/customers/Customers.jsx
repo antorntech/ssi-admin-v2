@@ -119,7 +119,7 @@ const Customers = () => {
         fetchCustomers();
         return;
       }
-      const res = await request(`customers?q=${searchText}`);
+      const res = await request(`users?q=${searchText}`);
       const order = await res.json();
       if (order?.data) {
         setResponse(order?.data);
