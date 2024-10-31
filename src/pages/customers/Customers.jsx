@@ -9,6 +9,7 @@ import { formatDate } from "../../utils/date";
 import { Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import Button from "../../components/shared/Button";
+import Loader from "../../loader/Loader";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -108,7 +109,7 @@ const Customers = () => {
     setSelectedCustomer(null);
   };
 
-  if (response?.loading == true) return "Loading...";
+  if (response?.loading == true) return <Loader />;
 
   return (
     <>

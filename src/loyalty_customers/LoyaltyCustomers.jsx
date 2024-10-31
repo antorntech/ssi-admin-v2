@@ -103,7 +103,7 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
           style={{
             backgroundColor: loyaltyColor[loyaltyCustomer?.level] || "",
           }}
-          className="capitalize border rounded-md px-2 py-2"
+          className="capitalize border rounded-md px-2 py-2 focus:outline-none"
           value={loyaltyCustomer?.level}
           onChange={async (e) => {
             if (!e.target.value) return;

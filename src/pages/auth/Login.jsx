@@ -108,6 +108,7 @@ const Login = () => {
               Welcome Back !
             </h2>
             <p className="text-sm text-[#6CB93B]">Login to continue to SSI.</p>
+            <img src="/img/logo.png" alt="" className="w-36 mt-2" />
           </div>
           <div className="w-1/2">
             <img
