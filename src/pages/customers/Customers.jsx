@@ -120,10 +120,8 @@ const Customers = () => {
         return;
       }
       const res = await request(`users?q=${searchText}`);
-      const order = await res.json();
-      if (order?.data) {
-        setResponse(order?.data);
-      }
+      const data = await res.json();
+      setResponse(data);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
     }
