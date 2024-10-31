@@ -18,6 +18,7 @@ const initialValues = {
   regular_price: 0,
   points: 0,
   points_max: 0,
+  testNumber: 0,
   quantity: 0,
   weight: 0,
   unit: "gm",
@@ -240,6 +241,17 @@ const AddProduct = () => {
                   onChange={onChange}
                   required
                 />
+                <Legend>Test Number</Legend>
+                <input
+                  type="number"
+                  size="md"
+                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="testNumber"
+                  value={formState.testNumber}
+                  min={0}
+                  onChange={onChange}
+                  required
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
                   <div>
@@ -284,13 +296,13 @@ const AddProduct = () => {
                   name="description"
                   value={formState.description}
                   onChange={onChange}
-                  rows={8}
+                  rows={11}
                   required
                 />
               </div>
             </div>
             {/* file upload */}
-            <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative">
+            <label className="border-2 border-dashed rounded-lg border-gray-400 bg-gray-100 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative mt-4">
               <lord-icon
                 src="https://cdn.lordicon.com/smwmetfi.json"
                 trigger="loop"
