@@ -101,93 +101,99 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center p-5 bg-[#F8F8FB]">
-      <div className="max-w-screen-lg sm:w-[450px] mx-auto bg-white rounded-md custom-shadow">
-        <div className="flex items-start justify-between bg-[#bde0a8] rounded-t-md">
-          <div className="w-1/2 p-3 lg:p-5">
-            <h2 className="text-md md:text-lg text-[#6CB93B] font-semibold">
-              Welcome Back !
-            </h2>
-            <p className="text-sm text-[#6CB93B]">Login to continue to SSI.</p>
-            <img src="/img/logo.png" alt="" className="w-36 mt-2" />
-          </div>
-          <div className="w-1/2">
-            <img
-              src="/img/profile-img.png"
-              alt=""
-              className="w-full object-contain"
-            />
-          </div>
+      <div className="max-w-screen-lg sm:w-[450px] mx-auto rounded-md">
+        <div className="flex items-center justify-center">
+          <img src="/img/logo.png" alt="" className="w-1/2 mb-3" />
         </div>
-        <div className="px-3 md:px-5 pt-4">
-          <form onSubmit={handleLogin}>
-            <div>
-              <div className="relative">
-                <Typography
-                  variant="h6"
-                  color="black"
-                  className="mb-1 font-normal"
-                >
-                  Email
-                </Typography>
-                <Input
-                  type="text"
-                  size="md"
-                  className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                  value={email}
-                  name="email"
-                  onChange={handleChange}
-                />
-                {errors.email && (
-                  <Typography className="text-red-800 text-sm mt-1">
-                    {errors.email}
-                  </Typography>
-                )}
-              </div>
-              <div className="relative mt-3">
-                <Typography
-                  variant="h6"
-                  color="black"
-                  className="mb-1 font-normal"
-                >
-                  Password
-                </Typography>
+        <div className="bg-white rounded-md custom-shadow pb-5">
+          <div className="flex items-center justify-between bg-[#bde0a8] rounded-t-md">
+            <div className="w-1/2 p-3 lg:p-5">
+              <h2 className="text-md md:text-lg text-[#6CB93B] font-semibold">
+                Welcome Back !
+              </h2>
+              <p className="text-sm text-[#6CB93B]">
+                Login to continue to SSI.
+              </p>
+            </div>
+            <div className="w-1/2">
+              <img
+                src="/img/profile-img.png"
+                alt=""
+                className="w-full object-contain"
+              />
+            </div>
+          </div>
+          <div className="px-3 md:px-5 pt-4">
+            <form onSubmit={handleLogin}>
+              <div>
                 <div className="relative">
+                  <Typography
+                    variant="h6"
+                    color="black"
+                    className="mb-1 font-normal"
+                  >
+                    Email
+                  </Typography>
                   <Input
-                    type={showPassword ? "text" : "password"}
+                    type="text"
                     size="md"
                     className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
                     labelProps={{
                       className: "before:content-none after:content-none",
                     }}
-                    value={password}
-                    name="password"
+                    value={email}
+                    name="email"
                     onChange={handleChange}
                   />
-                  <i
-                    className={`absolute right-2 top-3 text-gray-600 cursor-pointer fa-solid ${
-                      showPassword ? "fa-eye-slash" : "fa-eye"
-                    }`}
-                    onClick={toggleShowPassword}
-                  ></i>
+                  {errors.email && (
+                    <Typography className="text-red-800 text-sm mt-1">
+                      {errors.email}
+                    </Typography>
+                  )}
                 </div>
-                {errors.password && (
-                  <Typography className="text-red-800 text-sm mt-1">
-                    {errors.password}
+                <div className="relative mt-3">
+                  <Typography
+                    variant="h6"
+                    color="black"
+                    className="mb-1 font-normal"
+                  >
+                    Password
                   </Typography>
-                )}
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      size="md"
+                      className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                      value={password}
+                      name="password"
+                      onChange={handleChange}
+                    />
+                    <i
+                      className={`absolute right-2 top-3 text-gray-600 cursor-pointer fa-solid ${
+                        showPassword ? "fa-eye-slash" : "fa-eye"
+                      }`}
+                      onClick={toggleShowPassword}
+                    ></i>
+                  </div>
+                  {errors.password && (
+                    <Typography className="text-red-800 text-sm mt-1">
+                      {errors.password}
+                    </Typography>
+                  )}
+                </div>
               </div>
-            </div>
-            <Button
-              type="submit"
-              className="py-3 mt-5 text-sm bg-[#6CB93B] hover:bg-green-700 transition-all duration-500"
-              fullWidth
-            >
-              Log In
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                className="py-3 mt-5 text-sm bg-[#6CB93B] hover:bg-green-700 transition-all duration-500"
+                fullWidth
+              >
+                Log In
+              </Button>
+            </form>
+          </div>
         </div>
         <div className="flex flex-col gap-3 items-center justify-center my-6">
           <Link to="/auth/forgot-password" className="text-sm text-gray-600">
@@ -197,7 +203,7 @@ const Login = () => {
         </div>
       </div>
       <div className="mt-6">
-        <Typography
+        {/* <Typography
           variant="h6"
           color="black"
           className="mb-1 font-normal text-center"
@@ -209,7 +215,7 @@ const Login = () => {
           >
             Sign Up
           </Link>
-        </Typography>
+        </Typography> */}
         <p className="text-gray-600 text-center text-sm">
           © SSI. Crafted with by ANTOR & SANTO
         </p>

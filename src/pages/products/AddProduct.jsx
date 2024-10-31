@@ -18,7 +18,8 @@ const initialValues = {
   regular_price: 0,
   points: 0,
   points_max: 0,
-  testNumber: 0,
+  profit_sharing_amount: 0,
+  slug: "",
   quantity: 0,
   weight: 0,
   unit: "gm",
@@ -128,7 +129,6 @@ const AddProduct = () => {
             <Legend>Name</Legend>
             <input
               type="text"
-              size="md"
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="name"
               value={formState.name}
@@ -155,7 +155,6 @@ const AddProduct = () => {
             <Legend>Price</Legend>
             <input
               type="number"
-              size="md"
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="price"
               value={formState.price}
@@ -167,7 +166,6 @@ const AddProduct = () => {
             <Legend>Regular Price</Legend>
             <input
               type="number"
-              size="md"
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="regular_price"
               value={formState.regular_price}
@@ -178,7 +176,6 @@ const AddProduct = () => {
             <Legend>Weight in {formState.unit}</Legend>
             <input
               type="number"
-              size="md"
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="weight"
               value={formState.weight}
@@ -204,7 +201,6 @@ const AddProduct = () => {
             <Legend>Quantity</Legend>
             <input
               type="number"
-              size="md"
               className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
               name="quantity"
               value={formState.quantity}
@@ -218,41 +214,48 @@ const AddProduct = () => {
           <div className="w-full md:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
               <div>
-                <Legend>Earn Points</Legend>
-                <input
-                  type="number"
-                  size="md"
-                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                  name="points"
-                  value={formState.points}
-                  min={0}
-                  onChange={onChange}
-                  required
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+                  <div>
+                    <Legend>Earn Points</Legend>
+                    <input
+                      type="number"
+                      size="md"
+                      className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      name="points"
+                      value={formState.points}
+                      min={0}
+                      onChange={onChange}
+                      required
+                    />
+                  </div>
 
-                <Legend>Used Points Max</Legend>
-                <input
-                  type="number"
-                  size="md"
-                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                  name="points_max"
-                  value={formState.points_max}
-                  min={0}
-                  onChange={onChange}
-                  required
-                />
-                <Legend>Test Number</Legend>
-                <input
-                  type="number"
-                  size="md"
-                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                  name="testNumber"
-                  value={formState.testNumber}
-                  min={0}
-                  onChange={onChange}
-                  required
-                />
-
+                  <div>
+                    <Legend>Used Points Max</Legend>
+                    <input
+                      type="number"
+                      size="md"
+                      className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      name="points_max"
+                      value={formState.points_max}
+                      min={0}
+                      onChange={onChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Legend>Profit Sharing Amount</Legend>
+                  <input
+                    type="number"
+                    size="md"
+                    className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="profit_sharing_amount"
+                    value={formState.profit_sharing_amount}
+                    min={0}
+                    onChange={onChange}
+                    required
+                  />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
                   <div>
                     <Legend>Category</Legend>
@@ -287,6 +290,17 @@ const AddProduct = () => {
                       ))}
                     </select>
                   </div>
+                </div>
+                <div>
+                  <Legend>Slug</Legend>
+                  <input
+                    type="text"
+                    className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="slug"
+                    value={formState.slug}
+                    onChange={onChange}
+                    required
+                  />
                 </div>
               </div>
               <div>
