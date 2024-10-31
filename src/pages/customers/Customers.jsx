@@ -9,6 +9,7 @@ import { formatDate } from "../../utils/date";
 import { Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import Button from "../../components/shared/Button";
+import SearchBar from "../../components/searchbar/SearchBar";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -23,7 +24,7 @@ const Orders = ({ customer = {} }) => {
         const data = await response.json();
         if (!data) setOrders(data);
       } catch (error) {
-        console.log(`Orders not found with the given customer id=${id}`);
+        console.log(`Orders not found with the given customer id=${id}`, error);
       }
     }
     fetchOrders();
@@ -43,6 +44,7 @@ const Customers = () => {
     loading: false,
   });
   const { request } = useContext(FetchContext);
+  const [searchText, setSearchText] = useState("");
   const limit = 10;
 
   const fetchCustomers = async () => {
@@ -110,14 +112,38 @@ const Customers = () => {
 
   if (response?.loading == true) return "Loading...";
 
+  const doSearch = async (e) => {
+    e.preventDefault();
+    try {
+      if (!searchText.trim()) {
+        fetchCustomers();
+        return;
+      }
+      const res = await request(`customers?q=${searchText}`);
+      const order = await res.json();
+      if (order?.data) {
+        setResponse(order?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
+  };
+
   return (
     <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Customers</h1>
           <p className="text-sm text-gray-500">
-            Total Customers: {response?.count}
+            Total Customers: {response.count}
           </p>
+        </div>
+        <div>
+          <SearchBar
+            searchText={searchText}
+            handleSearch={setSearchText}
+            doSearch={doSearch}
+          />
         </div>
       </div>
 
