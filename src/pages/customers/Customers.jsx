@@ -118,9 +118,7 @@ const Customers = () => {
 
   function doSearch(e) {
     e.preventDefault();
-    if (searchText) {
-      window.location.search = `?q=${searchText}&skip=0&limit=${limit}`;
-    }
+    window.location.search = `?q=${searchText}&skip=0&limit=${limit}`;
   }
 
   if (response?.loading == true) return "Loading...";
