@@ -9,6 +9,7 @@ import { formatDate } from "../../utils/date";
 import { Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import Button from "../../components/shared/Button";
+import SearchBar from "../../components/searchbar/SearchBar";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -114,6 +115,13 @@ const Customers = () => {
     setIsModalOpen(false);
     setSelectedCustomer(null);
   };
+
+  function doSearch(e) {
+    e.preventDefault();
+    if (searchText) {
+      window.location.search = `?q=${searchText}&skip=0&limit=${limit}`;
+    }
+  }
 
   if (response?.loading == true) return "Loading...";
 
