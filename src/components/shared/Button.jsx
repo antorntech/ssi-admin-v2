@@ -11,7 +11,7 @@ const Button = ({
   return (
     <button
       className={cn(
-        "rounded focus:outline-none focus:ring transition duration-200 whitespace-nowrap",
+        "rounded focus:outline-none focus:ring ring-green-200 transition duration-200 whitespace-nowrap",
         {
           small: "px-2 py-1 text-sm",
           medium: "px-4 py-2 text-md",
