@@ -54,6 +54,11 @@ const menuItems = [
     icon: "/img/icons/loyaltycustomer",
   },
   {
+    title: "Withdrawal",
+    link: "/withdrawal",
+    icon: "/img/icons/wallet",
+  },
+  {
     title: "Send Messages",
     link: "/send-messages",
     icon: "/img/icons/message",

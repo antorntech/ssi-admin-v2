@@ -25,6 +25,7 @@ import MetaPixel from "../pages/pixel/MetaPixel";
 import Banners from "../pages/banners/Banners";
 import AddBanner from "../pages/banners/AddBanner";
 import LoyaltyCustomers from "../loyalty_customers/LoyaltyCustomers";
+import Withdrawal from "../components/withdrawal/Withdrawal";
 
 const AppRoutes = () => {
   return (
@@ -186,6 +187,14 @@ const AppRoutes = () => {
           element={
             <Protected>
               <LoyaltyCustomers />
+            </Protected>
+          }
+        />
+        <Route
+          path="withdrawal"
+          element={
+            <Protected>
+              <Withdrawal />
             </Protected>
           }
         />
