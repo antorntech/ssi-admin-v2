@@ -14,6 +14,7 @@ import { Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import Button from "../../components/shared/Button";
 import SearchBar from "../../components/searchbar/SearchBar";
+import Loader from "../../loader/Loader";
 
 const Orders = ({ customer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -211,7 +212,9 @@ const Customers = () => {
         </div>
       </div>
 
-      {loading ? null : (
+      {loading ? (
+        <Loader />
+      ) : (
         <>
           <div className="mt-5 w-full overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
