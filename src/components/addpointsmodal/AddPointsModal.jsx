@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "./AddPointsModal.css";
 import { Add } from "iconsax-react";
 import FetchContext from "../../context/FetchContext";
@@ -14,6 +14,13 @@ const AddPointsModal = ({
   if (!isOpen) return null;
   const [points, setPoints] = useState(0);
   const { request } = useContext(FetchContext);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.focus();
+    }
+  }, [modalRef]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -74,6 +81,7 @@ const AddPointsModal = ({
             className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
             onChange={(e) => setPoints(e.target.value)}
             value={points}
+            ref={modalRef}
           />
           <button className="px-2 py-1 bg-[#6CB93B] rounded text-white mt-3">
             Submit
