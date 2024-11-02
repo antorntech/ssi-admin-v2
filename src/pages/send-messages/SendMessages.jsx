@@ -91,7 +91,7 @@ const SendMessages = () => {
         <h1 className="text-xl font-bold">Send Messages</h1>
       </div>
       <section className="">
-        <table className="overflow-x-auto bg-white border">
+        <table className="overflow-x-auto w-full bg-white border">
           <thead>
             <tr>
               <th
