@@ -253,7 +253,6 @@ const AddProduct = () => {
                     value={formState.profit_sharing_amount}
                     min={0}
                     onChange={onChange}
-                    required
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
