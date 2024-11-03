@@ -33,9 +33,9 @@ const AppRoutes = () => {
       <Route
         path=""
         element={
-          <AuthProvider>
+          <Protected>
             <RootLayout />
-          </AuthProvider>
+          </Protected>
         }
       >
         <Route
