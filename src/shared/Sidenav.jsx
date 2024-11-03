@@ -34,7 +34,7 @@ const menuItems = [
     icon: "/img/icons/order",
   },
   {
-    title: "Manage Points",
+    title: "Points History",
     link: "/points",
     icon: "/img/icons/point",
   },
