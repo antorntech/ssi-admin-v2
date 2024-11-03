@@ -298,7 +298,6 @@ const AddProduct = () => {
                     name="slug"
                     value={formState.slug}
                     onChange={onChange}
-                    required
                   />
                 </div>
               </div>
