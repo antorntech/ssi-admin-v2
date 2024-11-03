@@ -9,28 +9,28 @@ import { useFetch } from "../context/FetchContext";
 import { Trash } from "iconsax-react";
 import { formatDate } from "../utils/date";
 
-const Orders = ({ customer = {} }) => {
-  const [orders, setOrders] = useState({ data: [], count: 0 });
+// const Orders = ({ customer = {} }) => {
+//   const [orders, setOrders] = useState({ data: [], count: 0 });
 
-  const { request } = useFetch();
-  const { id } = customer;
+//   const { request } = useFetch();
+//   const { id } = customer;
 
-  useEffect(() => {
-    if (!id) return;
-    async function fetchOrders() {
-      try {
-        const response = await request(`orders?customer_id=${id}`);
-        const data = await response.json();
-        setOrders(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchOrders();
-  }, [id, request]);
+//   useEffect(() => {
+//     if (!id) return;
+//     async function fetchOrders() {
+//       try {
+//         const response = await request(`orders?customer_id=${id}`);
+//         const data = await response.json();
+//         setOrders(data);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+//     fetchOrders();
+//   }, [id, request]);
 
-  return <div>{orders.count}</div>;
-};
+//   return <div>{orders.count}</div>;
+// };
 
 export const loyaltyColor = {
   silver: "#A8A9AD",
@@ -38,32 +38,56 @@ export const loyaltyColor = {
   platinum: "#E5E3E0",
 };
 
+const AvailablePoints = ({ customer_id }) => {
+  const [customer, setCustomer] = useState(null);
+  const { request } = useFetch();
+
+  useEffect(() => {
+    if (!customer_id) return;
+    async function fetchCustomer() {
+      try {
+        const response = await request(`users/${customer_id}`);
+        const data = await response.json();
+        setCustomer(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCustomer();
+  }, [customer_id, request]);
+
+  return customer?.points || 0;
+};
+
 const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
   const { request } = useFetch();
   const [loyaltyCustomer, setLoyaltyCustomer] = useState(customer || null);
 
-  const onDelete = useCallback(async () => {
-    try {
-      const response = await request(
-        `loyalty/customers/${loyaltyCustomer.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-      if (!data) return;
-      setLoyaltyCustomer(null);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [customer.id, request]);
+  // const onDelete = useCallback(async () => {
+  //   try {
+  //     const response = await request(
+  //       `loyalty/customers/${loyaltyCustomer.id}`,
+  //       {
+  //         method: "DELETE",
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     if (!data) return;
+  //     setLoyaltyCustomer(null);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [customer.id, request]);
 
   return (
     <tr
       key={loyaltyCustomer?.id}
       className="border-b border-gray-200 hover:bg-gray-100"
     >
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+      <td
+        className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap"
+        title={JSON.stringify(loyaltyCustomer, null, 2)}
+      >
         {loyaltyCustomer?.name}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
@@ -87,10 +111,7 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
         ) : null}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
-        <div>{loyaltyCustomer?.points || 0}</div>
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-        <Orders loyaltyCustomer={loyaltyCustomer} />
+        <AvailablePoints customer_id={loyaltyCustomer?.customer_id} />
       </td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
         {formatDate(loyaltyCustomer?.created_at)}
@@ -227,9 +248,6 @@ const LoyaltyCustomers = () => {
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Earned Points
-              </th>
-              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                Orders
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Created At

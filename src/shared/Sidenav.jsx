@@ -43,11 +43,11 @@ const menuItems = [
     link: "/customers",
     icon: "/img/icons/customer",
   },
-  {
-    title: "Previous Customers",
-    link: "/previous-customers",
-    icon: "/img/icons/precustomer",
-  },
+  // {
+  //   title: "Previous Customers",
+  //   link: "/previous-customers",
+  //   icon: "/img/icons/precustomer",
+  // },
   {
     title: "Loyalty Customers",
     link: "/loyalty-customers",
