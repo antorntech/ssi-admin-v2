@@ -1,35 +1,114 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useCallback, useEffect, useState } from "react";
+import { useFetch } from "../../context/FetchContext";
+import { useParams } from "react-router-dom";
+import cn from "../../utils/cn";
+
+const WithdrawalRow = ({ data, fetchWithdrawals, status = [] }) => {
+  const [customer, setCustomer] = useState(null);
+  const [withdrawal, setWithdrawal] = useState(data);
+  const { request } = useFetch();
+
+  useEffect(() => {
+    if (!data?.customer_id) return;
+    async function fetchCustomer() {
+      try {
+        const response = await request(`users/${data?.customer_id}`);
+        const resData = await response.json();
+        setCustomer(resData);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCustomer();
+  }, [data?.customer_id, request]);
+
+  const switchStatus = (id, status) => {
+    request(`withdrawal/${id}/status`, {
+      method: "PATCH",
+      header: "Content-Type: application/json",
+      body: status,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+        return res.json();
+      })
+      .then(() => {
+        fetchWithdrawals();
+      })
+      .catch((error) => console.error("Error updating order:", error));
+  };
+
+  const statusClasses = {
+    pending: "bg-cyan-400 text-white",
+    processing: "bg-yellow-400 text-black",
+    paid: "bg-green-600 text-white",
+    canceled: "bg-red-400 text-white",
+  };
+
+  return (
+    <tr className="border-b hover:bg-gray-100">
+      <td className="px-4 py-2 capitalize">{customer?.name}</td>
+      <td className="px-4 py-2 capitalize">{customer?.email}</td>
+      <td className="px-4 py-2 capitalize">{customer?.phone}</td>
+      <td className="px-4 py-2 capitalize">{withdrawal?.amount}</td>
+      <td className="px-4 py-2 capitalize">
+        <select
+          className={cn(
+            "capitalize border rounded-md px-2 py-2",
+            statusClasses[withdrawal?.status]
+          )}
+          value={withdrawal?.status}
+          onChange={(e) => switchStatus(withdrawal?.id, e.target.value)}
+        >
+          {status?.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </td>
+    </tr>
+  );
+};
 
 const Withdrawal = () => {
-  // Sample data for demonstration
-  const [withdrawals, setWithdrawals] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "123-456-7890",
-      amount: "$500",
-      approved: false,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "987-654-3210",
-      amount: "$300",
-      approved: false,
-    },
-    // Add more entries as needed
-  ]);
+  const [response, setResponse] = useState(null);
+  const { request } = useFetch();
+  const params = useParams();
+  const page = params?.page || 1;
+  const limit = 10;
+  const [status, setStatus] = useState(null);
 
-  // Function to handle approval action
-  const handleApproval = (id) => {
-    setWithdrawals((prev) =>
-      prev.map((withdrawal) =>
-        withdrawal.id === id ? { ...withdrawal, approved: true } : withdrawal
-      )
-    );
-  };
+  const fetchWithdrawals = useCallback(
+    async function (page) {
+      try {
+        const response = await request(
+          `withdrawal?skip=${(page - 1) * limit}&limit=${limit}`
+        );
+        const data = await response.json();
+        setResponse(data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [request, limit]
+  );
+
+  useEffect(() => {
+    fetchWithdrawals(page);
+
+    async function fetchStatus() {
+      try {
+        const response = await request(`withdrawal/status`);
+        const data = await response.json();
+        setStatus(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchStatus();
+  }, [fetchWithdrawals, page, request]);
 
   return (
     <div className="w-full">
@@ -37,7 +116,7 @@ const Withdrawal = () => {
         <div className="flex-grow">
           <h1 className="text-xl font-bold">Withdrawal</h1>
           <p className="text-sm text-gray-500">
-            Total Applications: {withdrawals.length}
+            Total Applications: {response?.count}
           </p>
         </div>
       </div>
@@ -46,45 +125,36 @@ const Withdrawal = () => {
         <table className="min-w-full bg-white border">
           <thead>
             <tr className="bg-gray-50">
-              <th className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Name
               </th>
-              <th className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Email
               </th>
-              <th className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Phone
               </th>
-              <th className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Amount
               </th>
-              <th className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {withdrawals.map((withdrawal) => (
-              <tr key={withdrawal.id} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-3 capitalize">{withdrawal.name}</td>
-                <td className="px-4 py-3 capitalize">{withdrawal.email}</td>
-                <td className="px-4 py-3 capitalize">{withdrawal.phone}</td>
-                <td className="px-4 py-3 capitalize">{withdrawal.amount}</td>
-                <td className="px-4 py-3 capitalize">
-                  <button
-                    onClick={() => handleApproval(withdrawal.id)}
-                    className={`px-4 py-2 rounded ${
-                      withdrawal.approved
-                        ? "bg-gray-700 text-white"
-                        : "bg-green-500 text-white"
-                    }`}
-                    disabled={withdrawal.approved}
-                  >
-                    {withdrawal.approved ? "Approved" : "Approve"}
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {response?.data?.map((item) => {
+              return (
+                <WithdrawalRow
+                  key={item?.id}
+                  data={item}
+                  status={status}
+                  fetchWithdrawals={() => {
+                    fetchWithdrawals(page);
+                  }}
+                />
+              );
+            })}
           </tbody>
         </table>
       </div>
