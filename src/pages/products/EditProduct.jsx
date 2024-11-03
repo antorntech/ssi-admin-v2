@@ -22,6 +22,8 @@ const initialValues = {
   weight: 0,
   quantity: 0,
   serverImages: null,
+  profit_sharing_amount: 0,
+  slug: "",
   unit: "gm",
 };
 
@@ -218,33 +220,74 @@ const EditProduct = () => {
               name="quantity"
               onChange={onChange}
             />
+            <div>
+              <Legend>Slug</Legend>
+              <input
+                type="text"
+                className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                name="slug"
+                value={formState.slug}
+                onChange={onChange}
+                required
+              />
+            </div>
+            <div>
+              <Legend>Profit Sharing Amount</Legend>
+              <input
+                type="number"
+                size="md"
+                className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                name="profit_sharing_amount"
+                value={formState.profit_sharing_amount}
+                min={0}
+                onChange={onChange}
+              />
+            </div>
           </div>
 
           {/* Right Column */}
           <div className="w-full md:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
-              <div>
-                <Legend>Earn Points</Legend>
-                <input
-                  type="number"
-                  size="md"
-                  className="capitalize mb-2 w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                  name="points"
-                  value={formState.points}
-                  min={0}
-                  onChange={onChange}
-                />
+              <div className="space-y-2">
+                <div>
+                  <Legend>Earn Points</Legend>
+                  <input
+                    type="number"
+                    size="md"
+                    className="capitalize mb-2 w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="points"
+                    value={formState.points}
+                    min={0}
+                    onChange={onChange}
+                  />
+                </div>
 
-                <Legend>Used Points Max</Legend>
-                <input
-                  type="number"
-                  size="md"
-                  className="capitalize mb-2 w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                  name="points_max"
-                  value={formState.points_max}
-                  min={0}
-                  onChange={onChange}
-                />
+                <div>
+                  <Legend>Used Points Max</Legend>
+                  <input
+                    type="number"
+                    size="md"
+                    className="capitalize mb-2 w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="points_max"
+                    value={formState.points_max}
+                    min={0}
+                    onChange={onChange}
+                  />
+                </div>
+
+                <div>
+                  <Legend>Profit Sharing Amount</Legend>
+                  <input
+                    type="number"
+                    size="md"
+                    className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="profit_sharing_amount"
+                    value={formState.profit_sharing_amount}
+                    min={0}
+                    onChange={onChange}
+                    required
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                   <div>
@@ -293,7 +336,7 @@ const EditProduct = () => {
               </div>
             </div>
             {/* file upload */}
-            <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative">
+            <label className="border-2 border-dashed rounded-lg border-gray-300 bg-gray-50 hover:border-[#6CB93B] p-6 text-center w-full flex flex-col items-center relative mt-4">
               <lord-icon
                 src="https://cdn.lordicon.com/smwmetfi.json"
                 trigger="loop"
