@@ -4,7 +4,7 @@ import { useFetch } from "../../context/FetchContext";
 import { useParams } from "react-router-dom";
 import cn from "../../utils/cn";
 
-const WithdrawalRow = ({ data, fetchWithdrawals, status = [] }) => {
+const WithdrawalRow = ({ data, status = [] }) => {
   const [customer, setCustomer] = useState(null);
   const [withdrawal, setWithdrawal] = useState(data);
   const { request } = useFetch();
@@ -24,9 +24,11 @@ const WithdrawalRow = ({ data, fetchWithdrawals, status = [] }) => {
   }, [data?.customer_id, request]);
 
   const switchStatus = (id, status) => {
-    request(`withdrawal/${id}/status`, {
+    request(`withdrawal/${id}`, {
       method: "PATCH",
-      header: "Content-Type: application/json",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ status }),
     })
       .then((res) => {
@@ -34,7 +36,11 @@ const WithdrawalRow = ({ data, fetchWithdrawals, status = [] }) => {
         return res.json();
       })
       .then(() => {
-        fetchWithdrawals();
+        request(`withdrawal/${id}`)
+          .then((res) => res.json())
+          .then((data) => {
+            setWithdrawal(data);
+          });
       })
       .catch((error) => console.error("Error updating order:", error));
   };
@@ -145,14 +151,7 @@ const Withdrawal = () => {
           <tbody>
             {response?.data?.map((item) => {
               return (
-                <WithdrawalRow
-                  key={item?.id}
-                  data={item}
-                  status={status}
-                  fetchWithdrawals={() => {
-                    fetchWithdrawals(page);
-                  }}
-                />
+                <WithdrawalRow key={item?.id} data={item} status={status} />
               );
             })}
           </tbody>
