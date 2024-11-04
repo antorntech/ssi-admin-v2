@@ -264,31 +264,31 @@ const Orders = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
+      <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold">Orders</h1>
           <p className="text-sm text-gray-500">
             Total Orders: {response?.count}
           </p>
         </div>
+        <div className="flex items-center gap-3 whitespace-nowrap">
+          Filter By
+          <select
+            className="rounded-lg border px-3 py-3 capitalize"
+            value={filterBy?.status}
+            onChange={(e) => {
+              setFilterBy({ ...filterBy, status: e.target.value });
+            }}
+          >
+            <option value="">All Status</option>
+            {status.map((item) => (
+              <option key={item} value={item} className="">
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="flex gap-3 items-center">
-          <div className="flex items-center gap-3">
-            Filter By
-            <select
-              className="rounded-lg border px-3 py-3 capitalize"
-              value={filterBy?.status}
-              onChange={(e) => {
-                setFilterBy({ ...filterBy, status: e.target.value });
-              }}
-            >
-              <option value="">All Status</option>
-              {status.map((item) => (
-                <option key={item} value={item} className="">
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
           <SearchBar
             searchText={searchText}
             handleSearch={setSearchText}

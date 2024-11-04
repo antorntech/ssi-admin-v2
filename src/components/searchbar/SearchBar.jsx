@@ -4,7 +4,7 @@ import { SearchNormal } from "iconsax-react";
 const SearchBar = ({ searchText, handleSearch, doSearch }) => {
   return (
     <form
-      className="flex-grow relative min-w-[16rem] border border-green-400 flex rounded-lg bg-white overflow-hidden"
+      className="flex-grow relative min-w-[16rem] border border-green-400 flex rounded-lg bg-white overflow-hidden max-w-sm"
       onSubmit={doSearch}
     >
       <input
