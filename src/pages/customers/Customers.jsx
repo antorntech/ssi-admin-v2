@@ -39,19 +39,9 @@ const Orders = ({ customer = {} }) => {
   return <div>{orders.count}</div>;
 };
 
-const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
+const MakeLoyalty = ({ customer = {} }) => {
   const { request } = useFetch();
-  const [customer, setCustomer] = useState(data || {});
-
-  async function fetchCustomer() {
-    try {
-      const response = await request(`users/${customer?.id}`);
-      const data = await response.json();
-      setCustomer(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const [loyalty, setLoyalty] = useState(null);
 
   const makeLoyaltyCustomer = async (customer_id) => {
     try {
@@ -62,11 +52,43 @@ const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
         },
         body: JSON.stringify({ customer_id }),
       });
-      fetchCustomer();
     } catch (error) {
-      throw new Error(error);
+      console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (!customer?.id) return;
+    async function fetchLoyalty() {
+      try {
+        const response = await request(`loyalty/customers/by/${customer?.id}`);
+        const data = await response.json();
+        setLoyalty(data);
+      } catch (error) {
+        console.log(`Ignore error if not loyalty customer`);
+      }
+    }
+    fetchLoyalty();
+  }, [customer?.id, request]);
+
+  return loyalty?.level ? (
+    <span
+      style={{
+        color: loyaltyColor[loyalty?.level],
+      }}
+    >
+      {loyalty?.level}
+    </span>
+  ) : (
+    <Button onClick={() => makeLoyaltyCustomer(customer.id)}>
+      Make Loyalty
+    </Button>
+  );
+};
+
+const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
+  const { request } = useFetch();
+  const [customer, setCustomer] = useState(data || {});
 
   return (
     <tr
@@ -119,19 +141,7 @@ const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
         {formatDate(customer?.updated_at)}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
-        {customer?.loyalty?.level ? (
-          <span
-            style={{
-              color: loyaltyColor[customer?.loyalty?.level],
-            }}
-          >
-            {customer?.loyalty?.level}
-          </span>
-        ) : (
-          <Button onClick={() => makeLoyaltyCustomer(customer.id)}>
-            Make Loyalty
-          </Button>
-        )}
+        <MakeLoyalty customer={customer} />
       </td>
     </tr>
   );
