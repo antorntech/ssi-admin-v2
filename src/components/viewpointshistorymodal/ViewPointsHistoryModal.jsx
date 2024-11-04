@@ -11,6 +11,29 @@ import { formatDate } from "../../utils/date";
 const ViewPointsHistoyModal = ({ isOpen, onClose, customerID }) => {
   if (!isOpen) return null;
 
+  const [pointsData, setPointsData] = useState([]);
+  const { request } = useContext(FetchContext);
+
+  console.log(pointsData);
+
+  const fetchPoints = async () => {
+    try {
+      const res = await request(`points?customer_id=${customerID}`);
+      const json = await res.json();
+      const { data } = json;
+
+      if (Array.isArray(data)) {
+        setPointsData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching points data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPoints();
+  }, []);
+
   return (
     <div className="order-modal">
       <div className="order-modal-content">
