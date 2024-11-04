@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
-import FetchContext from "../../context/FetchContext";
+import FetchContext, { useFetch } from "../../context/FetchContext";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
@@ -43,6 +43,33 @@ const statusClasses = {
   default: "bg-red-400 text-white", // Default fallback for unexpected status
 };
 
+const LoyaltyColumn = ({ order = {} }) => {
+  const [loyalty, setLoyalty] = useState(null);
+  const { request } = useFetch();
+  const customer_id = order?.customer_id;
+
+  useEffect(() => {
+    if (!customer_id) return;
+    request(`loyalty/customers/by/${customer_id}`)
+      .then((res) => res.json())
+      .then((data) => setLoyalty(data))
+      .catch(console.error);
+  }, [customer_id, request]);
+
+  if (!loyalty?.level) return;
+
+  return (
+    <span
+      className={cn("text-black capitalize")}
+      style={{
+        color: loyaltyColor[loyalty?.level],
+      }}
+    >
+      {loyalty?.level}
+    </span>
+  );
+};
+
 const OrderRow = ({ item, handleView, status = [] }) => {
   const [order, setOrder] = useState(item);
   const { request } = useContext(FetchContext);
@@ -74,16 +101,7 @@ const OrderRow = ({ item, handleView, status = [] }) => {
         {order?.shipping_address?.name}
       </td>
       <td className="px-4 py-2 border-b whitespace-nowrap">
-        {order?.loyalty?.level ? (
-          <span
-            className={cn("text-black capitalize")}
-            style={{
-              color: loyaltyColor[order?.loyalty?.level],
-            }}
-          >
-            {order?.loyalty?.level}
-          </span>
-        ) : null}
+        <LoyaltyColumn order={order} />
       </td>
       <td className="px-4 py-2 border-b whitespace-nowrap">
         ৳{" "}
@@ -253,7 +271,7 @@ const Orders = () => {
             Total Orders: {response?.count}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <div className="flex items-center gap-3">
             Filter By
             <select
