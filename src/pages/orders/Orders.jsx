@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
 import FetchContext from "../../context/FetchContext";
 import { toast } from "react-toastify";
@@ -10,6 +11,7 @@ import SearchBar from "../../components/searchbar/SearchBar";
 import { formatDate } from "../../utils/date";
 import cn from "../../utils/cn";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
+import ArrayValidator from "../../components/shared/ArrayValidator";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -41,41 +43,53 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
-  const limit = 10;
+  const [limit, setLimit] = useState(10);
+  const [filterBy, setFilterBy] = useState(null);
 
   // Fetch orders with pagination
-  const fetchOrders = async (page) => {
-    setLoading(true);
-    try {
-      const res = await request(
-        `orders?skip=${(page - 1) * limit}&limit=${limit}`
-      );
-      const json = await res.json();
-      const { data, count } = json;
+  const fetchOrders = useCallback(
+    async (page) => {
+      setLoading(true);
+      try {
+        const qp = {};
+        if (filterBy?.status) qp.status = filterBy?.status;
+        if (limit) qp.limit = limit;
+        if (searchText) qp.q = searchText;
+        if (page) qp.skip = (page - 1) * limit;
 
-      if (data) {
-        const statusOrder = {
-          pending: 1,
-          completed: 2,
-          canceled: 3,
-        };
+        const qpString = "?" + new URLSearchParams(qp).toString();
 
-        const sortedOrders = data.sort((a, b) => {
-          return (
-            statusOrder[a.status.toLowerCase()] -
-            statusOrder[b.status.toLowerCase()]
-          );
-        });
+        const res = await request(`orders${qpString}`);
+        const json = await res.json();
+        const { data, count } = json;
 
-        setOrders(sortedOrders);
-        setResponse({ data, count });
+        if (data) {
+          const statusOrder = {
+            pending: 1,
+            completed: 2,
+            canceled: 3,
+          };
+
+          const sortedOrders = data.sort((a, b) => {
+            return (
+              statusOrder[a.status.toLowerCase()] -
+              statusOrder[b.status.toLowerCase()]
+            );
+          });
+
+          setOrders(data);
+          setResponse({ data, count });
+        }
+      } catch (error) {
+        setResponse(null);
+        setOrders([]);
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [filterBy?.status, limit, request, searchText]
+  );
 
   const doSearch = async (e) => {
     e.preventDefault();
@@ -95,25 +109,24 @@ const Orders = () => {
     }
   };
 
-  const fetchStatus = async () => {
-    try {
-      const res = await request(`orders/status`);
-      const json = await res.json();
-      if (json) {
-        setStatus(json);
-      } else {
-        console.error("Failed to fetch status");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   // Refetch orders when the page number changes
   useEffect(() => {
     fetchOrders(currentPage);
+    const fetchStatus = async () => {
+      try {
+        const res = await request(`orders/status`);
+        const json = await res.json();
+        if (json) {
+          setStatus(json);
+        } else {
+          console.error("Failed to fetch status");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
     fetchStatus();
-  }, [currentPage]);
+  }, [currentPage, fetchOrders, request]);
 
   const switchStatus = (id, status) => {
     request(`orders/${id}/status`, {
@@ -152,10 +165,27 @@ const Orders = () => {
         <div>
           <h1 className="text-xl font-bold">Orders</h1>
           <p className="text-sm text-gray-500">
-            Total Orders: {response.count}
+            Total Orders: {response?.count}
           </p>
         </div>
-        <div>
+        <div className="flex gap-3">
+          <div className="flex items-center gap-3">
+            Filter By
+            <select
+              className="rounded-lg border px-3 py-3 capitalize"
+              value={filterBy?.status}
+              onChange={(e) => {
+                setFilterBy({ ...filterBy, status: e.target.value });
+              }}
+            >
+              <option value="">All Status</option>
+              {status.map((item) => (
+                <option key={item} value={item} className="">
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
           <SearchBar
             searchText={searchText}
             handleSearch={setSearchText}
@@ -166,8 +196,8 @@ const Orders = () => {
 
       {loading ? (
         <Loader />
-      ) : orders?.length > 0 ? (
-        <>
+      ) : (
+        <ArrayValidator list={orders} fallback={<p>No orders found.</p>}>
           <div className="mt-5 overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
@@ -242,21 +272,21 @@ const Orders = () => {
                       <td className="px-4 py-2 border-b flex items-center gap-3">
                         <select
                           className={`capitalize border rounded-md px-2 py-2 
-                        ${
-                          order?.status === "pending"
-                            ? "bg-cyan-400 text-white"
-                            : order?.status === "processed"
-                            ? "bg-yellow-400 text-black"
-                            : order?.status === "shipped"
-                            ? "bg-blue-400 text-white"
-                            : order?.status === "delivered"
-                            ? "bg-green-400 text-white"
-                            : order?.status === "canceled"
-                            ? "bg-red-400 text-white"
-                            : order?.status === "completed"
-                            ? "bg-green-600 text-white"
-                            : "bg-red-400 text-white" // Default fallback for unexpected status
-                        }`}
+                    ${
+                      order?.status === "pending"
+                        ? "bg-cyan-400 text-white"
+                        : order?.status === "processed"
+                        ? "bg-yellow-400 text-black"
+                        : order?.status === "shipped"
+                        ? "bg-blue-400 text-white"
+                        : order?.status === "delivered"
+                        ? "bg-green-400 text-white"
+                        : order?.status === "canceled"
+                        ? "bg-red-400 text-white"
+                        : order?.status === "completed"
+                        ? "bg-green-600 text-white"
+                        : "bg-red-400 text-white" // Default fallback for unexpected status
+                    }`}
                           value={order?.status}
                           onChange={(e) =>
                             switchStatus(order?.id, e.target.value)
@@ -287,7 +317,7 @@ const Orders = () => {
           <Pagination
             endPoint="orders"
             currentPage={currentPage}
-            totalPages={Math.ceil(response.count / limit)}
+            totalPages={Math.ceil(response?.count / limit) || 0}
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
 
@@ -296,9 +326,7 @@ const Orders = () => {
             onClose={closeModal}
             order={selectedOrder}
           />
-        </>
-      ) : (
-        <p>No orders found.</p>
+        </ArrayValidator>
       )}
     </>
   );
