@@ -7,14 +7,13 @@ import { useContext, useEffect, useState } from "react";
 import { srcBuilder } from "../../utils/src";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/date";
+import moment from "moment";
 
 const ViewPointsHistoyModal = ({ isOpen, onClose, customerID }) => {
   if (!isOpen) return null;
 
   const [pointsData, setPointsData] = useState([]);
   const { request } = useContext(FetchContext);
-
-  console.log(pointsData);
 
   const fetchPoints = async () => {
     try {
@@ -45,7 +44,38 @@ const ViewPointsHistoyModal = ({ isOpen, onClose, customerID }) => {
           Points History
         </h1>
 
-        <p>Customer Id: {customerID}</p>
+        <div>
+          <table className="w-full border border-gray-300 rounded-md overflow-hidden">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                  Points From
+                </th>
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                  Total Points
+                </th>
+                <th className="px-4 py-2 border-b font-bold text-left text-gray-700">
+                  CreatedAt
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {pointsData?.map((item) => {
+                return (
+                  <tr key={item.id} className="odd:bg-white even:bg-gray-50">
+                    <td className="px-4 py-3 border-b">{item.points_from}</td>
+                    <td className="px-4 py-3 border-b text-gray-600">
+                      {item.points}
+                    </td>
+                    <td className="px-4 py-3 border-b text-gray-600">
+                      {formatDate(item.created_at)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
