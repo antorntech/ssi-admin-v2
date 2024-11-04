@@ -220,58 +220,36 @@ const EditProduct = () => {
               name="quantity"
               onChange={onChange}
             />
-            <div>
-              <Legend>Slug</Legend>
-              <input
-                type="text"
-                className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                name="slug"
-                value={formState.slug}
-                onChange={onChange}
-              />
-            </div>
-            <div>
-              <Legend>Profit Sharing Amount</Legend>
-              <input
-                type="number"
-                size="md"
-                className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                name="profit_sharing_amount"
-                value={formState.profit_sharing_amount}
-                min={0}
-                onChange={onChange}
-              />
-            </div>
           </div>
 
           {/* Right Column */}
           <div className="w-full md:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
               <div className="space-y-2">
-                <div>
-                  <Legend>Earn Points</Legend>
-                  <input
-                    type="number"
-                    size="md"
-                    className="capitalize mb-2 w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                    name="points"
-                    value={formState.points}
-                    min={0}
-                    onChange={onChange}
-                  />
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+                  <div>
+                    <Legend>Earn Points</Legend>
+                    <input
+                      type="number"
+                      className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      name="points"
+                      value={formState.points}
+                      min={0}
+                      onChange={onChange}
+                    />
+                  </div>
 
-                <div>
-                  <Legend>Used Points Max</Legend>
-                  <input
-                    type="number"
-                    size="md"
-                    className="capitalize mb-2 w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                    name="points_max"
-                    value={formState.points_max}
-                    min={0}
-                    onChange={onChange}
-                  />
+                  <div>
+                    <Legend>Used Points Max</Legend>
+                    <input
+                      type="number"
+                      className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                      name="points_max"
+                      value={formState.points_max}
+                      min={0}
+                      onChange={onChange}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -322,6 +300,16 @@ const EditProduct = () => {
                     </select>
                   </div>
                 </div>
+                <div>
+                  <Legend>Slug</Legend>
+                  <input
+                    type="text"
+                    className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="slug"
+                    value={formState.slug}
+                    onChange={onChange}
+                  />
+                </div>
               </div>
               <div>
                 <Legend>Description</Legend>
@@ -330,7 +318,7 @@ const EditProduct = () => {
                   name="description"
                   value={formState.description}
                   onChange={onChange}
-                  rows={8}
+                  rows={11}
                 />
               </div>
             </div>
