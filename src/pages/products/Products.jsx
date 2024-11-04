@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../../loader/Loader";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
@@ -15,6 +15,8 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
   const { request } = useFetch();
   const [data, setData] = useState(product);
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState(null);
+  const [brand, setBrand] = useState(null);
 
   async function fetchProduct(id = null) {
     if (!id) return;
@@ -31,6 +33,28 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (data?.category) {
+      request(`categories/${data?.category}`).then((res) => {
+        if (res.ok) {
+          res.json().then((data) => {
+            setCategory(data);
+          });
+        }
+      });
+    }
+
+    if (data?.brand) {
+      request(`brands/${data?.brand}`).then((res) => {
+        if (res.ok) {
+          res.json().then((data) => {
+            setBrand(data);
+          });
+        }
+      });
+    }
+  }, [data?.brand, data?.brand_id, data?.category, data?.category_id, request]);
 
   return (
     <tr className="hover:bg-gray-100">
@@ -96,13 +120,13 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
         {data?.name}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-        {data?.brand?.name}
+        {brand?.name}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize">
         {data?.color}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b capitalize whitespace-nowrap">
-        {data?.category?.name}
+        {category?.name}
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b">
         {parseFloat(data?.price)}
@@ -149,11 +173,18 @@ const Products = () => {
   const [loading, setLoading] = useState(false);
 
   // Fetch products with pagination
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
+      const qp = {
+        include_category: false,
+        include_brand: false,
+      };
+      if (page) qp.page = (page - 1) * limit;
+      if (limit) qp.limit = limit;
+
       const res = await request(
-        `products?skip=${(page - 1) * limit}&limit=${limit}`
+        `products?${new URLSearchParams(qp).toString()}`
       );
       const json = await res.json();
       const { data, count } = json;
@@ -168,12 +199,12 @@ const Products = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, request]);
 
   // Fetch products when component mounts or when page changes
   useEffect(() => {
     fetchProducts();
-  }, [page]);
+  }, [fetchProducts, page]);
 
   const doSearch = async (e) => {
     e.preventDefault();
