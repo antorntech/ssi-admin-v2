@@ -27,7 +27,7 @@ const WithdrawalRow = ({ data, fetchWithdrawals, status = [] }) => {
     request(`withdrawal/${id}/status`, {
       method: "PATCH",
       header: "Content-Type: application/json",
-      body: status,
+      body: JSON.stringify({ status }),
     })
       .then((res) => {
         if (!res.ok) throw new Error(`Error: ${res.statusText}`);
