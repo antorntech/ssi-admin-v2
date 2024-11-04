@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
 import FetchContext from "../../context/FetchContext";
 import { toast } from "react-toastify";
@@ -32,6 +32,108 @@ import ArrayValidator from "../../components/shared/ArrayValidator";
 //   if (!customer) return;
 //   return <p className="font-semibold">{customer?.name}</p>;
 // }
+
+const statusClasses = {
+  pending: "bg-cyan-400 text-white",
+  processed: "bg-yellow-400 text-black",
+  shipped: "bg-blue-400 text-white",
+  delivered: "bg-green-400 text-white",
+  canceled: "bg-red-400 text-white",
+  completed: "bg-green-600 text-white",
+  default: "bg-red-400 text-white", // Default fallback for unexpected status
+};
+
+const OrderRow = ({ item, handleView, status = [] }) => {
+  const [order, setOrder] = useState(item);
+  const { request } = useContext(FetchContext);
+  const shippingCost =
+    order?.shipping_address?.district?.toLowerCase() === "dhaka" ? 60 : 120;
+
+  const switchStatus = (id, status) => {
+    request(`orders/${id}/status`, {
+      method: "PATCH",
+      header: "Content-Type: application/json",
+      body: status,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+        return res.json();
+      })
+      .then(() => {
+        toast.success("Order Updated Successfully!");
+        request(`orders/${id}`)
+          .then((res) => res.json())
+          .then((data) => setOrder(data));
+      })
+      .catch((error) => console.error("Error updating order:", error));
+  };
+
+  return (
+    <tr key={order?.id} className="hover:bg-gray-100">
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        {order?.shipping_address?.name}
+      </td>
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        {order?.loyalty?.level ? (
+          <span
+            className={cn("text-black capitalize")}
+            style={{
+              color: loyaltyColor[order?.loyalty?.level],
+            }}
+          >
+            {order?.loyalty?.level}
+          </span>
+        ) : null}
+      </td>
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        ৳{" "}
+        {order?.order_items?.reduce((acc, item) => {
+          const price = parseInt(item?.price) || 0;
+          const points_used = parseInt(order?.points_used) || 0;
+
+          const items_items = price * item.quantity;
+          return acc + items_items + shippingCost - points_used;
+        }, 0)}
+      </td>
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        {order?.order_items?.reduce((acc, item) => acc + item.quantity, 0)}
+      </td>
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        {order?.points_used}
+      </td>
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        {formatDate(order?.created_at)}
+      </td>
+      <td className="px-4 py-2 border-b whitespace-nowrap">
+        {formatDate(order?.updated_at)}
+      </td>
+      <td className="px-4 py-2 border-b flex items-center gap-3">
+        <select
+          className={cn(
+            `capitalize border rounded-md px-2 py-2`,
+            statusClasses[order?.status]
+          )}
+          value={order?.status}
+          onChange={(e) => switchStatus(order?.id, e.target.value)}
+        >
+          {status?.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
+        <div>
+          <button
+            onClick={() => handleView()}
+            className="px-4 py-[6px] text-white bg-orange-500 rounded-md"
+          >
+            View
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 const Orders = () => {
   const { page } = useParams();
@@ -128,23 +230,6 @@ const Orders = () => {
     fetchStatus();
   }, [currentPage, fetchOrders, request]);
 
-  const switchStatus = (id, status) => {
-    request(`orders/${id}/status`, {
-      method: "PATCH",
-      header: "Content-Type: application/json",
-      body: status,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-        return res.json();
-      })
-      .then(() => {
-        toast.success("Order Updated Successfully!");
-        fetchOrders(currentPage);
-      })
-      .catch((error) => console.error("Error updating order:", error));
-  };
-
   // order-modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -222,94 +307,17 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => {
-                  const shippingCost =
-                    order?.shipping_address?.district?.toLowerCase() === "dhaka"
-                      ? 60
-                      : 120;
-                  return (
-                    <tr key={order?.id} className="hover:bg-gray-100">
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order?.shipping_address?.name}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order?.loyalty?.level ? (
-                          <span
-                            className={cn("text-black capitalize")}
-                            style={{
-                              color: loyaltyColor[order?.loyalty?.level],
-                            }}
-                          >
-                            {order?.loyalty?.level}
-                          </span>
-                        ) : null}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        ৳{" "}
-                        {order?.order_items?.reduce((acc, item) => {
-                          const price = parseInt(item?.price) || 0;
-                          const points_used = parseInt(order?.points_used) || 0;
-
-                          const items_items = price * item.quantity;
-                          return acc + items_items + shippingCost - points_used;
-                        }, 0)}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order?.order_items?.reduce(
-                          (acc, item) => acc + item.quantity,
-                          0
-                        )}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {order?.points_used}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {formatDate(order?.created_at)}
-                      </td>
-                      <td className="px-4 py-2 border-b whitespace-nowrap">
-                        {formatDate(order?.updated_at)}
-                      </td>
-                      <td className="px-4 py-2 border-b flex items-center gap-3">
-                        <select
-                          className={`capitalize border rounded-md px-2 py-2 
-                    ${
-                      order?.status === "pending"
-                        ? "bg-cyan-400 text-white"
-                        : order?.status === "processed"
-                        ? "bg-yellow-400 text-black"
-                        : order?.status === "shipped"
-                        ? "bg-blue-400 text-white"
-                        : order?.status === "delivered"
-                        ? "bg-green-400 text-white"
-                        : order?.status === "canceled"
-                        ? "bg-red-400 text-white"
-                        : order?.status === "completed"
-                        ? "bg-green-600 text-white"
-                        : "bg-red-400 text-white" // Default fallback for unexpected status
-                    }`}
-                          value={order?.status}
-                          onChange={(e) =>
-                            switchStatus(order?.id, e.target.value)
-                          }
-                        >
-                          {status?.map((status) => (
-                            <option key={status} value={status}>
-                              {status}
-                            </option>
-                          ))}
-                        </select>
-                        <div>
-                          <button
-                            onClick={() => handleOrderClick(order)}
-                            className="px-4 py-[6px] text-white bg-orange-500 rounded-md"
-                          >
-                            View
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {orders.map((order) => (
+                  <Fragment key={order?.id}>
+                    <OrderRow
+                      item={order}
+                      handleView={() => {
+                        handleOrderClick(order);
+                      }}
+                      status={status}
+                    />
+                  </Fragment>
+                ))}
               </tbody>
             </table>
           </div>
