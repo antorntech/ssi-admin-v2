@@ -6,8 +6,9 @@ import { Link, useParams } from "react-router-dom";
 import Pagination from "../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 import { useFetch } from "../context/FetchContext";
-import { Trash } from "iconsax-react";
+import { NoteText, Trash } from "iconsax-react";
 import { formatDate } from "../utils/date";
+import ViewPointsHistoyModal from "../components/viewpointshistorymodal/ViewPointsHistoryModal";
 
 // const Orders = ({ customer = {} }) => {
 //   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -56,7 +57,7 @@ const AvailablePoints = ({ customer_id }) => {
     fetchCustomer();
   }, [customer_id, request]);
 
-  return customer?.points || 0;
+  return <p>{customer?.points}</p> || 0;
 };
 
 const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
@@ -79,86 +80,116 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
   //   }
   // }, [customer.id, request]);
 
+  // points-history-modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPoints, setSelectedPoints] = useState(null);
+
+  const handlePointsClick = (customerId) => {
+    setSelectedPoints(customerId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPoints(null);
+  };
+
   return (
-    <tr
-      key={loyaltyCustomer?.id}
-      className="border-b border-gray-200 hover:bg-gray-100"
-    >
-      <td
-        className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap"
-        title={JSON.stringify(loyaltyCustomer, null, 2)}
+    <>
+      <tr
+        key={loyaltyCustomer?.id}
+        className="border-b border-gray-200 hover:bg-gray-100"
       >
-        {loyaltyCustomer?.name}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-        {loyaltyCustomer?.email ? (
-          <Link
-            to={`mailto:${loyaltyCustomer?.email}`}
-            className="hover:underline py-2"
-          >
-            {loyaltyCustomer?.email}
-          </Link>
-        ) : null}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-        {loyaltyCustomer?.phone ? (
-          <Link
-            to={`tel:${loyaltyCustomer?.phone}`}
-            className="hover:underline py-2"
-          >
-            {loyaltyCustomer?.phone}
-          </Link>
-        ) : null}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
-        <AvailablePoints customer_id={loyaltyCustomer?.customer_id} />
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-        {formatDate(loyaltyCustomer?.created_at)}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-        {formatDate(loyaltyCustomer?.updated_at)}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-        <select
-          style={{
-            backgroundColor: loyaltyColor[loyaltyCustomer?.level] || "",
-          }}
-          className="capitalize border rounded-md px-2 py-2 focus:outline-none"
-          value={loyaltyCustomer?.level}
-          onChange={async (e) => {
-            if (!e.target.value) return;
-            try {
-              await request(`loyalty/customers/${loyaltyCustomer?.id}`, {
-                method: "PATCH",
-                body: e.target.value,
-              });
-              const response = await request(
-                `loyalty/customers/${loyaltyCustomer?.id}`
-              );
-              const data = await response.json();
-              setLoyaltyCustomer(data);
-            } catch (error) {
-              console.log(error);
-            }
-          }}
+        <td
+          className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap"
+          title={JSON.stringify(loyaltyCustomer, null, 2)}
         >
-          {levels.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
-        <button
-          onClick={() => handleOpen(customer?.id)}
-          className="text-red-500 hover:text-red-700"
-        >
-          <Trash size="22" className="text-red-600" variant="Bold" />
-        </button>
-      </td>
-    </tr>
+          {loyaltyCustomer?.name}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+          {loyaltyCustomer?.email ? (
+            <Link
+              to={`mailto:${loyaltyCustomer?.email}`}
+              className="hover:underline py-2"
+            >
+              {loyaltyCustomer?.email}
+            </Link>
+          ) : null}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+          {loyaltyCustomer?.phone ? (
+            <Link
+              to={`tel:${loyaltyCustomer?.phone}`}
+              className="hover:underline py-2"
+            >
+              {loyaltyCustomer?.phone}
+            </Link>
+          ) : null}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
+          <div className="flex gap-2 items-center justify-between">
+            <AvailablePoints customer_id={loyaltyCustomer?.customer_id} />
+            <button>
+              <NoteText
+                size="22"
+                className="text-indigo-600"
+                onClick={() => handlePointsClick(loyaltyCustomer?.customer_id)}
+              />
+            </button>
+          </div>
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+          {formatDate(loyaltyCustomer?.created_at)}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+          {formatDate(loyaltyCustomer?.updated_at)}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+          <select
+            style={{
+              backgroundColor: loyaltyColor[loyaltyCustomer?.level] || "",
+            }}
+            className="capitalize border rounded-md px-2 py-2 focus:outline-none"
+            value={loyaltyCustomer?.level}
+            onChange={async (e) => {
+              if (!e.target.value) return;
+              try {
+                await request(`loyalty/customers/${loyaltyCustomer?.id}`, {
+                  method: "PATCH",
+                  body: e.target.value,
+                });
+                const response = await request(
+                  `loyalty/customers/${loyaltyCustomer?.id}`
+                );
+                const data = await response.json();
+                setLoyaltyCustomer(data);
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          >
+            {levels.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+          <button
+            onClick={() => handleOpen(customer?.id)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <Trash size="22" className="text-red-600" variant="Bold" />
+          </button>
+        </td>
+      </tr>
+      <ViewPointsHistoyModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        order={selectedPoints}
+      />
+    </>
   );
 };
 
