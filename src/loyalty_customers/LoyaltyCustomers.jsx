@@ -82,16 +82,16 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
 
   // points-history-modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPoints, setSelectedPoints] = useState(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
   const handlePointsClick = (customerId) => {
-    setSelectedPoints(customerId);
+    setSelectedCustomerId(customerId);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedPoints(null);
+    setSelectedCustomerId(null);
   };
 
   return (
@@ -187,7 +187,7 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
       <ViewPointsHistoyModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        order={selectedPoints}
+        customerID={selectedCustomerId}
       />
     </>
   );

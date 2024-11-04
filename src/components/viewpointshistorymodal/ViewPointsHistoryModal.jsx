@@ -8,7 +8,7 @@ import { srcBuilder } from "../../utils/src";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/date";
 
-const ViewPointsHistoyModal = ({ isOpen, onClose, order }) => {
+const ViewPointsHistoyModal = ({ isOpen, onClose, customerID }) => {
   if (!isOpen) return null;
 
   return (
@@ -21,6 +21,8 @@ const ViewPointsHistoyModal = ({ isOpen, onClose, order }) => {
         <h1 className="underline underline-offset-4 text-3xl font-bold mb-8 text-center text-gray-800">
           Points History
         </h1>
+
+        <p>Customer Id: {customerID}</p>
       </div>
     </div>
   );
