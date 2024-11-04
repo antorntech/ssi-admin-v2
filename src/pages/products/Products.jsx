@@ -163,7 +163,7 @@ const Products = () => {
   const limit = 10;
   const { request } = useContext(FetchContext);
   const params = useParams();
-  const page = parseInt(params?.page || 1, 10); // Ensure page is an integer
+  const page = parseInt(params?.page) || 1; // Ensure page is an integer
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [products, setProducts] = useState([]); // Initialize as an empty array
@@ -180,7 +180,7 @@ const Products = () => {
         include_category: false,
         include_brand: false,
       };
-      if (page) qp.page = (page - 1) * limit;
+      if (page) qp.skipa = (page - 1) * limit;
       if (limit) qp.limit = limit;
 
       const res = await request(
