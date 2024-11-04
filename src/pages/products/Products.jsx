@@ -180,7 +180,7 @@ const Products = () => {
         include_category: false,
         include_brand: false,
       };
-      if (page) qp.skipa = (page - 1) * limit;
+      if (page) qp.skip = (page - 1) * limit;
       if (limit) qp.limit = limit;
 
       const res = await request(
