@@ -5,7 +5,7 @@ function formatDate(str = "") {
 
   if (isNaN(date.getTime())) return "Invalid date";
 
-  return date.toLocaleString("en-BD");
+  return date.toLocaleString("en-BD", { timeZone: "Asia/Dhaka", hour12: true });
 }
 
 export { formatDate };
