@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext";
 import { useParams } from "react-router-dom";
 import cn from "../../utils/cn";
+import Pagination from "../../components/pagination/Pagination";
 
 const WithdrawalRow = ({ data, status = [] }) => {
   const [customer, setCustomer] = useState(null);
@@ -157,6 +158,11 @@ const Withdrawal = () => {
           </tbody>
         </table>
       </div>
+      <Pagination
+        endPoint="categories"
+        currentPage={page}
+        totalPages={response?.count ? Math.ceil(response?.count / limit) : 0}
+      />
     </div>
   );
 };
