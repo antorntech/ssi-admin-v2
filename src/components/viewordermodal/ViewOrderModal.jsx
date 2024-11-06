@@ -2,31 +2,11 @@
 
 import "./ViewOrderModal.css";
 import { Add } from "iconsax-react";
-import FetchContext from "../../context/FetchContext";
-import { useContext, useEffect, useState } from "react";
 import { srcBuilder } from "../../utils/src";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/date";
 
-const ProductPreview = ({ id }) => {
-  const [product, setProduct] = useState(null);
-  const { request } = useContext(FetchContext);
-
-  useEffect(() => {
-    async function fetchProduct() {
-      try {
-        const response = await request(`products/${id}`);
-        const data = await response.json();
-        setProduct(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchProduct();
-  }, [id, request]);
-
-  if (!product) return;
-
+const ProductPreview = ({ product }) => {
   return (
     <div
       className="flex gap-2 items-center"
@@ -188,7 +168,11 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
                 return (
                   <tr key={item.id} className="odd:bg-white even:bg-gray-50">
                     <td className="px-4 py-3 border-b">
-                      <ProductPreview id={item.id} key={item.id} />
+                      <ProductPreview
+                        id={item.id}
+                        key={item.id}
+                        product={item}
+                      />
                     </td>
                     <td className="px-4 py-3 border-b text-gray-600">
                       {item.weight ? item.weight + item.unit : ""}
