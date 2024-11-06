@@ -36,7 +36,7 @@ const AddPointsModal = ({
 
     const body = {
       customer_id: customerId,
-      points: parseInt(points),
+      points: parseFloat(points),
     };
 
     try {
