@@ -24,7 +24,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
     pagination.push(i);
   }
 
-  if (end < totalPages - range) {
+  if (currentPage < totalPages - range) {
     pagination.push("...");
   }
 
