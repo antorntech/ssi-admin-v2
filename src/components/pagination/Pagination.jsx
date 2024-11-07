@@ -6,8 +6,6 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
   const [searchParams] = useSearchParams();
   currentPage = parseInt(currentPage);
 
-  if (totalPages == 0) return;
-
   const pagination = [];
   const range = 3;
 
