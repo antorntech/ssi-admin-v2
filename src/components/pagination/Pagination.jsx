@@ -28,7 +28,9 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
     pagination.push("...");
   }
 
-  pagination.push(totalPages);
+  if (totalPages > 1) {
+    pagination.push(totalPages);
+  }
 
   return (
     <div className="flex justify-center mt-5">
