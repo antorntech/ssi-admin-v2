@@ -4,11 +4,29 @@ import { Link, useSearchParams } from "react-router-dom";
 
 const Pagination = ({ currentPage, totalPages, endPoint }) => {
   const [searchParams] = useSearchParams();
-  // Ensure currentPage is an integer
   currentPage = parseInt(currentPage);
 
-  // Generate page numbers array
-  const pages = [...Array(totalPages).keys()].map((page) => page + 1);
+  const pagination = [];
+  const range = 3;
+
+  pagination.push(1);
+
+  if (currentPage > range) {
+    pagination.push("...");
+  }
+
+  const start = Math.max(2, currentPage - range);
+  const end = Math.min(currentPage + range, totalPages);
+
+  for (let i = start; i <= end; i++) {
+    pagination.push(i);
+  }
+
+  if (end < totalPages - range) {
+    pagination.push("...");
+  }
+
+  pagination.push(totalPages);
 
   return (
     <div className="flex justify-center mt-5">
@@ -29,7 +47,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
       </Link>
 
       {/* Page Numbers */}
-      {pages.map((page) => (
+      {pagination.map((page) => (
         <Link
           key={page}
           to={`/${endPoint}/${page}?${searchParams.toString()}`}

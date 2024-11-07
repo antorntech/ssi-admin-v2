@@ -1,0 +1,48 @@
+{
+    "cells": [
+        {
+            "language": "typescript",
+            "source": [
+                "function generatePagination(totalPages, currentPage) {\r\n  const pagination = [];\r\n\r\n  // Always show the first page\r\n  pagination.push(1);\r\n\r\n  // Add ellipsis if there's a gap between the first page and the current page\r\n  if (currentPage > 4) {\r\n    pagination.push(\"...\");\r\n  }\r\n\r\n  // Show a range of pages around the current page\r\n  const start = Math.max(2, currentPage - 4);\r\n  const end = Math.min(totalPages - 1, currentPage + 4);\r\n\r\n  for (let i = start; i <= end; i++) {\r\n    pagination.push(i);\r\n  }\r\n\r\n  // Add ellipsis if there's a gap between the current page range and the last page\r\n  if (currentPage < totalPages - 4) {\r\n    pagination.push(\"...\");\r\n  }\r\n\r\n  // Always show the last page\r\n  if (totalPages > 1) {\r\n    pagination.push(totalPages);\r\n  }\r\n\r\n  return pagination;\r\n}\r\n\r\ngeneratePagination(8, 1);\r\n"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "[",
+                                "  \u001b[33m1\u001b[39m,",
+                                "  \u001b[33m2\u001b[39m,",
+                                "  \u001b[33m3\u001b[39m,",
+                                "  \u001b[33m4\u001b[39m,",
+                                "  \u001b[33m5\u001b[39m,",
+                                "  \u001b[32m'...'\u001b[39m,",
+                                "  \u001b[33m7\u001b[39m",
+                                "]"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "typescript",
+            "source": [
+                ""
+            ],
+            "outputs": []
+        }
+    ]
+}
