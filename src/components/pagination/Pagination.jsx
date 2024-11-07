@@ -31,7 +31,7 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
   }
 
   return (
-    <div className="flex justify-center mt-5">
+    <div className="flex justify-center items-center mt-5">
       {/* Previous Page Link */}
       <Link
         to={
@@ -49,19 +49,23 @@ const Pagination = ({ currentPage, totalPages, endPoint }) => {
       </Link>
 
       {/* Page Numbers */}
-      {pagination.map((page) => (
-        <Link
-          key={page}
-          to={`/${endPoint}/${page}?${searchParams.toString()}`}
-          className={`mx-1 px-3 py-1 rounded ${
-            currentPage === page
-              ? "bg-[#6CB93B] text-white"
-              : "bg-gray-300 text-gray-700"
-          }`}
-        >
-          {page}
-        </Link>
-      ))}
+      {pagination.map((page) =>
+        page === "..." ? (
+          "..."
+        ) : (
+          <Link
+            key={page}
+            to={`/${endPoint}/${page}?${searchParams.toString()}`}
+            className={`mx-1 px-3 py-1 rounded ${
+              currentPage === page
+                ? "bg-[#6CB93B] text-white"
+                : "bg-gray-300 text-gray-700"
+            }`}
+          >
+            {page}
+          </Link>
+        )
+      )}
 
       {/* Next Page Link */}
       <Link
