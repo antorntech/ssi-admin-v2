@@ -100,7 +100,7 @@ const Brands = () => {
             <tbody>
               {brands.map((brand) => (
                 <tr key={brand.id} className="hover:bg-gray-100">
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 border-b">
                     <img
                       src={
                         brand.image
@@ -111,16 +111,16 @@ const Brands = () => {
                       className="h-12 w-12 object-cover"
                     />
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize min-w-[220px]">
+                  <td className="px-4 py-2 md:px-6 border-b capitalize min-w-[220px]">
                     {brand.name}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+                  <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
                     {formatDate(brand?.created_at)}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+                  <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
                     {formatDate(brand?.updated_at)}
                   </td>
-                  <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+                  <td className="px-4 py-2 md:px-6 border-b">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleEditClick(brand)}

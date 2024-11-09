@@ -19,17 +19,17 @@ const PointsRow = ({ point, handleOpen }) => {
   }, []);
 
   return (
-    <tr>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.email}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{customer?.phone}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{point.points}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+    <tr className="hover:bg-gray-100">
+      <td className="px-4 py-2 md:px-6 border-b">{customer?.email}</td>
+      <td className="px-4 py-2 md:px-6 border-b">{customer?.phone}</td>
+      <td className="px-4 py-2 md:px-6 border-b">{point.points}</td>
+      <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
         {formatDate(point?.created_at)}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+      <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
         {formatDate(point?.updated_at)}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+      <td className="px-4 py-2 md:px-6 border-b">
         <button
           onClick={handleOpen}
           className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
@@ -90,22 +90,22 @@ const Points = () => {
         <table className="min-w-full border bg-white">
           <thead>
             <tr>
-              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 md:px-6 border-b text-left text-sm font-semibold text-gray-700">
                 Email
               </th>
-              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 md:px-6 border-b text-left text-sm font-semibold text-gray-700">
                 Phone
               </th>
-              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 md:px-6 border-b text-left text-sm font-semibold text-gray-700">
                 Points
               </th>
-              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 md:px-6 border-b text-left text-sm font-semibold text-gray-700">
                 Created At
               </th>
-              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 md:px-6 border-b text-left text-sm font-semibold text-gray-700">
                 Updated At
               </th>
-              <th className="px-4 py-2 md:px-6 md:py-4 border-b text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 md:px-6 border-b text-left text-sm font-semibold text-gray-700">
                 Action
               </th>
             </tr>

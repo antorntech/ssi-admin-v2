@@ -101,12 +101,12 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
         className="border-b border-gray-200 hover:bg-gray-100"
       >
         <td
-          className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap"
+          className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap"
           title={JSON.stringify(loyaltyCustomer, null, 2)}
         >
           {loyaltyCustomer?.name}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
           {loyaltyCustomer?.email ? (
             <Link
               to={`mailto:${loyaltyCustomer?.email}`}
@@ -116,7 +116,7 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
             </Link>
           ) : null}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
           {loyaltyCustomer?.phone ? (
             <Link
               to={`tel:${loyaltyCustomer?.phone}`}
@@ -126,7 +126,7 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
             </Link>
           ) : null}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px] whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b capitalize w-[160px] whitespace-nowrap">
           <div className="flex gap-2 items-center justify-between">
             <AvailablePoints customer_id={loyaltyCustomer?.customer_id} />
             <button>
@@ -138,13 +138,13 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
             </button>
           </div>
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
           {formatDate(loyaltyCustomer?.created_at)}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
           {formatDate(loyaltyCustomer?.updated_at)}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
           <select
             style={{
               backgroundColor: loyaltyColor[loyaltyCustomer?.level] || "",
@@ -175,7 +175,7 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
             ))}
           </select>
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+        <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
           <button
             onClick={() => handleOpen(customer?.id)}
             className="text-red-500 hover:text-red-700"

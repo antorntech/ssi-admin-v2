@@ -95,10 +95,10 @@ const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
       key={customer?.id}
       className="border-b border-gray-200 hover:bg-gray-100"
     >
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+      <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
         {customer?.name}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+      <td className="px-4 py-2 md:px-6 border-b">
         {customer?.email ? (
           <Link
             to={`mailto:${customer?.email}`}
@@ -108,14 +108,14 @@ const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
           </Link>
         ) : null}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+      <td className="px-4 py-2 md:px-6 border-b">
         {customer?.phone ? (
           <Link to={`tel:${customer?.phone}`} className="hover:underline py-2">
             {customer?.phone}
           </Link>
         ) : null}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize w-[160px]">
+      <td className="px-4 py-2 md:px-6 border-b capitalize w-[160px]">
         <div className="flex items-center justify-between">
           <div>{customer?.points || 0}</div>
           <div className="flex gap-1">
@@ -128,19 +128,19 @@ const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
           </div>
         </div>
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+      <td className="px-4 py-2 md:px-6 border-b capitalize">
         <Orders customer={customer} />
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+      <td className="px-4 py-2 md:px-6 border-b capitalize">
         {customer?.address}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+      <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
         {formatDate(customer?.created_at)}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize whitespace-nowrap">
+      <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
         {formatDate(customer?.updated_at)}
       </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b capitalize">
+      <td className="px-4 py-2 md:px-6 border-b capitalize">
         <MakeLoyalty customer={customer} />
       </td>
     </tr>
