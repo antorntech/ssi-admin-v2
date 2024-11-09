@@ -197,7 +197,16 @@ const AppRoutes = () => {
               <Withdrawal />
             </Protected>
           }
-        />
+        >
+          <Route
+            path=":page"
+            element={
+              <Protected>
+                <Withdrawal />
+              </Protected>
+            }
+          />
+        </Route>
         <Route
           path="send-messages"
           element={
