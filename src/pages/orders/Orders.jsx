@@ -164,13 +164,8 @@ const Orders = () => {
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
   const [limit, setLimit] = useState(10);
-  const [filterBy, setFilterBy] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams({
     limit: 10,
-    skip: 0,
-    q: "",
-    date: "",
-    status: "",
   });
 
   // Fetch orders with pagination
@@ -179,15 +174,13 @@ const Orders = () => {
       setLoading(true);
       try {
         const qp = {};
-        if (filterBy?.status) qp.status = filterBy?.status;
-        if (limit) qp.limit = limit;
         if (searchText) qp.q = searchText;
         if (page) qp.skip = (page - 1) * limit;
 
         const qpString = "?" + new URLSearchParams(qp).toString();
 
         const res = await request(
-          `orders${qpString}${searchParams.toString()}`
+          `orders${qpString}&${searchParams.toString()}`
         );
         const json = await res.json();
         const { data, count } = json;
@@ -217,7 +210,7 @@ const Orders = () => {
         setLoading(false);
       }
     },
-    [filterBy?.status, limit, request, searchParams, searchText]
+    [limit, request, searchParams, searchText]
   );
 
   const doSearch = async (e) => {
@@ -277,9 +270,12 @@ const Orders = () => {
         Filter By
         <select
           className="rounded-lg border px-3 py-2.5 capitalize"
-          value={filterBy?.status}
+          value={searchParams.get("status")}
           onChange={(e) => {
-            setFilterBy({ ...filterBy, status: e.target.value });
+            setSearchParams((prev) => {
+              prev.set("status", e.target.value);
+              return prev;
+            });
           }}
         >
           <option value="">All Status</option>
