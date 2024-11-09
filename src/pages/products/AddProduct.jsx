@@ -24,11 +24,13 @@ const initialValues = {
   quantity: 0,
   weight: 0,
   unit: "gm",
+  offer: "",
 };
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const [brands, setBrands] = useState([]);
+  const [offers, setOffers] = useState([]);
   const [formState, setFormState] = useState(initialValues);
   const [categories, setCategories] = useState([]);
   const [files, setFiles] = useState([]);
@@ -68,8 +70,23 @@ const AddProduct = () => {
     }
   };
 
+  // fetch offers
+  const fetchOffers = async () => {
+    try {
+      const response = await request("gifts");
+      const json = await response.json();
+      const { data } = json;
+      console.log(data);
+      if (!data) return;
+      setOffers(json.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchBrands();
+    fetchOffers();
     fetchCategories();
   }, []);
 
@@ -183,32 +200,74 @@ const AddProduct = () => {
               onChange={onChange}
             />
 
-            <Legend>Weight Unit</Legend>
-            <select
-              className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="unit"
-              value={formState.unit}
-              onChange={onChange}
-              required
-            >
-              <option value="" disabled></option>
-              {["gm", "kg", "ml"].map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+              <div>
+                <Legend>Weight Unit</Legend>
+                <select
+                  className="w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="unit"
+                  value={formState.unit}
+                  onChange={onChange}
+                  required
+                >
+                  <option value="" disabled></option>
+                  {["gm", "kg", "ml"].map((unit) => (
+                    <option key={unit} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <Legend>Quantity</Legend>
-            <input
-              type="number"
-              className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-              name="quantity"
-              value={formState.quantity}
-              onChange={onChange}
-              required
-              min={0}
-            />
+              <div>
+                <Legend>Quantity</Legend>
+                <input
+                  type="number"
+                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="quantity"
+                  value={formState.quantity}
+                  onChange={onChange}
+                  required
+                  min={0}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+              <div>
+                <Legend>Category</Legend>
+                <select
+                  className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="category"
+                  value={formState.category}
+                  onChange={onChange}
+                  required
+                >
+                  <option value="" disabled></option>
+                  {categories.map((category, i) => (
+                    <option key={category.id || i} value={category?.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <Legend>Color</Legend>
+                <select
+                  className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  name="color"
+                  onChange={onChange}
+                  value={formState.color}
+                >
+                  <option value="" disabled></option>
+                  {colors.map((color, i) => (
+                    <option key={i} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
 
           {/* Right Column */}
@@ -256,41 +315,7 @@ const AddProduct = () => {
                     onChange={onChange}
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
-                  <div>
-                    <Legend>Category</Legend>
-                    <select
-                      className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                      name="category"
-                      value={formState.category}
-                      onChange={onChange}
-                      required
-                    >
-                      <option value="" disabled></option>
-                      {categories.map((category, i) => (
-                        <option key={category.id || i} value={category?.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <Legend>Color</Legend>
-                    <select
-                      className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-                      name="color"
-                      onChange={onChange}
-                      value={formState.color}
-                    >
-                      <option value="" disabled></option>
-                      {colors.map((color, i) => (
-                        <option key={i} value={color}>
-                          {color}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+
                 <div>
                   <Legend>Slug</Legend>
                   <input
@@ -301,11 +326,29 @@ const AddProduct = () => {
                     onChange={onChange}
                   />
                 </div>
+                <div>
+                  {/* offer filed */}
+                  <Legend>Offer</Legend>
+                  <select
+                    className="capitalize w-full py-[10px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                    name="offer"
+                    value={formState.offer}
+                    onChange={onChange}
+                    required
+                  >
+                    <option value="" disabled></option>
+                    {offers?.map((offer, i) => (
+                      <option key={offer?.id || i} value={offer?.id}>
+                        {offer?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div>
                 <Legend>Description</Legend>
                 <textarea
-                  className="capitalize w-full mb-3 md:mb-0 py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+                  className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
                   name="description"
                   value={formState.description}
                   onChange={onChange}
