@@ -5,8 +5,9 @@ import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src.js";
 
 const initialValues = {
+  name: "",
   price: "",
-  serverImages: null
+  serverImages: null,
 };
 
 const EditGift = ({ selectedGift, fetchGifts }) => {
@@ -32,7 +33,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
           ...prev,
           ...data,
           serverImages: data.images,
-          images: []
+          images: [],
         }));
       })
       .catch(console.error);
@@ -123,7 +124,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
                   if (!id || !src) throw new Error("id or src is not defined");
                   // call remove media api
                   request(`gifts/${id}/images/${src}`, {
-                    method: "DELETE"
+                    method: "DELETE",
                   })
                     .then((r) => r.json())
                     .then(() => {
@@ -147,6 +148,22 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
           })}
         </div>
 
+        {/* Name Input */}
+        <div>
+          <Typography
+            variant="h6"
+            color="gray"
+            className="mb-1 font-normal mt-2"
+          >
+            Name
+          </Typography>
+          <input
+            type="text"
+            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+            name="name"
+          />
+        </div>
+
         <div>
           <Typography
             variant="h6"
@@ -155,13 +172,9 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
           >
             Edit Price
           </Typography>
-          <Input
+          <input
             type="number"
-            size="md"
-            className="!border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            labelProps={{
-              className: "before:content-none after:content-none"
-            }}
+            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
             value={formState.price}
             onChange={onChange}
             name="price"

@@ -4,14 +4,23 @@ import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { AuthContext } from "../../context/AuthContext";
 
+const initialValues = {
+  name: "",
+  price: "",
+};
+
 const AddGift = ({ fetchGifts }) => {
   const [files, setFiles] = useState([]);
   const { request } = useContext(FetchContext);
-  const [formState, setFormState] = useState({
-    price: 0,
-  });
+  const [formState, setFormState] = useState(initialValues);
   const { user } = useContext(AuthContext);
   const author = user?.email || "admin";
+
+  function onChange(e) {
+    const { name, value } = e.target;
+    if (!name) throw new Error("name or value is not defined");
+    setFormState({ ...formState, [name]: value });
+  }
 
   const fileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -32,6 +41,7 @@ const AddGift = ({ fetchGifts }) => {
         if (fetchGifts) {
           setFiles([]);
           e.target.reset();
+          setFormState(initialValues);
           fetchGifts();
         } else {
           window.location.reload();
@@ -104,6 +114,24 @@ const AddGift = ({ fetchGifts }) => {
           ))}
         </div>
 
+        {/* Name Input */}
+        <div>
+          <Typography
+            variant="h6"
+            color="gray"
+            className="mb-1 font-normal mt-2"
+          >
+            Name
+          </Typography>
+          <input
+            type="text"
+            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+            name="name"
+            onChange={onChange}
+            value={formState.name}
+          />
+        </div>
+
         {/* Price Input */}
         <div>
           <Typography
@@ -115,10 +143,10 @@ const AddGift = ({ fetchGifts }) => {
           </Typography>
           <input
             type="number"
-            size="md"
-            className="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
             name="price"
-            required
+            onChange={onChange}
+            value={formState.price}
           />
         </div>
 
