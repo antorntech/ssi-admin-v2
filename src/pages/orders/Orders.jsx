@@ -4,7 +4,7 @@ import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
 import FetchContext, { useFetch } from "../../context/FetchContext";
 import { toast } from "react-toastify";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import ViewOrderModal from "../../components/viewordermodal/ViewOrderModal";
 import SearchBar from "../../components/searchbar/SearchBar";
@@ -165,6 +165,13 @@ const Orders = () => {
   const { request } = useContext(FetchContext);
   const [limit, setLimit] = useState(10);
   const [filterBy, setFilterBy] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams({
+    limit: 10,
+    skip: 0,
+    q: "",
+    date: "",
+    status: "",
+  });
 
   // Fetch orders with pagination
   const fetchOrders = useCallback(
@@ -179,7 +186,9 @@ const Orders = () => {
 
         const qpString = "?" + new URLSearchParams(qp).toString();
 
-        const res = await request(`orders${qpString}`);
+        const res = await request(
+          `orders${qpString}${searchParams.toString()}`
+        );
         const json = await res.json();
         const { data, count } = json;
 
@@ -208,7 +217,7 @@ const Orders = () => {
         setLoading(false);
       }
     },
-    [filterBy?.status, limit, request, searchText]
+    [filterBy?.status, limit, request, searchParams, searchText]
   );
 
   const doSearch = async (e) => {
@@ -262,6 +271,39 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  const FilterByStatus = () => {
+    return (
+      <div className="flex items-center gap-3 whitespace-nowrap">
+        Filter By
+        <select
+          className="rounded-lg border px-3 py-2.5 capitalize"
+          value={filterBy?.status}
+          onChange={(e) => {
+            setFilterBy({ ...filterBy, status: e.target.value });
+          }}
+        >
+          <option value="">All Status</option>
+          {status.map((item) => (
+            <option key={item} value={item} className="">
+              {item}
+            </option>
+          ))}
+        </select>
+        <input
+          type="date"
+          className="rounded-lg border px-3 py-2"
+          value={searchParams.get("date")}
+          onChange={(e) => {
+            setSearchParams((prev) => {
+              prev.set("date", e.target.value);
+              return prev;
+            });
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between">
@@ -271,23 +313,7 @@ const Orders = () => {
             Total Orders: {response?.count}
           </p>
         </div>
-        <div className="flex items-center gap-3 whitespace-nowrap">
-          Filter By
-          <select
-            className="rounded-lg border px-3 py-3 capitalize"
-            value={filterBy?.status}
-            onChange={(e) => {
-              setFilterBy({ ...filterBy, status: e.target.value });
-            }}
-          >
-            <option value="">All Status</option>
-            {status.map((item) => (
-              <option key={item} value={item} className="">
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
+        <FilterByStatus />
         <div className="flex gap-3 items-center">
           <SearchBar
             searchText={searchText}
