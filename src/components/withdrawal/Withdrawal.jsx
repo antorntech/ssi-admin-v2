@@ -4,6 +4,7 @@ import { useFetch } from "../../context/FetchContext";
 import { useParams } from "react-router-dom";
 import cn from "../../utils/cn";
 import Pagination from "../../components/pagination/Pagination";
+import { formatDate } from "../../utils/date";
 
 const WithdrawalRow = ({ data, status = [] }) => {
   const [customer, setCustomer] = useState(null);
@@ -59,6 +60,12 @@ const WithdrawalRow = ({ data, status = [] }) => {
       <td className="px-4 py-2 capitalize">{customer?.email}</td>
       <td className="px-4 py-2 capitalize">{customer?.phone}</td>
       <td className="px-4 py-2 capitalize">{withdrawal?.amount}</td>
+      <td className="px-4 py-2 capitalize">
+        {formatDate(withdrawal?.created_at)}
+      </td>
+      <td className="px-4 py-2 capitalize">
+        {formatDate(withdrawal?.updated_at)}
+      </td>
       <td className="px-4 py-2 capitalize">
         <select
           className={cn(
@@ -143,6 +150,12 @@ const Withdrawal = () => {
               </th>
               <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Amount
+              </th>
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                Created At
+              </th>
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                Updated At
               </th>
               <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Action
