@@ -42,8 +42,10 @@ const Orders = ({ customer = {} }) => {
 const MakeLoyalty = ({ customer = {} }) => {
   const { request } = useFetch();
   const [loyalty, setLoyalty] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const makeLoyaltyCustomer = async (customer_id) => {
+    setLoading(true);
     try {
       await request(`loyalty/customers`, {
         method: "POST",
@@ -54,22 +56,28 @@ const MakeLoyalty = ({ customer = {} }) => {
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
+  const fetchLoyalty = useCallback(async () => {
     if (!customer?.id) return;
-    async function fetchLoyalty() {
-      try {
-        const response = await request(`loyalty/customers/by/${customer?.id}`);
-        const data = await response.json();
-        setLoyalty(data);
-      } catch (error) {
-        console.log(`Ignore error if not loyalty customer`);
-      }
+    setLoading(true);
+    try {
+      const response = await request(`loyalty/customers/by/${customer?.id}`);
+      const data = await response.json();
+      setLoyalty(data);
+    } catch (error) {
+      console.log(`Ignore error if not loyalty customer`);
+    } finally {
+      setLoading(false);
     }
-    fetchLoyalty();
   }, [customer?.id, request]);
+
+  useEffect(() => {
+    fetchLoyalty();
+  }, [customer.id, fetchLoyalty, request]);
 
   return loyalty?.level ? (
     <span
@@ -80,7 +88,13 @@ const MakeLoyalty = ({ customer = {} }) => {
       {loyalty?.level}
     </span>
   ) : (
-    <Button onClick={() => makeLoyaltyCustomer(customer.id)}>
+    <Button
+      onClick={async () => {
+        await makeLoyaltyCustomer(customer.id);
+        await fetchLoyalty();
+      }}
+      disabled={loading}
+    >
       Make Loyalty
     </Button>
   );
