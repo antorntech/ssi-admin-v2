@@ -49,7 +49,8 @@ const Points = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState(null);
   const [limit, setLimit] = useState(10);
-  const { page } = useParams();
+  const params = useParams();
+  const page = params?.page || 1;
   const skip = (page - 1) * limit;
 
   // Fetch points data
