@@ -60,10 +60,10 @@ const WithdrawalRow = ({ data, status = [] }) => {
       <td className="px-4 py-2 capitalize">{customer?.email}</td>
       <td className="px-4 py-2 capitalize">{customer?.phone}</td>
       <td className="px-4 py-2 capitalize">{withdrawal?.amount}</td>
-      <td className="px-4 py-2 capitalize">
+      <td className="px-4 py-2 capitalize whitespace-nowrap">
         {formatDate(withdrawal?.created_at)}
       </td>
-      <td className="px-4 py-2 capitalize">
+      <td className="px-4 py-2 capitalize whitespace-nowrap">
         {formatDate(withdrawal?.updated_at)}
       </td>
       <td className="px-4 py-2 capitalize">
