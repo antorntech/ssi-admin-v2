@@ -64,6 +64,7 @@ const WithdrawalRow = ({ data, status = [] }) => {
       </td>
       <td className="px-4 py-2 capitalize">{customer?.phone}</td>
       <td className="px-4 py-2 capitalize">{withdrawal?.amount}</td>
+      <td className="px-4 py-2 capitalize">{withdrawal?.method || ""}</td>
       <td className="px-4 py-2 capitalize whitespace-nowrap">
         {formatDate(withdrawal?.created_at)}
       </td>
@@ -154,6 +155,9 @@ const Withdrawal = () => {
               </th>
               <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Amount
+              </th>
+              <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                Method
               </th>
               <th className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
                 Created At
