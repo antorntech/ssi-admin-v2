@@ -159,7 +159,7 @@ const Withdrawal = () => {
         </table>
       </div>
       <Pagination
-        endPoint="categories"
+        endPoint="withdrawal"
         currentPage={page}
         totalPages={response?.count ? Math.ceil(response?.count / limit) : 0}
       />
