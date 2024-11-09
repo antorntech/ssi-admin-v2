@@ -56,8 +56,12 @@ const WithdrawalRow = ({ data, status = [] }) => {
 
   return (
     <tr className="border-b hover:bg-gray-100">
-      <td className="px-4 py-2 capitalize">{customer?.name}</td>
-      <td className="px-4 py-2 capitalize">{customer?.email}</td>
+      <td className="px-4 py-2 capitalize whitespace-nowrap">
+        {customer?.name}
+      </td>
+      <td className="px-4 py-2 capitalize whitespace-nowrap">
+        {customer?.email}
+      </td>
       <td className="px-4 py-2 capitalize">{customer?.phone}</td>
       <td className="px-4 py-2 capitalize">{withdrawal?.amount}</td>
       <td className="px-4 py-2 capitalize whitespace-nowrap">
