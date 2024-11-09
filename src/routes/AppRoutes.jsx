@@ -149,7 +149,16 @@ const AppRoutes = () => {
               <Points />
             </Protected>
           }
-        />
+        >
+          <Route
+            path=":page"
+            element={
+              <Protected>
+                <Points />
+              </Protected>
+            }
+          />
+        </Route>
         <Route
           path="customers"
           element={

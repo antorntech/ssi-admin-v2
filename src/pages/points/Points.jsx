@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import { formatDate } from "../../utils/date";
+import Pagination from "../../components/pagination/Pagination";
+import { useSearchParams } from "react-router-dom";
 
 const PointsRow = ({ point, handleOpen }) => {
   const { request } = useContext(FetchContext);
@@ -42,29 +44,29 @@ const PointsRow = ({ point, handleOpen }) => {
 };
 
 const Points = () => {
-  const [pointsData, setPointsData] = useState([]);
   const { request } = useContext(FetchContext);
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [limit, setLimit] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+  const skip = (page - 1) * limit;
 
   // Fetch points data
-  const fetchPoints = async () => {
+  const fetchPoints = useCallback(async () => {
     try {
-      const res = await request("points");
+      const res = await request(`points?skip=${skip}&limit=${limit}`);
       const json = await res.json();
-      const { data } = json;
-
-      if (Array.isArray(data)) {
-        setPointsData(data);
-      }
+      setResponse(json);
     } catch (error) {
       console.error("Error fetching points data:", error);
     }
-  };
+  }, [request, skip, limit]);
 
   useEffect(() => {
     fetchPoints();
-  }, []);
+  }, [fetchPoints]);
 
   const handleDelete = async (id) => {
     try {
@@ -111,7 +113,7 @@ const Points = () => {
             </tr>
           </thead>
           <tbody>
-            {pointsData.map((point) => {
+            {response?.data?.map((point) => {
               return (
                 <PointsRow
                   key={point?.id}
@@ -120,7 +122,7 @@ const Points = () => {
                 />
               );
             })}
-            {pointsData.length === 0 && (
+            {response?.count === 0 && (
               <tr>
                 <td colSpan="5" className="text-center py-4 text-gray-500">
                   No Data Available
@@ -129,6 +131,11 @@ const Points = () => {
             )}
           </tbody>
         </table>
+        <Pagination
+          endPoint="points"
+          currentPage={page}
+          totalPages={Math.ceil(response?.count / limit)}
+        />
         <DeleteConfirmModal
           open={open}
           handleOpen={() => handleOpen(null)}
