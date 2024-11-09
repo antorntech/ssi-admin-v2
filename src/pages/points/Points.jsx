@@ -4,7 +4,7 @@ import FetchContext from "../../context/FetchContext";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import { formatDate } from "../../utils/date";
 import Pagination from "../../components/pagination/Pagination";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const PointsRow = ({ point, handleOpen }) => {
   const { request } = useContext(FetchContext);
@@ -49,8 +49,7 @@ const Points = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState(null);
   const [limit, setLimit] = useState(10);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = searchParams.get("page") || 1;
+  const { page } = useParams();
   const skip = (page - 1) * limit;
 
   // Fetch points data
