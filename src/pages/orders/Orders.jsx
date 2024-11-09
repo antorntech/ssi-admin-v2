@@ -163,7 +163,6 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useContext(FetchContext);
-  const [limit, setLimit] = useState(10);
   const [searchParams, setSearchParams] = useSearchParams({
     limit: 10,
   });
@@ -174,31 +173,19 @@ const Orders = () => {
       setLoading(true);
       try {
         const qp = {};
-        if (searchText) qp.q = searchText;
-        if (page) qp.skip = (page - 1) * limit;
+        if (page) qp.skip = (page - 1) * searchParams.get("limit");
+
+        searchParams.forEach((value, key) => {
+          if (value) qp[key] = value;
+        });
 
         const qpString = "?" + new URLSearchParams(qp).toString();
 
-        const res = await request(
-          `orders${qpString}&${searchParams.toString()}`
-        );
+        const res = await request(`orders${qpString}`);
         const json = await res.json();
         const { data, count } = json;
 
         if (data) {
-          const statusOrder = {
-            pending: 1,
-            completed: 2,
-            canceled: 3,
-          };
-
-          const sortedOrders = data.sort((a, b) => {
-            return (
-              statusOrder[a.status.toLowerCase()] -
-              statusOrder[b.status.toLowerCase()]
-            );
-          });
-
           setOrders(data);
           setResponse({ data, count });
         }
@@ -210,7 +197,7 @@ const Orders = () => {
         setLoading(false);
       }
     },
-    [limit, request, searchParams, searchText]
+    [request, searchParams]
   );
 
   const doSearch = async (e) => {
@@ -264,38 +251,62 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  const selectionRange = {
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  };
+
   const FilterByStatus = () => {
     return (
-      <div className="flex items-center gap-3 whitespace-nowrap">
-        Filter By
-        <select
-          className="rounded-lg border px-3 py-2.5 capitalize"
-          value={searchParams.get("status")}
-          onChange={(e) => {
-            setSearchParams((prev) => {
-              prev.set("status", e.target.value);
-              return prev;
-            });
-          }}
-        >
-          <option value="">All Status</option>
-          {status.map((item) => (
-            <option key={item} value={item} className="">
-              {item}
-            </option>
-          ))}
-        </select>
-        <input
-          type="date"
-          className="rounded-lg border px-3 py-2"
-          value={searchParams.get("date")}
-          onChange={(e) => {
-            setSearchParams((prev) => {
-              prev.set("date", e.target.value);
-              return prev;
-            });
-          }}
-        />
+      <div className="flex items-center gap-3 whitespace-nowrap flex-wrap">
+        <div className="flex items-center gap-2">
+          Filter By
+          <select
+            className="rounded-lg border px-3 py-2.5 capitalize"
+            value={searchParams.get("status")}
+            onChange={(e) => {
+              setSearchParams((prev) => {
+                prev.set("status", e.target.value);
+                return prev;
+              });
+            }}
+          >
+            <option value="">All Status</option>
+            {status.map((item) => (
+              <option key={item} value={item} className="">
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          From
+          <input
+            type="date"
+            className="rounded-lg border px-3 py-2"
+            value={searchParams.get("date_from") || ""}
+            onChange={(e) => {
+              setSearchParams((prev) => {
+                prev.set("date_from", e.target.value);
+                return prev;
+              });
+            }}
+          />
+          To
+          <input
+            type="date"
+            min={searchParams.get("date_from") || ""}
+            className="rounded-lg border px-3 py-2"
+            value={searchParams.get("date_to") || ""}
+            onChange={(e) => {
+              setSearchParams((prev) => {
+                prev.set("date_to", e.target.value);
+                return prev;
+              });
+            }}
+          />
+        </div>
       </div>
     );
   };
@@ -365,7 +376,9 @@ const Orders = () => {
           <Pagination
             endPoint="orders"
             currentPage={currentPage}
-            totalPages={Math.ceil(response?.count / limit) || 0}
+            totalPages={
+              Math.ceil(response?.count / searchParams.get("limit")) || 0
+            }
             onPageChange={(newPage) => navigate(`/orders/${newPage}`)}
           />
 
