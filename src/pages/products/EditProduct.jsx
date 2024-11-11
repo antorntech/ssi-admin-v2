@@ -339,7 +339,6 @@ const EditProduct = () => {
                     name="offer"
                     value={formState.offer}
                     onChange={onChange}
-                    required
                   >
                     <option value="" disabled></option>
                     {offers?.map((offer, i) => (
