@@ -7,10 +7,12 @@ import { AuthContext } from "../../context/AuthContext";
 const initialValues = {
   name: "",
   price: "",
+  type: "",
 };
 
 const AddGift = ({ fetchGifts }) => {
   const [files, setFiles] = useState([]);
+  const [offerTypes, setOfferTypes] = useState([]);
   const { request } = useContext(FetchContext);
   const [formState, setFormState] = useState(initialValues);
   const { user } = useContext(AuthContext);
@@ -56,6 +58,21 @@ const AddGift = ({ fetchGifts }) => {
   const handleRemoveFile = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
+
+  // fetch offer types
+  const fetchOfferTypes = async () => {
+    try {
+      const response = await request("gifts/types");
+      const json = await response.json();
+      setOfferTypes(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchOfferTypes();
+  }, []);
 
   return (
     <div>
@@ -132,22 +149,49 @@ const AddGift = ({ fetchGifts }) => {
           />
         </div>
 
-        {/* Price Input */}
-        <div>
-          <Typography
-            variant="h6"
-            color="gray"
-            className="mb-1 font-normal mt-2"
-          >
-            Price
-          </Typography>
-          <input
-            type="number"
-            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
-            name="price"
-            onChange={onChange}
-            value={formState.price}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Price Input */}
+          <div>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Price
+            </Typography>
+            <input
+              type="number"
+              className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+              name="price"
+              onChange={onChange}
+              value={formState.price}
+            />
+          </div>
+
+          {/* Select Offer Type */}
+          <div>
+            <Typography
+              variant="h6"
+              color="gray"
+              className="mb-1 font-normal mt-2"
+            >
+              Offer Type
+            </Typography>
+            <select
+              className="capitalize w-full py-[14px] px-[5px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
+              name="type"
+              value={formState.type}
+              onChange={onChange}
+              required
+            >
+              <option value="" disabled></option>
+              {offerTypes?.map((type, i) => (
+                <option key={type.id || i} value={type?.id}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Submit Button */}
