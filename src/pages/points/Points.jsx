@@ -5,6 +5,7 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import { formatDate } from "../../utils/date";
 import Pagination from "../../components/pagination/Pagination";
 import { useParams, useSearchParams } from "react-router-dom";
+import SearchBar from "../../components/searchbar/SearchBar";
 
 const PointsRow = ({ point, handleOpen }) => {
   const { request } = useContext(FetchContext);
@@ -46,6 +47,7 @@ const PointsRow = ({ point, handleOpen }) => {
 const Points = () => {
   const { request } = useContext(FetchContext);
   const [open, setOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState(null);
   const [limit, setLimit] = useState(10);
@@ -63,6 +65,24 @@ const Points = () => {
       console.error("Error fetching points data:", error);
     }
   }, [request, skip, limit]);
+
+  const doSearch = async (e) => {
+    e.preventDefault();
+    try {
+      if (!searchText.trim()) {
+        fetchPoints(currentPage ? currentPage : 1);
+        return;
+      }
+      const res = await request(`points?q=${searchText}`);
+      const point = await res.json();
+      if (!point) {
+        throw new Error("No point found");
+      }
+      setResponse(point);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
+  };
 
   useEffect(() => {
     fetchPoints();
@@ -87,7 +107,14 @@ const Points = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-3">Points List</h2>
+      <div className="flex justify-between items-center mb-4 md:mb-8">
+        <h2 className="text-xl font-semibold mb-3">Points List</h2>
+        <SearchBar
+          searchText={searchText}
+          handleSearch={setSearchText}
+          doSearch={doSearch}
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full border bg-white">
           <thead>

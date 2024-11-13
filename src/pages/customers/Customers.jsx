@@ -11,7 +11,7 @@ import Pagination from "../../components/pagination/Pagination";
 import FetchContext, { useFetch } from "../../context/FetchContext";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 import { formatDate } from "../../utils/date";
-import { Edit } from "iconsax-react";
+import { Check, Copy, Edit } from "iconsax-react";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import Button from "../../components/shared/Button";
 import SearchBar from "../../components/searchbar/SearchBar";
@@ -104,11 +104,33 @@ const CustomerRow = ({ data, handlePointsClick = (id) => {} }) => {
   const { request } = useFetch();
   const [customer, setCustomer] = useState(data || {});
 
+  const CopyButton = ({ id }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+      navigator.clipboard.writeText(id);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+      <button
+        onClick={handleCopy}
+        className="size-7 flex items-center justify-center rounded"
+      >
+        {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+      </button>
+    );
+  };
+
   return (
     <tr
       key={customer?.id}
       className="border-b border-gray-200 hover:bg-gray-100"
     >
+      <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
+        <CopyButton id={customer?.id} />
+      </td>
       <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
         {customer?.name}
       </td>
@@ -245,6 +267,9 @@ const Customers = () => {
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr className="bg-gray-50">
+                  <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    ID
+                  </th>
                   <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                     Name
                   </th>

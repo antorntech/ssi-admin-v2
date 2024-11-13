@@ -9,6 +9,7 @@ import { useFetch } from "../context/FetchContext";
 import { NoteText, Trash } from "iconsax-react";
 import { formatDate } from "../utils/date";
 import ViewPointsHistoyModal from "../components/viewpointshistorymodal/ViewPointsHistoryModal";
+import SearchBar from "../components/searchbar/SearchBar";
 
 // const Orders = ({ customer = {} }) => {
 //   const [orders, setOrders] = useState({ data: [], count: 0 });
@@ -199,6 +200,7 @@ const LoyaltyCustomers = () => {
   const [levels, setLevels] = useState(["silver", "gold", "platinum"]);
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [searchText, setSearchText] = useState("");
   const [response, setResponse] = useState({ data: [], count: 0 });
   const { request } = useFetch();
   const limit = 10;
@@ -253,6 +255,24 @@ const LoyaltyCustomers = () => {
     fetchLevels();
   }, [fetchLoyaltyCustomers, page, request]);
 
+  const doSearch = async (e) => {
+    e.preventDefault();
+    try {
+      if (!searchText.trim()) {
+        fetchLoyaltyCustomers(currentPage ? currentPage : 1);
+        return;
+      }
+      const res = await request(`loyalty/customers?q=${searchText}`);
+      const loyaltCustomer = await res.json();
+      if (!loyaltCustomer) {
+        throw new Error("No loyaltCustomer found");
+      }
+      setResponse(loyaltCustomer);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
+  };
+
   return (
     <>
       <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
@@ -262,6 +282,11 @@ const LoyaltyCustomers = () => {
             Total Loyalty Customers: {response?.count}
           </p>
         </div>
+        <SearchBar
+          searchText={searchText}
+          handleSearch={setSearchText}
+          doSearch={doSearch}
+        />
       </div>
 
       <div className="mt-5 w-full overflow-x-auto">
