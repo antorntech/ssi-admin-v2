@@ -10,6 +10,93 @@ import { useParams } from "react-router-dom";
 import { Edit2, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
 
+const Product = ({ id }) => {
+  const [product, setProduct] = useState(null);
+  const { request } = useContext(FetchContext);
+  React.useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await request(`products/${id}`);
+        const data = await response.json();
+        setProduct(data);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+    fetchProduct();
+  }, []);
+  return (
+    <div>
+      <p>{product?.name}</p>
+    </div>
+  );
+};
+
+const GiftRow = ({ gift }) => {
+  const products = gift?.products;
+  const { images } = gift;
+  const image = images[0];
+  return (
+    <tr className="hover:bg-gray-100">
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        {image ? (
+          <>
+            <img
+              src={`${UPLOADS_URL + "gifts/" + image}`}
+              alt={image}
+              className="h-12 w-12 object-cover border"
+            />
+          </>
+        ) : null}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.name}</td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.type}</td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.price}</td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        {products?.map((product) => (
+          <Product key={product?.id} id={product?.id} />
+        ))}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        {formatDate(gift.created_at)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        {formatDate(gift.updated_at)}
+      </td>
+      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              handleEditClick(gift);
+            }}
+            className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+          >
+            <Edit2 />
+          </button>
+          <button
+            onClick={() => {
+              handleDeleteClick(gift);
+            }}
+            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+          >
+            <Trash />
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+
+  function handleEditClick(gift) {
+    setSelectedGift(gift);
+    setIsEditing(true);
+  }
+
+  function handleDeleteClick(gift) {
+    setSelectedGift(gift);
+    setOpen(true);
+  }
+};
+
 const Gifts = () => {
   const params = useParams();
   const page = params?.page || 1;
@@ -60,7 +147,7 @@ const Gifts = () => {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
       {/* Column 1: Table */}
-      <div className="col-span-1 gifts-table">
+      <div className="col-span-2 gifts-table">
         <div className="mb-4">
           <h1 className="text-xl font-bold">Gifts</h1>
           <p className="text-sm text-gray-500">
@@ -75,7 +162,16 @@ const Gifts = () => {
                   Banner
                 </th>
                 <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  Name
+                </th>
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  Type
+                </th>
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   Price
+                </th>
+                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
+                  Products
                 </th>
                 <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
                   CreatedAt
@@ -90,60 +186,13 @@ const Gifts = () => {
             </thead>
             <tbody>
               {gifts?.map((gift) => {
-                const { images } = gift;
-                const image = images[0];
                 return (
-                  <tr key={gift.id} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      {image ? (
-                        <>
-                          <img
-                            src={`${UPLOADS_URL + "gifts/" + image}`}
-                            alt={image}
-                            className="h-12 w-12 object-cover border"
-                          />
-                        </>
-                      ) : null}
-                    </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      {gift.price}
-                    </td>
-
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                      {formatDate(gift?.created_at)}
-                    </td>
-
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b whitespace-nowrap">
-                      {formatDate(gift?.updated_at)}
-                    </td>
-                    <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleEditClick(gift)}
-                          className="text-orange-500 hover:text-orange-700 mr-3"
-                        >
-                          <Edit2
-                            size="22"
-                            className="text-orange-600"
-                            variant="Bold"
-                          />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedGiftId(gift.id);
-                            handleOpen(); // Open delete confirmation modal
-                          }}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash
-                            size="22"
-                            className="text-red-600"
-                            variant="Bold"
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <GiftRow
+                    key={gift._id}
+                    gift={gift}
+                    handleEditClick={handleEditClick}
+                    handleDeleteClick={handleDelete}
+                  />
                 );
               })}
             </tbody>
@@ -157,7 +206,7 @@ const Gifts = () => {
           totalPages={response.count ? Math.ceil(response.count / 5) : 0}
         />
       </div>
-      <div className="col-span-1">
+      <div className="col-span-2">
         <div className=" w-full bg-white p-4 lg:p-5 rounded-lg custom-shadow">
           {isEditing ? (
             <EditGift

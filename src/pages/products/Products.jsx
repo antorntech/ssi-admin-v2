@@ -166,7 +166,6 @@ const Products = () => {
   const page = parseInt(params?.page) || 1; // Ensure page is an integer
   const [open, setOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [products, setProducts] = useState([]); // Initialize as an empty array
   const [filteredProducts, setFilteredProducts] = useState([]); // Initialize as an empty array
   const [searchText, setSearchText] = useState("");
   const [response, setResponse] = useState({ data: [], count: 0 });
@@ -191,7 +190,6 @@ const Products = () => {
 
       if (Array.isArray(data)) {
         setResponse({ data, count });
-        setProducts(data);
         setFilteredProducts(data); // Set filteredProducts initially to the fetched products
       }
     } catch (error) {
