@@ -4,6 +4,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src.js";
+import { useParams } from "react-router-dom";
 
 const initialValues = {
   name: "",
@@ -13,11 +14,11 @@ const initialValues = {
 };
 
 const EditGift = ({ selectedGift, fetchGifts }) => {
+  const { id = null } = useParams();
   const [formState, setFormState] = useState(initialValues);
   const [files, setFiles] = useState([]);
   const [offerTypes, setOfferTypes] = useState([]);
   const { request } = useContext(FetchContext);
-  const id = selectedGift?.id || null;
   const author = "author@gmail.com";
 
   function onChange(e) {
@@ -75,7 +76,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
   }, [fetchOfferTypes]);
 
   return (
-    <>
+    <div className="w-full max-w-2xl bg-white p-4 lg:p-5 rounded-lg custom-shadow">
       <div className="flex items-center gap-3 mb-3">
         <div>
           <h1 className="text-xl font-bold">Edit Gift</h1>
@@ -179,6 +180,8 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
             type="text"
             className="w-full bg-transparent font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
             name="name"
+            value={formState.name}
+            onChange={onChange}
           />
         </div>
 
@@ -233,7 +236,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
           Save Changes
         </button>
       </form>
-    </>
+    </div>
   );
 };
 

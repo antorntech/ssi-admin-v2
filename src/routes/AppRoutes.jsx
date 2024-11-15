@@ -26,6 +26,8 @@ import Banners from "../pages/banners/Banners";
 import AddBanner from "../pages/banners/AddBanner";
 import LoyaltyCustomers from "../loyalty_customers/LoyaltyCustomers";
 import Withdrawal from "../components/withdrawal/Withdrawal";
+import AddGiftPage from "../pages/gifts/add/AddGift";
+import EditGiftPage from "../pages/gifts/edit/AddGift";
 
 const AppRoutes = () => {
   return (
@@ -116,7 +118,25 @@ const AppRoutes = () => {
             index
             element={
               <Protected>
-                <Gifts key="giftHome" />
+                <Gifts />
+              </Protected>
+            }
+          />
+          <Route
+            path="add"
+            index
+            element={
+              <Protected>
+                <AddGiftPage />
+              </Protected>
+            }
+          />
+          <Route
+            path="edit/:id"
+            index
+            element={
+              <Protected>
+                <EditGiftPage />
               </Protected>
             }
           />
@@ -124,7 +144,7 @@ const AppRoutes = () => {
             path=":page"
             element={
               <Protected>
-                <Gifts key="giftPage" />
+                <Gifts />
               </Protected>
             }
           />

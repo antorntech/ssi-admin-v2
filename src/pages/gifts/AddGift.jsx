@@ -10,7 +10,7 @@ const initialValues = {
   type: "",
 };
 
-const AddGift = ({ fetchGifts }) => {
+const AddGift = () => {
   const [files, setFiles] = useState([]);
   const [offerTypes, setOfferTypes] = useState([]);
   const { request } = useContext(FetchContext);
@@ -40,14 +40,10 @@ const AddGift = ({ fetchGifts }) => {
         body,
       });
       if (response.ok) {
-        if (fetchGifts) {
-          setFiles([]);
-          e.target.reset();
-          setFormState(initialValues);
-          fetchGifts();
-        } else {
-          window.location.reload();
-        }
+        setFiles([]);
+        e.target.reset();
+        setFormState(initialValues);
+        window.location.href = "/gifts";
       }
     } catch (error) {
       console.error("Failed to add gift", error);
@@ -59,23 +55,21 @@ const AddGift = ({ fetchGifts }) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  // fetch offer types
-  const fetchOfferTypes = async () => {
-    try {
-      const response = await request("gifts/types");
-      const json = await response.json();
-      setOfferTypes(json);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   React.useEffect(() => {
+    const fetchOfferTypes = async () => {
+      try {
+        const response = await request("gifts/types");
+        const json = await response.json();
+        setOfferTypes(json);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     fetchOfferTypes();
   }, []);
 
   return (
-    <div className="max-w-2xl">
+    <div className="w-full max-w-2xl bg-white p-4 lg:p-5 rounded-lg custom-shadow">
       <h1 className="text-xl font-bold">Add Gift</h1>
       <form onSubmit={onSubmit} className="form">
         {/* File Upload Section */}
@@ -125,13 +119,12 @@ const AddGift = ({ fetchGifts }) => {
           {files.map((file, i) => (
             <ImagePreviewWithRemove
               key={i}
-              src={URL.createObjectURL(file)} // Use createObjectURL for preview
+              src={URL.createObjectURL(file)}
               onRemove={() => handleRemoveFile(i)}
             />
           ))}
         </div>
 
-        {/* Name Input */}
         <div>
           <Typography
             variant="h6"
@@ -142,7 +135,7 @@ const AddGift = ({ fetchGifts }) => {
           </Typography>
           <input
             type="text"
-            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+            className="w-full bg-transparent  font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
             name="name"
             onChange={onChange}
             value={formState.name}
@@ -150,7 +143,6 @@ const AddGift = ({ fetchGifts }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Price Input */}
           <div>
             <Typography
               variant="h6"
@@ -161,14 +153,13 @@ const AddGift = ({ fetchGifts }) => {
             </Typography>
             <input
               type="number"
-              className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+              className="w-full bg-transparent  font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
               name="price"
               onChange={onChange}
               value={formState.price}
             />
           </div>
 
-          {/* Select Offer Type */}
           <div>
             <Typography
               variant="h6"
@@ -194,11 +185,7 @@ const AddGift = ({ fetchGifts }) => {
           </div>
         </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="mt-5 bg-green-500 text-white px-4 py-2 rounded"
-        >
+        <button className="mt-5 bg-green-500 text-white px-4 py-2 rounded">
           Add Gift
         </button>
       </form>
