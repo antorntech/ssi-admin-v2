@@ -4,6 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import "./AddProductsModal.css";
 import { Add } from "iconsax-react";
 import FetchContext from "../../context/FetchContext";
+import Loader from "../../loader/Loader";
 
 const AddProductsModal = ({
   isOpen,
@@ -39,10 +40,21 @@ const AddProductsModal = ({
     fetchProducts();
   }, []);
 
-  const onSubmit = async (e) => {
+  const onChange = async (e) => {
+    const { id } = e.target;
+    console.log(id);
+    if (e.target.checked) {
+      setSelectedProducts([...selectedProducts, id]);
+    } else {
+      setSelectedProducts(selectedProducts.filter((id) => id !== id));
+    }
+
     try {
-      const response = await request("gifts", {
-        method: "POST",
+      const body = {
+        products: selectedProducts.filter(Boolean),
+      };
+      const response = await request(`gifts/${gift.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -54,7 +66,6 @@ const AddProductsModal = ({
       }
 
       fetchGifts();
-      onClose();
     } catch (error) {
       console.error("Error adding points:", error);
     }
@@ -68,29 +79,27 @@ const AddProductsModal = ({
           <Add size="24" className="text-white rotate-45" />
         </button>
         <>
-          {products.map((product) => (
-            <div key={product.id} className="flex items-center py-1.5">
-              <input
-                type="checkbox"
-                id={product.id}
-                name={product.name}
-                value={product.id}
-                className="mr-3 size-5"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedProducts([...selectedProducts, product.id]);
-                  } else {
-                    setSelectedProducts(
-                      selectedProducts.filter((id) => id !== product.id)
-                    );
-                  }
-                }}
-              />
-              <label htmlFor={product.id} className="text-md md:text-lg">
-                {product.name}
-              </label>
+          {products.length > 0 ? (
+            products?.map((product) => (
+              <div key={product.id} className="flex items-center py-1.5">
+                <input
+                  type="checkbox"
+                  id={product.id}
+                  name={product.name}
+                  value={product.id}
+                  className="mr-3 size-5"
+                  onChange={onChange}
+                />
+                <label htmlFor={product.id} className="text-md md:text-lg">
+                  {product.name}
+                </label>
+              </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-md md:text-2xl">Loading...</p>
             </div>
-          ))}
+          )}
         </>
       </div>
     </div>
