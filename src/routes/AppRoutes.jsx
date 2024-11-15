@@ -110,22 +110,25 @@ const AppRoutes = () => {
             </Protected>
           }
         />
-        <Route
-          path="gifts"
-          element={
-            <Protected>
-              <Gifts />
-            </Protected>
-          }
-        />
-        <Route
-          path="gifts/:page"
-          element={
-            <Protected>
-              <Gifts />
-            </Protected>
-          }
-        />
+        <Route path="gifts" element={<Outlet />}>
+          <Route
+            path=""
+            index
+            element={
+              <Protected>
+                <Gifts key="giftHome" />
+              </Protected>
+            }
+          />
+          <Route
+            path=":page"
+            element={
+              <Protected>
+                <Gifts key="giftPage" />
+              </Protected>
+            }
+          />
+        </Route>
         <Route
           path="orders"
           element={

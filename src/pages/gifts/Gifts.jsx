@@ -1,5 +1,5 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect, useContext } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useContext, Fragment, useCallback } from "react";
 import AddGift from "./AddGift";
 import EditGift from "./EditGift";
 import Pagination from "../../components/pagination/Pagination";
@@ -10,201 +10,170 @@ import { useParams } from "react-router-dom";
 import { Edit2, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
 import AddProductsModal from "../../components/addproductsmodal/AddProductsModal";
+import ArrayValidator from "../../components/shared/ArrayValidator";
 
-const Product = ({ id, handleGiftClick }) => {
-  const [product, setProduct] = useState(null);
-  const { request } = useContext(FetchContext);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await request(`products/${id}`);
-        const data = await response.json();
-        setProduct(data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      }
-    };
-    fetchProduct();
-  }, [id, request]);
-
-  return <p>{product?.name}</p>;
-};
-
-const GiftRow = ({ gift, onEditClick, onDeleteClick, fetchGifts }) => {
-  const { images } = gift;
-  const image = images?.[0];
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGift, setSelectedGift] = useState(null);
-
-  const handleGiftClick = (gift) => {
-    setSelectedGift(gift);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    selectedGift(null);
-  };
+const GiftRow = ({ gift, onEditClick, onDeleteClick, onViewClick }) => {
+  const image = gift?.images?.[0];
 
   return (
-    <>
+    <Fragment key={gift?.id}>
       <tr className="hover:bg-gray-100">
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+        <td className="px-4 py-2 whitespace-nowrap">
           {image && (
             <img
               src={`${UPLOADS_URL}gifts/${image}`}
-              alt={image}
+              alt={gift.name}
               className="h-12 w-12 object-cover border"
             />
           )}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.name}</td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.type}</td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.price}</td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-          {/* {products?.map((product) => (
-          <Product key={product?.id} id={product?.id} handleGiftClick={handleGiftClick} />
-        ))} */}
+        <td className="px-4 py-2">{gift?.name}</td>
+        <td className="px-4 py-2">{gift?.type}</td>
+        <td className="px-4 py-2">{gift?.price}</td>
+        <td className="px-4 py-2">
           <button
-            onClick={() => handleGiftClick(gift)}
+            onClick={() => onViewClick(gift)}
             className="bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600"
           >
             View
           </button>
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-          {formatDate(gift.created_at)}
+        <td className="px-4 py-2 whitespace-nowrap">
+          {formatDate(gift?.created_at)}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-          {formatDate(gift.updated_at)}
+        <td className="px-4 py-2 whitespace-nowrap">
+          {formatDate(gift?.updated_at)}
         </td>
-        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-          <div className="flex gap-2">
+        <td className="px-4 py-2 whitespace-nowrap">
+          <div className="flex gap-1">
             <button
               onClick={() => onEditClick(gift)}
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+              className="text-blue-500 size-8 flex justify-center items-center"
             >
-              <Edit2 />
+              <Edit2 className="size-6" />
             </button>
             <button
-              onClick={() => onDeleteClick(gift.id)}
-              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+              onClick={() => onDeleteClick(gift?.id)}
+              className="text-red-500 size-8 flex justify-center items-center"
             >
-              <Trash />
+              <Trash className="size-6" />
             </button>
           </div>
         </td>
       </tr>
-
-      {/* Add Products Modal */}
-      <AddProductsModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        gift={selectedGift}
-        fetchGifts={fetchGifts}
-      />
-    </>
+    </Fragment>
   );
 };
 
 const Gifts = () => {
-  const params = useParams();
-  const page = params?.page || 1;
+  const { page = 1 } = useParams();
   const { request } = useContext(FetchContext);
   const [gifts, setGifts] = useState([]);
-  const [response, setResponse] = useState({ data: [], filtered: [] });
-  const [isEditing, setIsEditing] = useState(false);
+  const [response, setResponse] = useState({ data: [], count: 0 });
   const [selectedGift, setSelectedGift] = useState(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedGiftId, setSelectedGiftId] = useState(null);
+  const [modalState, setModalState] = useState({
+    edit: false,
+    addProducts: false,
+  });
 
-  const fetchGifts = async () => {
+  const fetchGifts = useCallback(async () => {
     try {
       const response = await request(`gifts?skip=${(page - 1) * 5}&limit=5`);
       const json = await response.json();
-      const { data, count } = json;
-      if (data) {
-        setResponse((prev) => ({ ...prev, data, count }));
-        setGifts(data);
+      if (json.data) {
+        setResponse({ data: json.data, count: json.count });
+        setGifts(json.data);
       }
     } catch (error) {
       console.error("Error fetching gifts:", error);
     }
-  };
+  }, [request, page]);
 
   useEffect(() => {
     fetchGifts();
-  }, [page]);
+  }, [fetchGifts, page]);
 
   const handleEditClick = (gift) => {
     setSelectedGift(gift);
-    setIsEditing(true);
+    setModalState({ ...modalState, edit: true });
   };
 
-  const handleDeleteClick = (id) => {
-    setSelectedGiftId(id);
-    setDeleteModalOpen(true);
-  };
-
-  const handleDelete = async () => {
-    if (!selectedGiftId) return;
+  const handleDeleteClick = async (id) => {
     try {
-      await request(`gifts/${selectedGiftId}`, { method: "DELETE" });
-      setSelectedGiftId(null);
-      setDeleteModalOpen(false);
-      fetchGifts();
+      await request(`gifts/${id}`, { method: "DELETE" });
+      fetchGifts(); // refresh the gifts list
+      setSelectedGift(null);
     } catch (error) {
       console.error("Error deleting gift:", error);
     }
+  };
+
+  const handleViewClick = (gift) => {
+    setSelectedGift(gift);
+    setModalState({ ...modalState, addProducts: true });
+  };
+
+  const closeModal = () => {
+    setSelectedGift(null);
+    setModalState({ edit: false, addProducts: false });
   };
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div className="col-span-2">
         <h1 className="text-xl font-bold">Gifts</h1>
-        <p className="text-sm text-gray-500">Total Gifts: {response?.count}</p>
+        <p className="text-sm text-gray-500">Total Gifts: {response.count}</p>
+
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px] lg:min-w-full bg-white border">
             <thead>
               <tr>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  Banner
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  Name
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  Type
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  Price
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  Products
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  CreatedAt
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  UpdatedAt
-                </th>
-                <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700">
-                  Action
-                </th>
+                {[
+                  "Banner",
+                  "Name",
+                  "Type",
+                  "Price",
+                  "Products",
+                  "CreatedAt",
+                  "UpdatedAt",
+                  "Action",
+                ].map((header) => (
+                  <th
+                    key={header}
+                    className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700"
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
+
             <tbody>
-              {gifts.map((gift) => (
-                <GiftRow
-                  key={gift._id}
-                  gift={gift}
-                  onEditClick={handleEditClick}
-                  onDeleteClick={handleDeleteClick}
-                  fetchGifts={fetchGifts}
-                />
-              ))}
+              <ArrayValidator
+                list={gifts}
+                fallback={
+                  <tr className="text-center">
+                    <td className="text-center" colSpan={8}>
+                      No records
+                    </td>
+                  </tr>
+                }
+              >
+                {gifts?.map((gift) => {
+                  if (!gift) return;
+                  return (
+                    <GiftRow
+                      key={gift?.id}
+                      gift={gift}
+                      onEditClick={handleEditClick}
+                      onDeleteClick={() => {
+                        setModalState({ ...modalState, delete: true });
+                      }}
+                      onViewClick={handleViewClick}
+                    />
+                  );
+                })}
+              </ArrayValidator>
             </tbody>
           </table>
         </div>
@@ -218,12 +187,12 @@ const Gifts = () => {
 
       <div className="col-span-2">
         <div className="w-full max-w-2xl bg-white p-4 lg:p-5 rounded-lg custom-shadow">
-          {isEditing ? (
+          {modalState.edit ? (
             <EditGift
               selectedGift={selectedGift}
               fetchGifts={() => {
                 fetchGifts();
-                setIsEditing(false);
+                setModalState({ ...modalState, edit: false });
                 setSelectedGift(null);
               }}
             />
@@ -233,14 +202,24 @@ const Gifts = () => {
         </div>
       </div>
 
-      {deleteModalOpen && (
-        <DeleteConfirmModal
-          open={deleteModalOpen}
-          handleOpen={() => setDeleteModalOpen(false)}
-          onDelete={handleDelete}
-          itemName="Gift"
+      {/* Add Products Modal */}
+      {modalState.addProducts && selectedGift && (
+        <AddProductsModal
+          isOpen={modalState.addProducts}
+          onClose={closeModal}
+          gift={selectedGift}
+          fetchGifts={fetchGifts}
         />
       )}
+
+      {/* Delete Confirm Modal */}
+      <DeleteConfirmModal
+        open={modalState.delete}
+        handleOpen={() => setModalState({ ...modalState, delete: false })}
+        onDelete={() => handleDeleteClick(selectedGift)}
+        onCollapse={closeModal}
+        itemName="Gift"
+      />
     </div>
   );
 };

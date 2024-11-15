@@ -1,5 +1,6 @@
-import { Input, Typography } from "@material-tailwind/react";
-import React, { useState, useEffect, useContext } from "react";
+/* eslint-disable react/prop-types */
+import { Typography } from "@material-tailwind/react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src.js";
@@ -40,7 +41,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
       })
       .catch(console.error);
   }
-  useEffect(fetchGiftById, [selectedGift]);
+  useEffect(fetchGiftById, [id, request, selectedGift]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -59,7 +60,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
   };
 
   // fetch offer types
-  const fetchOfferTypes = async () => {
+  const fetchOfferTypes = useCallback(async () => {
     try {
       const response = await request("gifts/types");
       const json = await response.json();
@@ -67,11 +68,11 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [request]);
 
   React.useEffect(() => {
     fetchOfferTypes();
-  }, []);
+  }, [fetchOfferTypes]);
 
   return (
     <>
@@ -176,7 +177,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
           </Typography>
           <input
             type="text"
-            className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+            className="w-full bg-transparent font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
             name="name"
           />
         </div>
@@ -192,7 +193,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
             </Typography>
             <input
               type="number"
-              className="w-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
+              className="w-full bg-transparent font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 disabled:cursor-not-allowed transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent placeholder:opacity-0 focus:placeholder:opacity-100 px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900 !border !border-gray-300 bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#6CB93B] focus:!border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10 py-3 block"
               value={formState.price}
               onChange={onChange}
               name="price"
