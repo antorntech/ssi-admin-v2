@@ -9,8 +9,9 @@ import { UPLOADS_URL } from "../../utils/API";
 import { useParams } from "react-router-dom";
 import { Edit2, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
+import AddProductsModal from "../../components/addproductsmodal/AddProductsModal";
 
-const Product = ({ id }) => {
+const Product = ({ id, handleGiftClick }) => {
   const [product, setProduct] = useState(null);
   const { request } = useContext(FetchContext);
 
@@ -30,52 +31,81 @@ const Product = ({ id }) => {
   return <p>{product?.name}</p>;
 };
 
-const GiftRow = ({ gift, onEditClick, onDeleteClick }) => {
-  const { images, products } = gift;
+const GiftRow = ({ gift, onEditClick, onDeleteClick, fetchGifts }) => {
+  const { images } = gift;
   const image = images?.[0];
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedGift, setSelectedGift] = useState(null);
+
+  const handleGiftClick = (gift) => {
+    setSelectedGift(gift);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    selectedGift(null);
+  };
+
   return (
-    <tr className="hover:bg-gray-100">
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-        {image && (
-          <img
-            src={`${UPLOADS_URL}gifts/${image}`}
-            alt={image}
-            className="h-12 w-12 object-cover border"
-          />
-        )}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.name}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.type}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.price}</td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-        {products?.map((product) => (
-          <Product key={product?.id} id={product?.id} />
-        ))}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-        {formatDate(gift.created_at)}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-        {formatDate(gift.updated_at)}
-      </td>
-      <td className="px-4 py-2 md:px-6 md:py-4 border-b">
-        <div className="flex gap-2">
+    <>
+      <tr className="hover:bg-gray-100">
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+          {image && (
+            <img
+              src={`${UPLOADS_URL}gifts/${image}`}
+              alt={image}
+              className="h-12 w-12 object-cover border"
+            />
+          )}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.name}</td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.type}</td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">{gift.price}</td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+          {/* {products?.map((product) => (
+          <Product key={product?.id} id={product?.id} handleGiftClick={handleGiftClick} />
+        ))} */}
           <button
-            onClick={() => onEditClick(gift)}
-            className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+            onClick={() => handleGiftClick(gift)}
+            className="bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600"
           >
-            <Edit2 />
+            View
           </button>
-          <button
-            onClick={() => onDeleteClick(gift.id)}
-            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-          >
-            <Trash />
-          </button>
-        </div>
-      </td>
-    </tr>
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+          {formatDate(gift.created_at)}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+          {formatDate(gift.updated_at)}
+        </td>
+        <td className="px-4 py-2 md:px-6 md:py-4 border-b">
+          <div className="flex gap-2">
+            <button
+              onClick={() => onEditClick(gift)}
+              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+            >
+              <Edit2 />
+            </button>
+            <button
+              onClick={() => onDeleteClick(gift.id)}
+              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+            >
+              <Trash />
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      {/* Add Products Modal */}
+      <AddProductsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        gift={selectedGift}
+        fetchGifts={fetchGifts}
+      />
+    </>
   );
 };
 
@@ -172,6 +202,7 @@ const Gifts = () => {
                   gift={gift}
                   onEditClick={handleEditClick}
                   onDeleteClick={handleDeleteClick}
+                  fetchGifts={fetchGifts}
                 />
               ))}
             </tbody>
