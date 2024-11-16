@@ -7,12 +7,7 @@ import Loader from "../../loader/Loader";
 import ArrayValidator from "../../components/shared/ArrayValidator";
 import Button from "../../components/shared/Button";
 
-const AddProductsModal = ({
-  isOpen,
-  onClose = () => {},
-  gift = {},
-  fetchGifts = () => {},
-}) => {
+const AddProductsModal = ({ isOpen, onClose = () => {}, gift = {} }) => {
   const [giftData, setGiftData] = useState(gift || {});
   const { request } = useContext(FetchContext);
   const modalRef = useRef(null);
@@ -71,11 +66,12 @@ const AddProductsModal = ({
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ products }),
+                body: JSON.stringify({ products: selectedProducts }),
               });
               const data = await response.json();
-              setGiftData(data);
-              fetchGifts();
+              if (data?.id) {
+                setGiftData(data);
+              }
             } catch (e) {
               console.error(e);
             } finally {
@@ -85,7 +81,9 @@ const AddProductsModal = ({
           className="space-y-4 flex-grow flex flex-col px-4"
         >
           <div>
-            <h2 className="text-2xl font-semibold mb-4">Add Products</h2>
+            <h2 className="text-2xl font-semibold mb-4" title={giftData?.id}>
+              Add Products
+            </h2>
             <button onClick={onClose} className="close-button" type="button">
               <Add size="24" className="text-white rotate-45" />
             </button>
