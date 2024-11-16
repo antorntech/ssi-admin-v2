@@ -14,13 +14,15 @@ import SearchBar from "../components/searchbar/SearchBar";
 const Orders = ({ loyaltyCustomer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
   const { request } = useFetch();
-  const { id } = loyaltyCustomer;
+  const { customer_id } = loyaltyCustomer;
+
+  console.log(customer_id);
 
   useEffect(() => {
-    if (!id) return;
+    if (!customer_id) return;
     async function fetchOrders() {
       try {
-        const response = await request(`orders?customer_id=${id}`);
+        const response = await request(`orders?customer_id=${customer_id}`);
         const data = await response.json();
         setOrders(data);
       } catch (error) {
@@ -28,7 +30,7 @@ const Orders = ({ loyaltyCustomer = {} }) => {
       }
     }
     fetchOrders();
-  }, [id, request]);
+  }, [customer_id, request]);
 
   return <div>{orders.count}</div>;
 };
