@@ -1,57 +1,96 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useContext, Fragment, useCallback } from "react";
 import Pagination from "../../components/pagination/Pagination";
 import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
-import FetchContext from "../../context/FetchContext";
+import FetchContext, { useFetch } from "../../context/FetchContext";
 import { UPLOADS_URL } from "../../utils/API";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Edit2, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
 import AddProductsModal from "../../components/addproductsmodal/AddProductsModal";
 import ArrayValidator from "../../components/shared/ArrayValidator";
+import PlayPause from "../../shared/PlayPause";
 
 const GiftRow = ({ gift, onDeleteClick, onViewClick }) => {
   const image = gift?.images?.[0];
+  const { request } = useFetch();
+  const [giftData, setGiftData] = useState(gift || {});
+
+  const fetchGifts = async () => {
+    try {
+      const response = await request(`gifts/${giftData?.id}`);
+      const data = await response.json();
+      if (data) {
+        setGiftData(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <Fragment key={gift?.id}>
+    <Fragment key={giftData?.id}>
       <tr className="hover:bg-gray-100">
         <td className="px-4 py-2 whitespace-nowrap">
           {image && (
             <img
               src={`${UPLOADS_URL}gifts/${image}`}
-              alt={gift.name}
+              alt={giftData.name}
               className="h-12 w-12 object-cover border"
             />
           )}
         </td>
-        <td className="px-4 py-2">{gift?.name}</td>
-        <td className="px-4 py-2">{gift?.type}</td>
-        <td className="px-4 py-2">{gift?.price}</td>
+        <td className="px-4 py-2">{giftData?.name}</td>
+        <td className="px-4 py-2">{giftData?.type}</td>
+        <td className="px-4 py-2">{giftData?.price}</td>
         <td className="px-4 py-2">
           <button
-            onClick={() => onViewClick(gift)}
+            onClick={() => onViewClick(giftData)}
             className="bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600"
           >
             View
           </button>
         </td>
         <td className="px-4 py-2 whitespace-nowrap">
-          {formatDate(gift?.created_at)}
+          {formatDate(giftData?.created_at)}
         </td>
         <td className="px-4 py-2 whitespace-nowrap">
-          {formatDate(gift?.updated_at)}
+          {formatDate(giftData?.updated_at)}
         </td>
         <td className="px-4 py-2 whitespace-nowrap">
           <div className="flex gap-1">
+            <PlayPause
+              play={giftData?.active}
+              onPlay={async (e) => {
+                try {
+                  await request(`gifts/${giftData?.id}/activate`, {
+                    method: "PATCH",
+                  });
+                  await fetchGifts(giftData?.id); // We are not changing order with updated_at that is why does not require re render
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+              onPause={async (e) => {
+                try {
+                  await request(`gifts/${giftData?.id}/deactivate`, {
+                    method: "PATCH",
+                  });
+                  await fetchGifts(giftData?.id); // We are not changing order with updated_at that is why does not require re render
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            />
             <Link
-              to={`/gifts/edit/${gift?.id}`}
+              to={`/gifts/edit/${giftData?.id}`}
               className="text-blue-500 size-8 flex justify-center items-center"
             >
               <Edit2 className="size-6" />
             </Link>
             <button
-              onClick={() => onDeleteClick(gift?.id)}
+              onClick={() => onDeleteClick(giftData?.id)}
               className="text-red-500 size-8 flex justify-center items-center"
             >
               <Trash className="size-6" />
