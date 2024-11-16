@@ -7,7 +7,12 @@ import Loader from "../../loader/Loader";
 import ArrayValidator from "../../components/shared/ArrayValidator";
 import Button from "../../components/shared/Button";
 
-const AddProductsModal = ({ isOpen, onClose = () => {}, gift = {} }) => {
+const AddProductsModal = ({
+  isOpen,
+  onClose = () => {},
+  gift = {},
+  fetchGifts = () => {},
+}) => {
   const [giftData, setGiftData] = useState(gift || {});
   const { request } = useContext(FetchContext);
   const modalRef = useRef(null);
@@ -71,6 +76,8 @@ const AddProductsModal = ({ isOpen, onClose = () => {}, gift = {} }) => {
               const data = await response.json();
               if (data?.id) {
                 setGiftData(data);
+                fetchGifts();
+                onClose();
               }
             } catch (e) {
               console.error(e);
