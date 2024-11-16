@@ -88,7 +88,7 @@ const AddProductsModal = ({ isOpen, onClose = () => {}, gift = {} }) => {
               <Add size="24" className="text-white rotate-45" />
             </button>
           </div>
-          <div className="flex-grow">
+          <div className="flex-grow overflow-y-auto">
             {loading ? (
               <Loader />
             ) : (
