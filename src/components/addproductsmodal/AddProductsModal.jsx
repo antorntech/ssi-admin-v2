@@ -5,11 +5,12 @@ import { Add } from "iconsax-react";
 import FetchContext from "../../context/FetchContext";
 import Loader from "../../loader/Loader";
 import ArrayValidator from "../../components/shared/ArrayValidator";
+import Button from "../../components/shared/Button";
 
 const AddProductsModal = ({
   isOpen,
   onClose = () => {},
-  gift,
+  gift = {},
   fetchGifts = () => {},
 }) => {
   const [giftData, setGiftData] = useState(gift || {});
@@ -47,50 +48,11 @@ const AddProductsModal = ({
   const onChange = async (e) => {
     const { id, checked } = e.target;
     if (checked) {
-      const products = [...selectedProducts, id].filter(Boolean);
-      setSelectedProducts(products);
-
-      try {
-        setLoading(true);
-        const response = await request(`gifts/${giftData?.id}/products/add`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ products }),
-        });
-        const data = await response.json();
-        setGiftData(data);
-        fetchGifts();
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      const tuple = new Set(selectedProducts).add(id);
+      setSelectedProducts([...tuple]);
     } else {
-      const products = selectedProducts.filter(Boolean);
+      const products = selectedProducts.filter((item) => item !== id);
       setSelectedProducts(products);
-
-      try {
-        setLoading(true);
-        const response = await request(
-          `gifts/${giftData?.id}/products/remove`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ products }),
-          }
-        );
-        const data = await response.json();
-        setGiftData(data);
-        fetchGifts();
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
     }
   };
 
@@ -98,42 +60,70 @@ const AddProductsModal = ({
 
   return (
     <div className="product-modal">
-      <div className="product-modal-content clear-start p-5 md:px-10 space-y-2">
-        <h2 className="text-2xl font-semibold mb-4">Add Products</h2>
-        <button onClick={onClose} className="close-button">
-          <Add size="24" className="text-white rotate-45" />
-        </button>
-
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
-            <ArrayValidator
-              list={products}
-              fallback={<p>No products available.</p>}
-            >
-              {products?.map((product, index) => (
-                <div
-                  key={product.id || index}
-                  className="flex items-center py-1.5"
-                >
-                  <input
-                    type="checkbox"
-                    id={product.id}
-                    name={product.name}
-                    value={product.id}
-                    className="mr-3 size-5"
-                    checked={giftData?.products?.includes(product.id)}
-                    onChange={onChange}
-                  />
-                  <label htmlFor={product.id} className="text-md md:text-lg">
-                    {product.name}
-                  </label>
-                </div>
-              ))}
-            </ArrayValidator>
-          </>
-        )}
+      <div className="product-modal-content clear-start py-4 space-y-2 flex flex-col">
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              setLoading(true);
+              const response = await request(`gifts/${giftData?.id}/products`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ products }),
+              });
+              const data = await response.json();
+              setGiftData(data);
+              fetchGifts();
+            } catch (e) {
+              console.error(e);
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="space-y-4 flex-grow flex flex-col px-4"
+        >
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Add Products</h2>
+            <button onClick={onClose} className="close-button" type="button">
+              <Add size="24" className="text-white rotate-45" />
+            </button>
+          </div>
+          <div className="flex-grow">
+            {loading ? (
+              <Loader />
+            ) : (
+              <ArrayValidator
+                list={products}
+                fallback={<p>No products available.</p>}
+              >
+                {products?.map((product, index) => (
+                  <div
+                    key={product?.id || index}
+                    className="flex items-center py-1.5"
+                  >
+                    <input
+                      type="checkbox"
+                      id={product?.id}
+                      name={product?.id}
+                      value={product?.id}
+                      className="mr-3 size-4"
+                      checked={selectedProducts?.includes(product?.id)}
+                      onChange={onChange}
+                    />
+                    <label htmlFor={product?.id} className="text-md">
+                      {product?.name}
+                    </label>
+                  </div>
+                ))}
+              </ArrayValidator>
+            )}
+          </div>
+          <div>
+            <Button type="submit">Submit</Button>
+          </div>
+        </form>
       </div>
     </div>
   );
