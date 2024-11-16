@@ -7,9 +7,11 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Pagination from "../../components/pagination/Pagination";
 import FetchContext, { useFetch } from "../../context/FetchContext";
-import { Edit2, Pause, Play, Trash } from "iconsax-react";
+import { Edit2, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
 import { srcBuilder } from "../../utils/src";
+import cn from "../../utils/cn";
+import PlayPause from "../../shared/PlayPause";
 
 const ProductRow = ({ product = null, openModal = () => {} }) => {
   const { request } = useFetch();
@@ -36,7 +38,9 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
 
   useEffect(() => {
     if (data?.category) {
-      request(`categories/${data?.category}`).then((res) => {
+      let categoryId = data?.category?.id;
+      if (typeof data?.category === "string") categoryId = data?.category;
+      request(`categories/${categoryId}`).then((res) => {
         if (res.ok) {
           res.json().then((data) => {
             setCategory(data);
@@ -46,7 +50,9 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
     }
 
     if (data?.brand) {
-      request(`brands/${data?.brand}`).then((res) => {
+      let brandId = data?.brand?.id;
+      if (typeof data?.brand === "string") brandId = data?.brand;
+      request(`brands/${brandId}`).then((res) => {
         if (res.ok) {
           res.json().then((data) => {
             setBrand(data);
@@ -60,39 +66,29 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
     <tr className="hover:bg-gray-100">
       <td className="px-4 py-2 md:px-6 md:py-2 border-b">
         <div className="flex gap-2 items-center">
-          {data?.active === false ? (
-            <button
-              onClick={async () => {
-                try {
-                  await request(`products/${data?.id}/activate`, {
-                    method: "PATCH",
-                  });
-                  await fetchProduct(data?.id); // We are not changing order with updated_at that is why does not require re render
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
-              className="text-green-500 hover:text-green-700"
-            >
-              <Play size="22" className="text-green-600" variant="Bold" />
-            </button>
-          ) : (
-            <button
-              onClick={async () => {
-                try {
-                  await request(`products/${data?.id}/deactivate`, {
-                    method: "PATCH",
-                  });
-                  await fetchProduct(data?.id); // We are not changing order with updated_at that is why does not require re render
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
-              className="text-green-500 hover:text-green-700"
-            >
-              <Pause size="22" className="text-red-600" variant="Bold" />
-            </button>
-          )}
+          <PlayPause
+            play={data?.active}
+            onPlay={async (e) => {
+              try {
+                await request(`products/${data?.id}/activate`, {
+                  method: "PATCH",
+                });
+                await fetchProduct(data?.id); // We are not changing order with updated_at that is why does not require re render
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+            onPause={async (e) => {
+              try {
+                await request(`products/${data?.id}/deactivate`, {
+                  method: "PATCH",
+                });
+                await fetchProduct(data?.id); // We are not changing order with updated_at that is why does not require re render
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          />
           <Link
             to={`/products/edit/${data?.id}`}
             className="text-orange-500 hover:text-orange-700"
