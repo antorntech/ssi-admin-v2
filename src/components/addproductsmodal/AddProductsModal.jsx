@@ -7,6 +7,10 @@ import Loader from "../../loader/Loader";
 import ArrayValidator from "../../components/shared/ArrayValidator";
 import Button from "../../components/shared/Button";
 
+const ModalLoader = () => {
+  return <div class="modal-loader"></div>;
+};
+
 const AddProductsModal = ({
   isOpen,
   onClose = () => {},
@@ -85,7 +89,7 @@ const AddProductsModal = ({
               setLoading(false);
             }
           }}
-          className="space-y-4 flex-grow flex flex-col px-4"
+          className="space-y-4 flex-grow flex flex-col px-4 overflow-hidden"
         >
           <div>
             <h2 className="text-2xl font-semibold mb-4" title={giftData?.id}>
@@ -97,7 +101,9 @@ const AddProductsModal = ({
           </div>
           <div className="flex-grow overflow-y-auto">
             {loading ? (
-              <Loader />
+              <div className="h-full flex items-center justify-center">
+                <ModalLoader />
+              </div>
             ) : (
               <ArrayValidator
                 list={products}
