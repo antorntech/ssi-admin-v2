@@ -11,28 +11,27 @@ import { formatDate } from "../utils/date";
 import ViewPointsHistoyModal from "../components/viewpointshistorymodal/ViewPointsHistoryModal";
 import SearchBar from "../components/searchbar/SearchBar";
 
-// const Orders = ({ customer = {} }) => {
-//   const [orders, setOrders] = useState({ data: [], count: 0 });
+const Orders = ({ loyaltyCustomer = {} }) => {
+  const [orders, setOrders] = useState({ data: [], count: 0 });
+  const { request } = useFetch();
+  const { id } = loyaltyCustomer;
 
-//   const { request } = useFetch();
-//   const { id } = customer;
+  useEffect(() => {
+    if (!id) return;
+    async function fetchOrders() {
+      try {
+        const response = await request(`orders?customer_id=${id}`);
+        const data = await response.json();
+        setOrders(data);
+      } catch (error) {
+        // ignore
+      }
+    }
+    fetchOrders();
+  }, [id, request]);
 
-//   useEffect(() => {
-//     if (!id) return;
-//     async function fetchOrders() {
-//       try {
-//         const response = await request(`orders?customer_id=${id}`);
-//         const data = await response.json();
-//         setOrders(data);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     }
-//     fetchOrders();
-//   }, [id, request]);
-
-//   return <div>{orders.count}</div>;
-// };
+  return <div>{orders.count}</div>;
+};
 
 export const loyaltyColor = {
   silver: "#A8A9AD",
@@ -138,6 +137,9 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
               />
             </button>
           </div>
+        </td>
+        <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
+          <Orders loyaltyCustomer={loyaltyCustomer} />
         </td>
         <td className="px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap">
           {formatDate(loyaltyCustomer?.created_at)}
@@ -304,6 +306,9 @@ const LoyaltyCustomers = () => {
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Earned Points
+              </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Orders
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Created At
