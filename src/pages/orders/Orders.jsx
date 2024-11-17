@@ -383,6 +383,14 @@ const Orders = () => {
           }}
           onSubmit={(e) => {
             e.preventDefault();
+            if (selectedOrders?.length === 0) {
+              toast.error("No orders selected");
+              return;
+            }
+            if (!markAs) {
+              toast.error("Please select a status");
+              return;
+            }
             const all = selectedOrders?.filter(Boolean)?.map((id) => {
               return request(`orders/${id}/status`, {
                 method: "PATCH",
