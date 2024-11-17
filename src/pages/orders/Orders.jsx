@@ -412,6 +412,8 @@ const Orders = () => {
             Promise.all(all)
               .then(() => {
                 fetchOrders();
+                setMarkAs("");
+                setSelectedOrders([]);
               })
               .catch((error) => console.error("Error updating order:", error));
           }}
