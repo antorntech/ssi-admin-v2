@@ -12,6 +12,8 @@ import { formatDate } from "../../utils/date";
 import cn from "../../utils/cn";
 import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import ArrayValidator from "../../components/shared/ArrayValidator";
+import Button from "../../components/shared/Button";
+import { ArrowCircleDown, ArrowRotateRight } from "iconsax-react";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -287,7 +289,6 @@ const Orders = () => {
   };
 
   const handleSelect = (id) => {
-    console.log(id);
     if (selectedOrders.includes(id)) {
       setSelectedOrders((prev) => prev.filter((item) => item !== id));
     } else {
@@ -382,6 +383,17 @@ const Orders = () => {
           <p className="text-sm text-gray-500">
             Total Orders: {response?.count}
           </p>
+        </div>
+        <div className="flex gap-3 items-center">
+          <Button
+            type="button"
+            className="flex items-center gap-2"
+            onClick={() => {
+              fetchOrders(1); // Go to first page.
+            }}
+          >
+            Reload <ArrowRotateRight className="size-4" />
+          </Button>
         </div>
         <div className="flex gap-3 items-center">
           <SearchBar
