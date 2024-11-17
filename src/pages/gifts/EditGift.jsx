@@ -4,7 +4,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import ImagePreviewWithRemove from "../products/ImagePreviewWithRemove";
 import FetchContext from "../../context/FetchContext";
 import { srcBuilder } from "../../utils/src.js";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const initialValues = {
   name: "",
@@ -20,6 +20,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
   const [offerTypes, setOfferTypes] = useState([]);
   const { request } = useContext(FetchContext);
   const author = "author@gmail.com";
+  const navigate = useNavigate();
 
   function onChange(e) {
     const { name, value } = e.target;
@@ -54,6 +55,7 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
       .then(() => {
         if (fetchGifts) {
           fetchGifts();
+          navigate("/gifts");
         }
         setFormState(initialValues);
       })
