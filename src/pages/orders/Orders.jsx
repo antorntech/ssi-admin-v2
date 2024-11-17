@@ -70,7 +70,13 @@ const LoyaltyColumn = ({ order = {} }) => {
   );
 };
 
-const OrderRow = ({ item, handleView, status = [] }) => {
+const OrderRow = ({
+  item,
+  handleView,
+  checked = false,
+  status = [],
+  onSelect = () => {},
+}) => {
   const [order, setOrder] = useState(item);
   const { request } = useContext(FetchContext);
   const shippingCost =
@@ -97,6 +103,15 @@ const OrderRow = ({ item, handleView, status = [] }) => {
 
   return (
     <tr key={order?.id} className="hover:bg-gray-100">
+      <td className="px-4 py-2">
+        <input
+          type="checkbox"
+          name={order?.id}
+          className="w-5 h-5 cursor-pointer rounded border-gray-300 text-green-600 focus:ring-green-500"
+          checked={checked}
+          onChange={(e) => onSelect(e)}
+        />
+      </td>
       <td className="px-4 py-2 border-b whitespace-nowrap">
         {order?.shipping_address?.name}
       </td>
@@ -166,6 +181,11 @@ const Orders = () => {
   const [searchParams, setSearchParams] = useSearchParams({
     limit: 10,
   });
+
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const orderLength = orders?.length;
+
+  const [markAs, setMarkAs] = useState("");
 
   // Fetch orders with pagination
   const fetchOrders = useCallback(
@@ -257,9 +277,35 @@ const Orders = () => {
     key: "selection",
   };
 
-  const FilterByStatus = () => {
+  const handleSelect = (id) => {
+    console.log(id);
+    if (selectedOrders.includes(id)) {
+      setSelectedOrders((prev) => prev.filter((item) => item !== id));
+    } else {
+      setSelectedOrders((prev) => [...prev, id]);
+    }
+  };
+
+  const FilterByStatus = ({ status, onChange, markAs, onSubmit }) => {
     return (
-      <div className="flex items-center gap-3 whitespace-nowrap flex-wrap">
+      <div className="w-full flex justify-between items-center mt-5 gap-3 whitespace-nowrap flex-wrap">
+        <form onSubmit={onSubmit} className="flex items-center gap-2">
+          <select
+            name="status"
+            className={cn(`capitalize border rounded-md px-2 py-2`)}
+            value={markAs}
+            onChange={onChange}
+          >
+            {status?.map((status) => (
+              <option key={status} value={status}>
+                Mark as {status}
+              </option>
+            ))}
+          </select>
+          <button className="px-4 py-[6px] text-white bg-orange-500 rounded-md">
+            Apply
+          </button>
+        </form>
         <div className="flex items-center gap-2">
           Filter By
           <select
@@ -320,7 +366,7 @@ const Orders = () => {
             Total Orders: {response?.count}
           </p>
         </div>
-        <FilterByStatus />
+
         <div className="flex gap-3 items-center">
           <SearchBar
             searchText={searchText}
@@ -328,6 +374,36 @@ const Orders = () => {
             doSearch={doSearch}
           />
         </div>
+      </div>
+      <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between">
+        <FilterByStatus
+          status={status}
+          markAs={markAs}
+          onChange={(e) => {
+            const { value } = e.target;
+            setMarkAs(value);
+          }}
+          onSubmit={() => {
+            const all = selectedOrders?.filter(Boolean)?.map((id) => {
+              return request(`orders/${id}/status`, {
+                method: "PATCH",
+                header: "Content-Type: application/json",
+                body: status,
+              });
+            });
+
+            Promise.all(all)
+              .then((res) => {
+                if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+                return res.json();
+              })
+              .then(() => {
+                toast.success("Order Updated Successfully!");
+                fetchOrders();
+              })
+              .catch((error) => console.error("Error updating order:", error));
+          }}
+        />
       </div>
 
       {loading ? (
@@ -338,23 +414,74 @@ const Orders = () => {
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr>
-                  {[
-                    "Customer",
-                    "Loyalty",
-                    "Price Total",
-                    "Quantity",
-                    "Points Used",
-                    "Created At",
-                    "Updated At",
-                    "Actions",
-                  ].map((heading) => (
-                    <th
-                      key={heading}
-                      className="px-4 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap"
-                    >
-                      {heading}
-                    </th>
-                  ))}
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700"
+                    width="80px"
+                  >
+                    <input
+                      type="checkbox"
+                      name="all"
+                      checked={selectedOrders?.length === orderLength}
+                      className="w-5 h-5 cursor-pointer rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+
+                        if (isChecked) {
+                          setSelectedOrders(orders.map((item) => item?.id));
+                        } else {
+                          setSelectedOrders([]);
+                        }
+                      }}
+                    />
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Customer
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Loyalty
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Price Total
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Quantity
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Points Used
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Created At
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Updated At
+                  </th>
+                  <th
+                    className="px-4 py-2 border-b text-left text-sm whitespace-nowrap font-semibold text-gray-700"
+                    width="280px"
+                  >
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -366,6 +493,8 @@ const Orders = () => {
                         handleOrderClick(order);
                       }}
                       status={status}
+                      checked={selectedOrders.includes(order?.id)}
+                      onSelect={() => handleSelect(order?.id)}
                     />
                   </Fragment>
                 ))}
