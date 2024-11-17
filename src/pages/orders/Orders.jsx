@@ -271,12 +271,6 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
-  const selectionRange = {
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection",
-  };
-
   const handleSelect = (id) => {
     console.log(id);
     if (selectedOrders.includes(id)) {
@@ -286,26 +280,31 @@ const Orders = () => {
     }
   };
 
-  const FilterByStatus = ({ status, onChange, markAs, onSubmit }) => {
+  const MarkAllForm = ({ status, onChange, markAs, onSubmit }) => {
     return (
-      <div className="w-full flex justify-between items-center mt-5 gap-3 whitespace-nowrap flex-wrap">
-        <form onSubmit={onSubmit} className="flex items-center gap-2">
-          <select
-            name="status"
-            className={cn(`capitalize border rounded-md px-2 py-2`)}
-            value={markAs}
-            onChange={onChange}
-          >
-            {status?.map((status) => (
-              <option key={status} value={status}>
-                Mark as {status}
-              </option>
-            ))}
-          </select>
-          <button className="px-4 py-[6px] text-white bg-orange-500 rounded-md">
-            Apply
-          </button>
-        </form>
+      <form onSubmit={onSubmit} className="flex items-center gap-2">
+        <select
+          name="status"
+          className={cn(`capitalize border rounded-md px-2 py-2`)}
+          value={markAs}
+          onChange={onChange}
+        >
+          {status?.map((status) => (
+            <option key={status} value={status}>
+              Mark as {status}
+            </option>
+          ))}
+        </select>
+        <button className="px-4 py-[6px] text-white bg-orange-500 rounded-md">
+          Apply
+        </button>
+      </form>
+    );
+  };
+
+  const FilterByStatus = () => {
+    return (
+      <>
         <div className="flex items-center gap-2">
           Filter By
           <select
@@ -353,20 +352,19 @@ const Orders = () => {
             }}
           />
         </div>
-      </div>
+      </>
     );
   };
 
   return (
     <>
-      <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between">
+      <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between py-1">
         <div>
           <h1 className="text-xl font-bold">Orders</h1>
           <p className="text-sm text-gray-500">
             Total Orders: {response?.count}
           </p>
         </div>
-
         <div className="flex gap-3 items-center">
           <SearchBar
             searchText={searchText}
@@ -375,37 +373,40 @@ const Orders = () => {
           />
         </div>
       </div>
-      <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between">
-        <FilterByStatus
+      <div className="w-full flex flex-wrap gap-4 items-start md:items-center md:justify-between py-1">
+        <MarkAllForm
           status={status}
           markAs={markAs}
           onChange={(e) => {
             const { value } = e.target;
             setMarkAs(value);
           }}
-          onSubmit={() => {
+          onSubmit={(e) => {
+            e.preventDefault();
             const all = selectedOrders?.filter(Boolean)?.map((id) => {
               return request(`orders/${id}/status`, {
                 method: "PATCH",
                 header: "Content-Type: application/json",
-                body: status,
-              });
+                body: markAs,
+              })
+                .then((res) => {
+                  if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+                  return res.json();
+                })
+                .then(() => {
+                  toast.success("Order Updated Successfully!");
+                });
             });
 
             Promise.all(all)
-              .then((res) => {
-                if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-                return res.json();
-              })
               .then(() => {
-                toast.success("Order Updated Successfully!");
                 fetchOrders();
               })
               .catch((error) => console.error("Error updating order:", error));
           }}
         />
+        <FilterByStatus />
       </div>
-
       {loading ? (
         <Loader />
       ) : (
