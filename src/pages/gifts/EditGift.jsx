@@ -55,8 +55,8 @@ const EditGift = ({ selectedGift, fetchGifts }) => {
       .then(() => {
         if (fetchGifts) {
           fetchGifts();
-          navigate("/gifts");
         }
+        navigate("/gifts");
         setFormState(initialValues);
       })
       .catch(console.error);
