@@ -289,6 +289,9 @@ const Orders = () => {
           value={markAs}
           onChange={onChange}
         >
+          <option value="" disabled>
+            Choose Status
+          </option>
           {status?.map((status) => (
             <option key={status} value={status}>
               Mark as {status}
