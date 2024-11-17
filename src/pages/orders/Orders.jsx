@@ -79,26 +79,41 @@ const OrderRow = ({
 }) => {
   const [order, setOrder] = useState(item);
   const { request } = useContext(FetchContext);
+  const [loading, setLoading] = useState(false);
   const shippingCost =
     order?.shipping_address?.district?.toLowerCase() === "dhaka" ? 60 : 120;
 
   const switchStatus = (id, status) => {
-    request(`orders/${id}/status`, {
-      method: "PATCH",
-      header: "Content-Type: application/json",
-      body: status,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-        return res.json();
+    if (!id) {
+      toast.error("Order not found");
+      return;
+    } else if (!status) {
+      toast.error("Status not found");
+      return;
+    } else {
+      setLoading(true);
+      request(`orders/${id}/status`, {
+        method: "PATCH",
+        header: "Content-Type: application/json",
+        body: status,
       })
-      .then(() => {
-        toast.success("Order Updated Successfully!");
-        request(`orders/${id}`)
-          .then((res) => res.json())
-          .then((data) => setOrder(data));
-      })
-      .catch((error) => console.error("Error updating order:", error));
+        .then((res) => {
+          if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+          return res.json();
+        })
+        .then(() => {
+          toast.success("Order Updated Successfully!");
+          request(`orders/${id}`)
+            .then((res) => res.json())
+            .then((data) => setOrder(data));
+        })
+        .catch((error) => {
+          console.error("Error updating order:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   return (
@@ -151,7 +166,7 @@ const OrderRow = ({
         >
           {status?.map((status) => (
             <option key={status} value={status}>
-              {status}
+              {status} {loading ? "..." : ""}
             </option>
           ))}
         </select>
