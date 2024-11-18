@@ -14,6 +14,7 @@ import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import ArrayValidator from "../../components/shared/ArrayValidator";
 import Button from "../../components/shared/Button";
 import { ArrowCircleDown, ArrowRotateRight } from "iconsax-react";
+import { calculateOderTotal } from "../../utils/calculate";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -136,14 +137,7 @@ const OrderRow = ({
         <LoyaltyColumn order={order} />
       </td>
       <td className="px-4 py-2 border-b whitespace-nowrap">
-        ৳{" "}
-        {order?.order_items?.reduce((acc, item) => {
-          const price = parseInt(item?.price) || 0;
-          const points_used = parseInt(order?.points_used) || 0;
-
-          const items_items = price * item.quantity;
-          return acc + items_items + shippingCost - points_used;
-        }, 0)}
+        ৳ {calculateOderTotal(order)}
       </td>
       <td className="px-4 py-2 border-b whitespace-nowrap">
         {order?.order_items?.reduce((acc, item) => acc + item.quantity, 0)}

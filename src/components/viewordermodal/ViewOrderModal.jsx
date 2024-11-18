@@ -5,6 +5,7 @@ import { Add } from "iconsax-react";
 import { srcBuilder } from "../../utils/src";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/date";
+import { calculateOderTotal } from "../../utils/calculate";
 
 const ProductPreview = ({ product }) => {
   return (
@@ -43,9 +44,6 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-
-  const totalPrice =
-    totalItemPrice + shippingCost - (parseInt(order?.points_used) || 0);
 
   return (
     <div className="order-modal">
@@ -210,7 +208,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
             </div>
             <div className="flex items-center gap-12 font-semibold">
               <div className="w-[200px]">Total Price:</div>
-              <div className="w-[200px]">৳ {totalPrice}</div>
+              <div className="w-[200px]">৳ {calculateOderTotal(order)}</div>
             </div>
           </div>
         </section>
