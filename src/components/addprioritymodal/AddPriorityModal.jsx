@@ -40,7 +40,7 @@ const AddPriorityModal = ({
     };
 
     try {
-      const response = await request("/products/priority", {
+      const response = await request(`products/${productId}/priority`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
