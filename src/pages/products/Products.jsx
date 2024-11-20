@@ -7,13 +7,18 @@ import { DeleteConfirmModal } from "../../components/DeleteConfirmModal";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Pagination from "../../components/pagination/Pagination";
 import FetchContext, { useFetch } from "../../context/FetchContext";
-import { Edit2, Trash } from "iconsax-react";
+import { Edit, Edit2, Trash } from "iconsax-react";
 import { formatDate } from "../../utils/date";
 import { srcBuilder } from "../../utils/src";
 import cn from "../../utils/cn";
 import PlayPause from "../../shared/PlayPause";
+import AddPriorityModal from "../../components/addprioritymodal/AddPriorityModal";
 
-const ProductRow = ({ product = null, openModal = () => {} }) => {
+const ProductRow = ({
+  product = null,
+  openModal = () => {},
+  handlePriority = (id) => {},
+}) => {
   const { request } = useFetch();
   const [data, setData] = useState(product);
   const [loading, setLoading] = useState(false);
@@ -101,6 +106,19 @@ const ProductRow = ({ product = null, openModal = () => {} }) => {
           >
             <Trash size="22" className="text-red-600" variant="Bold" />
           </button>
+        </div>
+      </td>
+      <td className="px-4 py-2 md:px-6 border-b capitalize">
+        <div className="flex items-center justify-between gap-5">
+          <div>{data?.priority || 0}</div>
+          <div className="flex gap-1">
+            <button
+              onClick={() => handlePriority(data.id)}
+              className="size-7 flex items-center justify-center text-[#6CB93B] rounded"
+            >
+              <Edit className="size-4" />
+            </button>
+          </div>
         </div>
       </td>
       <td className="px-4 py-2 md:px-6 md:py-2 border-b">
@@ -236,6 +254,19 @@ const Products = () => {
     setOpen(!open);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handlePriority = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <>
       <div className="w-full flex flex-wrap gap-2 items-start md:items-center">
@@ -270,6 +301,7 @@ const Products = () => {
                 <tr>
                   {[
                     "Action",
+                    "Priority",
                     "Banner",
                     "Name",
                     "Brand",
@@ -301,6 +333,7 @@ const Products = () => {
                       key={product.id}
                       product={product}
                       openModal={handleOpen}
+                      handlePriority={handlePriority}
                     />
                   ))
                 ) : (
@@ -326,6 +359,14 @@ const Products = () => {
             onCollapse={() => setOpen(false)}
             itemId={selectedItemId}
             onDelete={() => handleDelete(selectedItemId)}
+          />
+
+          {/* Add Priority Modal */}
+          <AddPriorityModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            productId={selectedProduct?.id}
+            fetchProducts={fetchProducts}
           />
         </>
       ) : (
