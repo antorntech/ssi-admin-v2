@@ -365,7 +365,7 @@ const Products = () => {
           <AddPriorityModal
             isOpen={isModalOpen}
             onClose={closeModal}
-            productId={selectedProduct?.id}
+            productId={selectedProduct}
             fetchProducts={fetchProducts}
           />
         </>

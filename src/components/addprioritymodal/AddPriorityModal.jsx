@@ -35,13 +35,13 @@ const AddPriorityModal = ({
     }
 
     const body = {
-      customer_id: productId,
+      id: productId,
       priority: parseFloat(priority),
     };
 
     try {
       const response = await request("/products/priority", {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -80,7 +80,7 @@ const AddPriorityModal = ({
             type="number"
             placeholder="Enter priority"
             className="capitalize w-full py-[8px] pl-[12px] border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none  focus:ring-border-none focus:border-[#6CB93B] focus:border-t-border-[#6CB93B] focus:ring-border-[#199bff]/10"
-            onChange={(e) => setPriority(e.target.value)}
+            onChange={(e) => setPriority(parseInt(e.target.value))}
             value={priority}
             ref={modalRef}
           />
