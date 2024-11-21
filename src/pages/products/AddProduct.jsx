@@ -211,7 +211,7 @@ const AddProduct = () => {
                   required
                 >
                   <option value="" disabled></option>
-                  {["gm", "kg", "ml"].map((unit) => (
+                  {["gm", "kg", "ml", "pieces"].map((unit) => (
                     <option key={unit} value={unit}>
                       {unit}
                     </option>
