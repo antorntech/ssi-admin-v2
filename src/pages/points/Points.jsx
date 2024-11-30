@@ -50,15 +50,20 @@ const Points = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [response, setResponse] = useState(null);
-  const [limit, setLimit] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams({
+    limit: 10,
+  });
+  const limit = searchParams.get("limit") || 10;
   const params = useParams();
   const page = params?.page || 1;
-  const skip = (page - 1) * limit;
+  const previousPage = page - 1
+  const skip = previousPage * limit;
 
   // Fetch points data
   const fetchPoints = useCallback(async () => {
     try {
-      const res = await request(`points?skip=${skip}&limit=${limit}`);
+      const qp = new URLSearchParams({ limit, skip, q: searchParams.get("q") });
+      const res = await request(`points?${qp.toString()}`);
       const json = await res.json();
       setResponse(json);
     } catch (error) {
@@ -68,20 +73,8 @@ const Points = () => {
 
   const doSearch = async (e) => {
     e.preventDefault();
-    try {
-      if (!searchText.trim()) {
-        fetchPoints(currentPage ? currentPage : 1);
-        return;
-      }
-      const res = await request(`points?q=${searchText}`);
-      const point = await res.json();
-      if (!point) {
-        throw new Error("No point found");
-      }
-      setResponse(point);
-    } catch (error) {
-      console.error("Error fetching filtered data:", error);
-    }
+    fetchPoints(page ? page : 1);
+    setSearchParams({ q: searchText });
   };
 
   useEffect(() => {
