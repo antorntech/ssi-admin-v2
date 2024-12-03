@@ -5,7 +5,7 @@ import { Add } from "iconsax-react";
 import { srcBuilder } from "../../utils/src";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/date";
-import { calculateOderTotal } from "../../utils/calculate";
+import { calculateOderTotal, getShippingCost } from "../../utils/calculate";
 
 const ProductPreview = ({ product }) => {
   return (
@@ -37,8 +37,7 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
 
   const { status, shipping_address, order_items } = order;
 
-  const shippingCost =
-    shipping_address.district.toLowerCase() === "dhaka" ? 60 : 120;
+  const shippingCost = getShippingCost(shipping_address.district);
 
   const totalItemPrice = order_items.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -73,21 +72,20 @@ const ViewOrderModal = ({ isOpen, onClose, order }) => {
               <p className="text-gray-600 pt-2">
                 <span className="font-medium">Status:</span>{" "}
                 <span
-                  className={`capitalize text-sm border rounded-md px-2 py-1 ${
-                    status === "pending"
+                  className={`capitalize text-sm border rounded-md px-2 py-1 ${status === "pending"
                       ? "bg-cyan-400 text-white"
                       : status === "processed"
-                      ? "bg-yellow-400 text-black"
-                      : status === "shipped"
-                      ? "bg-blue-400 text-white"
-                      : status === "delivered"
-                      ? "bg-green-400 text-white"
-                      : status === "canceled"
-                      ? "bg-red-400 text-white"
-                      : status === "completed"
-                      ? "bg-green-600 text-white"
-                      : "bg-red-400 text-white"
-                  }`}
+                        ? "bg-yellow-400 text-black"
+                        : status === "shipped"
+                          ? "bg-blue-400 text-white"
+                          : status === "delivered"
+                            ? "bg-green-400 text-white"
+                            : status === "canceled"
+                              ? "bg-red-400 text-white"
+                              : status === "completed"
+                                ? "bg-green-600 text-white"
+                                : "bg-red-400 text-white"
+                    }`}
                 >
                   {status}
                 </span>

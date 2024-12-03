@@ -14,7 +14,7 @@ import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
 import ArrayValidator from "../../components/shared/ArrayValidator";
 import Button from "../../components/shared/Button";
 import { ArrowCircleDown, ArrowRotateRight } from "iconsax-react";
-import { calculateOderTotal } from "../../utils/calculate";
+import { calculateOderTotal, getShippingCost } from "../../utils/calculate";
 
 // function Customer({ id = "" }) {
 //   const [customer, setCustomer] = useState(null);
@@ -78,13 +78,12 @@ const OrderRow = ({
   handleView,
   checked = false,
   status = [],
-  onSelect = () => {},
+  onSelect = () => { },
 }) => {
   const [order, setOrder] = useState(item);
   const { request } = useContext(FetchContext);
   const [loading, setLoading] = useState(false);
-  const shippingCost =
-    order?.shipping_address?.district?.toLowerCase() === "dhaka" ? 60 : 120;
+  const shippingCost = getShippingCost(order?.shipping_address?.district);
 
   const switchStatus = (id, status) => {
     if (!id) {
