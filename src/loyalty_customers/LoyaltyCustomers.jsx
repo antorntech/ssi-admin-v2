@@ -10,13 +10,12 @@ import { NoteText, Trash } from "iconsax-react";
 import { formatDate } from "../utils/date";
 import ViewPointsHistoyModal from "../components/viewpointshistorymodal/ViewPointsHistoryModal";
 import SearchBar from "../components/searchbar/SearchBar";
+import validUntil from "./validUntil";
 
 const Orders = ({ loyaltyCustomer = {} }) => {
   const [orders, setOrders] = useState({ data: [], count: 0 });
   const { request } = useFetch();
   const { customer_id } = loyaltyCustomer;
-
-  console.log(customer_id);
 
   useEffect(() => {
     if (!customer_id) return;
@@ -27,6 +26,7 @@ const Orders = ({ loyaltyCustomer = {} }) => {
         setOrders(data);
       } catch (error) {
         // ignore
+        console.error(error);
       }
     }
     fetchOrders();
@@ -62,7 +62,34 @@ const AvailablePoints = ({ customer_id }) => {
   return <p>{customer?.points}</p> || 0;
 };
 
-const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
+const Countdown = ({ createdAt }) => {
+  const [countdown, setCountdown] = useState(null);
+
+  useEffect(() => {
+    if (!createdAt) return;
+
+    function assignTimeLeft() {
+      const timeLeft = validUntil(createdAt)
+      if (timeLeft?.days === 0 && timeLeft?.hours === 0 && timeLeft?.minutes === 0 && timeLeft?.seconds === 0) {
+        // make API request to remove from loyalty customer
+        return
+      }
+      setCountdown(timeLeft);
+    }
+    assignTimeLeft()
+
+    const intervalId = setInterval(assignTimeLeft, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [createdAt]);
+
+  if (!createdAt) { return null }
+  if (!countdown) { return <p className="text-red-800">Expired</p> }
+
+  return <p className="text-green-800">{countdown?.days}d {countdown?.hours}h {countdown?.minutes}m {countdown?.seconds}s</p>;
+}
+
+const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => { } }) => {
   const { request } = useFetch();
   const [loyaltyCustomer, setLoyaltyCustomer] = useState(customer || null);
 
@@ -187,6 +214,11 @@ const LoyaltyCustomerRow = ({ customer, levels, handleOpen = () => {} }) => {
           >
             <Trash size="22" className="text-red-600" variant="Bold" />
           </button>
+        </td>
+        <td className="px-4 py-2 md:px-6 border-b whitespace-nowrap">
+          {customer?.created_at ?
+            <Countdown createdAt={customer?.created_at} />
+            : null}
         </td>
       </tr>
       <ViewPointsHistoyModal
@@ -323,6 +355,9 @@ const LoyaltyCustomers = () => {
               </th>
               <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                 Action
+              </th>
+              <th className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Valid Until
               </th>
             </tr>
           </thead>
