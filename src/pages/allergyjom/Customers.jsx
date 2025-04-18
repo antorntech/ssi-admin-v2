@@ -1,102 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useFetch } from "../../context/FetchContext";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 import { formatDate } from "../../utils/date";
-import { Check, Copy, Edit } from "iconsax-react";
-import { loyaltyColor } from "../../loyalty_customers/LoyaltyCustomers";
-import Button from "../../components/shared/Button";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Loader from "../../loader/Loader";
 
-const API_Allergyjom = "http://localhost:8080"
+const API_Allergyjom = import.meta.env.VITE_API_URL_ALLERGYJOM
+console.log(API_Allergyjom)
 
-// Subcomponent: CopyButton
-const CopyButton = ({ id }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(id);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <button onClick={handleCopy} className="size-7 flex items-center justify-center rounded">
-      {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-    </button>
-  );
-};
-
-// Subcomponent: Orders
-const Orders = ({ customer = {} }) => {
-  const [orders, setOrders] = useState({ data: [], count: 0 });
-  const { request } = useFetch();
-  const { id } = customer;
-
-  useEffect(() => {
-    if (!id) return;
-    const fetchOrders = async () => {
-      try {
-        const response = await request(`orders?customer_id=${id}`);
-        const data = await response.json();
-        setOrders(data);
-      } catch (error) { }
-    };
-    fetchOrders();
-  }, [id, request]);
-
-  return <div>{orders.count}</div>;
-};
-
-// Subcomponent: MakeLoyalty
-const MakeLoyalty = ({ customer = {} }) => {
-  const { request } = useFetch();
-  const [loyalty, setLoyalty] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const makeLoyaltyCustomer = async () => {
-    setLoading(true);
-    try {
-      await request(`loyalty/customers`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer_id: customer.id }),
-      });
-      await fetchLoyalty();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchLoyalty = useCallback(async () => {
-    if (!customer?.id) return;
-    setLoading(true);
-    try {
-      const response = await request(`loyalty/customers/by/${customer?.id}`);
-      const data = await response.json();
-      setLoyalty(data);
-    } catch (error) {
-      console.log("Ignore error if not loyalty customer");
-    } finally {
-      setLoading(false);
-    }
-  }, [customer?.id, request]);
-
-  useEffect(() => { fetchLoyalty(); }, [fetchLoyalty]);
-
-  if (loyalty?.level) {
-    return <span style={{ color: loyaltyColor[loyalty.level] }}>{loyalty.level}</span>;
-  }
-
-  return (
-    <Button onClick={makeLoyaltyCustomer} disabled={loading}>Make Loyalty</Button>
-  );
-};
-
-// Subcomponent: CustomerRow
 const CustomerRow = ({ data }) => {
   const [customer, setCustomer] = useState(data);
 
@@ -207,7 +118,7 @@ const AllergyjomCustomers = () => {
       const res = await fetch(`${API_Allergyjom}/api/v1/query?${queryParams.toString()}`);
       const json = await res.json();
       if (json) {
-        json.loading = false
+        json.loading = false;
         setResponse(json);
       }
     } catch (error) {
@@ -245,30 +156,24 @@ const AllergyjomCustomers = () => {
         <SearchBar searchText={searchText} handleSearch={setSearchText} doSearch={doSearch} />
       </div>
 
-      {response.loading ? (
-        <Loader />
-      ) : (
+      {response.loading ? <Loader /> : (
         <>
           <div className="mt-5 w-full overflow-x-auto">
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr className="bg-gray-50">
-                  {[
-                    "Name", "Phone", "Address", "Problem", "Duration", "Created At", "Action"
-                  ].map(header => (
+                  {["Name", "Phone", "Address", "Problem", "Duration", "Created At", "Action"].map((header, i) => (
                     <th
-                      key={header}
+                      key={i}
                       className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap"
-                    >
-                      {header}
-                    </th>
+                    >{header}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {customers.map((customer) => (
+                {customers.map((customer) =>
                   <CustomerRow key={customer?.id} data={customer} handlePointsClick={handlePointsClick} />
-                ))}
+                )}
               </tbody>
             </table>
           </div>
