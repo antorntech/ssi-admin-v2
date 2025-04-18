@@ -4,28 +4,28 @@ import AddPointsModal from "../../components/addpointsmodal/AddPointsModal";
 import { formatDate } from "../../utils/date";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Loader from "../../loader/Loader";
+import { twMerge } from "tailwind-merge";
 
 const API_Allergyjom = import.meta.env.VITE_API_URL_ALLERGYJOM
-console.log(API_Allergyjom)
 
 const CustomerRow = ({ data }) => {
   const [customer, setCustomer] = useState(data);
 
-  const commonCellClasses = "px-4 py-2 md:px-6 border-b capitalize whitespace-nowrap";
+  const commonCellClasses = "px-4 py-2 md:px-6 border-b capitalize";
 
   if (!customer) return null;
 
   return (
     <tr key={customer?.id} className="border-b border-gray-200 hover:bg-gray-100">
-      <td className={commonCellClasses}>{customer?.name}</td>
-      <td className={commonCellClasses}>
+      <td className={twMerge(commonCellClasses, "whitespace-nowrap")}>{customer?.name}</td>
+      <td className={twMerge(commonCellClasses)}>
         {customer?.phone && <Link to={`tel:${customer.phone}`} className="hover:underline">{customer.phone}</Link>}
       </td>
-      <td className={commonCellClasses} width="20%">{customer?.address}</td>
-      <td className={commonCellClasses} width="40%">{customer?.problem}</td>
-      <td className={commonCellClasses}>{customer?.duration}</td>
-      <td className={commonCellClasses}>{formatDate(customer?.created_at)}</td>
-      <td className={commonCellClasses}>
+      <td className={twMerge(commonCellClasses)} width="20%">{customer?.address}</td>
+      <td className={twMerge(commonCellClasses)} width="40%">{customer?.problem}</td>
+      <td className={twMerge(commonCellClasses)}>{customer?.duration}</td>
+      <td className={twMerge(commonCellClasses, "whitespace-nowrap")}>{formatDate(customer?.created_at)}</td>
+      <td className={twMerge(commonCellClasses)}>
         <button type="button" className="bg-red-700 text-white px-3 py-1 rounded-lg hover:bg-red-900"
           onClick={async () => {
             try {
