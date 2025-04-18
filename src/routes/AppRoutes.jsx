@@ -28,6 +28,7 @@ import LoyaltyCustomers from "../loyalty_customers/LoyaltyCustomers";
 import Withdrawal from "../components/withdrawal/Withdrawal";
 import AddGiftPage from "../pages/gifts/add/AddGift";
 import EditGiftPage from "../pages/gifts/edit/AddGift";
+import AllergyjomCutomers from "../pages/allergyjom/Customers";
 
 const AppRoutes = () => {
   return (
@@ -316,6 +317,14 @@ const AppRoutes = () => {
           element={
             <Protected>
               <Profile />
+            </Protected>
+          }
+        />
+        <Route
+          path="allergyjom-customers"
+          element={
+            <Protected>
+              <AllergyjomCutomers />
             </Protected>
           }
         />

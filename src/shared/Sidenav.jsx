@@ -78,6 +78,11 @@ const menuItems = [
     link: "/banners",
     icon: "/img/icons/banner",
   },
+  {
+    title: "Allergyjom Customers",
+    link: "/allergyjom-customers",
+    icon: "/img/icons/banner",
+  },
 ];
 
 const Sidenav = () => {
@@ -106,9 +111,8 @@ const Sidenav = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full transform transition-transform z-50 bg-white w-[250px] ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`fixed top-0 left-0 h-full transform transition-transform z-50 bg-white w-[250px] ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         <div className="bg-white px-3 min-h-[70px] flex items-center justify-center">
           <Link to={"/"}>
@@ -127,11 +131,10 @@ const Sidenav = () => {
                   <>
                     <div className="group">
                       <div
-                        className={`flex items-center justify-between menu-title p-2 hover:text-[#050828]  ${
-                          activeMenu === index
-                            ? "bg-[#6CB93B] text-white hover:text-white"
-                            : ""
-                        }`}
+                        className={`flex items-center justify-between menu-title p-2 hover:text-[#050828]  ${activeMenu === index
+                          ? "bg-[#6CB93B] text-white hover:text-white"
+                          : ""
+                          }`}
                         onClick={() => handleMenuClick(index)}
                       >
                         <div className="flex items-center gap-2">
@@ -147,9 +150,8 @@ const Sidenav = () => {
                           <p>{item.title}</p>
                         </div>
                         <i
-                          className={`fa-solid fa-angle-right transition-transform ${
-                            activeMenu === index ? "rotate-90" : ""
-                          }`}
+                          className={`fa-solid fa-angle-right transition-transform ${activeMenu === index ? "rotate-90" : ""
+                            }`}
                         ></i>
                       </div>
                     </div>
@@ -159,11 +161,10 @@ const Sidenav = () => {
                           <li key={subindex}>
                             <Link
                               to={subitem.link}
-                              className={`block p-2 ${
-                                currentPath === subitem.link
-                                  ? "bg-[#050828] text-white"
-                                  : ""
-                              }`}
+                              className={`block p-2 ${currentPath === subitem.link
+                                ? "bg-[#050828] text-white"
+                                : ""
+                                }`}
                               onClick={toggleSidebar}
                             >
                               <i className="fa-solid fa-minus mx-2" />
@@ -178,11 +179,10 @@ const Sidenav = () => {
                   <div className="group">
                     <Link
                       to={item.link}
-                      className={`flex items-center gap-2 px-3 py-2.5 hover:text-[#050828] ${
-                        currentPath === item.link
-                          ? "bg-[#6CB93B] text-white hover:text-white"
-                          : "hover:bg-green-50"
-                      }`}
+                      className={`flex items-center gap-2 px-3 py-2.5 hover:text-[#050828] ${currentPath === item.link
+                        ? "bg-[#6CB93B] text-white hover:text-white"
+                        : "hover:bg-green-50"
+                        }`}
                       onClick={toggleSidebar}
                     >
                       <img
