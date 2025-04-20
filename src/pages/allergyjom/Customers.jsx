@@ -5,6 +5,7 @@ import { formatDate } from "../../utils/date";
 import SearchBar from "../../components/searchbar/SearchBar";
 import Loader from "../../loader/Loader";
 import { twMerge } from "tailwind-merge";
+import DownloadCSVFromAPI from "../../components/DownloadCSVFromAPI";
 
 const API_Allergyjom = import.meta.env.VITE_API_URL_ALLERGYJOM
 
@@ -148,11 +149,12 @@ const AllergyjomCustomers = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between">
-        <div>
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between gap-4">
+        <div className="grow">
           <h1 className="text-xl font-bold">Customers</h1>
           <p className="text-sm text-gray-500">Total Customers: {response.count}</p>
         </div>
+        <DownloadCSVFromAPI />
         <SearchBar searchText={searchText} handleSearch={setSearchText} doSearch={doSearch} />
       </div>
 

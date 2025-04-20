@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import cn from "../../utils/cn";
+import { twMerge } from "tailwind-merge";
 
 const Button = ({
   children,
@@ -10,7 +10,7 @@ const Button = ({
 }) => {
   return (
     <button
-      className={cn(
+      className={twMerge(
         "rounded focus:outline-none focus:ring ring-green-200 transition duration-200 whitespace-nowrap",
         {
           small: "px-2 py-1 text-sm",
