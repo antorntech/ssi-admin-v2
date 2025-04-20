@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "./shared/Button";
+import { unparse } from "papaparse";
 
 const API_Allergyjom = import.meta.env.VITE_API_URL_ALLERGYJOM
 
@@ -18,16 +19,8 @@ const DownloadForm = ({ closeForm }) => {
 
             const json = await res.json();
 
-            const convertToCSV = (data) => {
-                if (!data.length) return "";
-                const keys = Object.keys(data[0]);
-                const header = keys.join(",");
-                const rows = data.map(row => keys.map(k => `"${row[k]}"`).join(","));
-                return [header, ...rows].join("\n");
-            };
-
             if (json.rows) {
-                const csv = convertToCSV(json?.rows || []);
+                const csv = '\uFEFF' + unparse(json.rows);
 
                 const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
                 const CSV_URL = URL.createObjectURL(blob);
