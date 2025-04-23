@@ -41,7 +41,7 @@ const ReloadCustomers = ({ count, queryString }) => {
       }
     };
 
-    const interval = setInterval(checkNewData, 3 * 60 * 1000);
+    const interval = setInterval(checkNewData, 60 * 1000);
     checkNewData();
 
     return () => clearInterval(interval);
