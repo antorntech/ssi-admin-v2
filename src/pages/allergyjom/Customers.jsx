@@ -21,7 +21,7 @@ const ActionButton = ({ onClick, children, className = "" }) => {
 };
 
 const ReloadCustomers = ({ count, queryString }) => {
-  const [hasNewEntries, setHasNewEntries] = useState(false);
+  const [hasNewEntries, setHasNewEntries] = useState(0);
 
   useEffect(() => {
     if (!count) return;
@@ -33,7 +33,7 @@ const ReloadCustomers = ({ count, queryString }) => {
         if (response.ok) {
           const newCount = await response.json();
           if (newCount > count) {
-            setHasNewEntries(true);
+            setHasNewEntries(newCount - count);
           }
         }
       } catch (error) {
@@ -54,7 +54,7 @@ const ReloadCustomers = ({ count, queryString }) => {
       onClick={() => window.location.reload()}
       className="bg-green-500 hover:bg-green-600 py-2 flex items-center gap-1 whitespace-nowrap"
     >
-      {count} New {count === 1 ? "Entry" : "Entries"} <ArrowRotateRight className="size-4" />
+      {hasNewEntries} New {hasNewEntries === 1 ? "Entry" : "Entries"} <ArrowRotateRight className="size-4" />
     </ActionButton>
   );
 };
