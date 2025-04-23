@@ -6,6 +6,58 @@ import SearchBar from "../../components/searchbar/SearchBar";
 import Loader from "../../loader/Loader";
 import { twMerge } from "tailwind-merge";
 import DownloadCSVFromAPI from "../../components/DownloadCSVFromAPI";
+import { ArrowRotateRight } from "iconsax-react";
+
+const ActionButton = ({ onClick, children, className = "" }) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={twMerge(`px-3 py-1 rounded text-white`, className)}
+    >
+      {children}
+    </button>
+  );
+};
+
+const ReloadCustomers = ({ count, queryString }) => {
+  const [hasNewEntries, setHasNewEntries] = useState(false);
+
+  useEffect(() => {
+    if (!count) return;
+
+    const checkNewData = async () => {
+      try {
+        const response = await fetch(`${API_Allergyjom}/api/v1/query/count?${queryString}`);
+
+        if (response.ok) {
+          const newCount = await response.json();
+          if (newCount > count) {
+            setHasNewEntries(true);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check new data:", error);
+      }
+    };
+
+    const interval = setInterval(checkNewData, 3 * 60 * 1000);
+    checkNewData();
+
+    return () => clearInterval(interval);
+  }, [count, queryString]);
+
+  if (!count || !hasNewEntries) return null;
+
+  return (
+    <ActionButton
+      onClick={() => window.location.reload()}
+      className="bg-green-500 hover:bg-green-600 py-2 flex items-center gap-1 whitespace-nowrap"
+    >
+      {count} New {count === 1 ? "Entry" : "Entries"} <ArrowRotateRight className="size-4" />
+    </ActionButton>
+  );
+};
 
 const API_Allergyjom = import.meta.env.VITE_API_URL_ALLERGYJOM
 
@@ -26,9 +78,43 @@ const CustomerRow = ({ data }) => {
       <td className={twMerge(commonCellClasses)} width="40%">{customer?.problem}</td>
       <td className={twMerge(commonCellClasses)}>{customer?.duration}</td>
       <td className={twMerge(commonCellClasses, "whitespace-nowrap")}>{formatDate(customer?.created_at)}</td>
+      <td className={twMerge(commonCellClasses)} width="10%">{customer?.status}</td>
       <td className={twMerge(commonCellClasses)}>
-        <button type="button" className="bg-red-700 text-white px-3 py-1 rounded-lg hover:bg-red-900"
-          onClick={async () => {
+        <div className="flex flex-col gap-2">
+          <ActionButton className="bg-green-600 hover:bg-green-800" onClick={async () => {
+            try {
+              const response = await fetch(`${API_Allergyjom}/api/v1/query/${customer?.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "completed" })
+              });
+              if (response.ok) {
+                const query = await response.json()
+                setCustomer(query);
+              }
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+          >Complete</ActionButton>
+
+          <ActionButton className="bg-orange-500 hover:bg-orange-700" onClick={async () => {
+            try {
+              const response = await fetch(`${API_Allergyjom}/api/v1/query/${customer?.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "canceled" })
+              })
+              if (response.ok) {
+                const query = await response.json()
+                setCustomer(query);
+              }
+            } catch (error) {
+              console.error(error);
+            }
+          }}>Cancel</ActionButton>
+
+          <ActionButton type="button" className="bg-red-700 hover:bg-red-900" onClick={async () => {
             try {
               const response = await fetch(`${API_Allergyjom}/api/v1/query/${customer?.id}`, {
                 method: "DELETE",
@@ -39,8 +125,8 @@ const CustomerRow = ({ data }) => {
             } catch (error) {
               console.error(error);
             }
-          }}
-        >Delete</button>
+          }}>Delete</ActionButton>
+        </div>
       </td>
     </tr>
   );
@@ -105,6 +191,8 @@ const AllergyjomCustomers = () => {
   const page = searchParams.get("page") || 1;
   const q = searchParams.get("q");
   const limit = 10;
+  const offset = (page - 1) * limit;
+  const queryString = new URLSearchParams({ q: q || "", offset, limit }).toString();
   const navigate = useNavigate();
 
   const [response, setResponse] = useState({ rows: [], count: 0, loading: false });
@@ -115,8 +203,7 @@ const AllergyjomCustomers = () => {
   const fetchCustomers = useCallback(async () => {
     try {
       setResponse(prev => ({ ...prev, loading: true }));
-      const queryParams = new URLSearchParams({ q: q || "", offset: (page - 1) * limit, limit });
-      const res = await fetch(`${API_Allergyjom}/api/v1/query?${queryParams.toString()}`);
+      const res = await fetch(`${API_Allergyjom}/api/v1/query?${queryString}`);
       const json = await res.json();
       if (json) {
         json.loading = false;
@@ -149,11 +236,12 @@ const AllergyjomCustomers = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col md:flex-row items-start md:items-center md:justify-between gap-4">
+      <div className="w-full flex flex-wrap lg:flex-nowrap items-start lg:items-center lg:justify-between gap-4">
         <div className="grow">
           <h1 className="text-xl font-bold">Customers</h1>
           <p className="text-sm text-gray-500">Total Customers: {response.count}</p>
         </div>
+        <ReloadCustomers count={response.count} queryString={queryString} />
         <DownloadCSVFromAPI />
         <SearchBar searchText={searchText} handleSearch={setSearchText} doSearch={doSearch} />
       </div>
@@ -164,7 +252,7 @@ const AllergyjomCustomers = () => {
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr className="bg-gray-50">
-                  {["Name", "Phone", "Address", "Problem", "Duration", "Created At", "Action"].map((header, i) => (
+                  {["Name", "Phone", "Address", "Problem", "Duration", "Created At", 'Status', "Action"].map((header, i) => (
                     <th
                       key={i}
                       className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap"
