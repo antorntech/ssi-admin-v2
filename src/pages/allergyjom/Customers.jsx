@@ -70,15 +70,16 @@ const CustomerRow = ({ data }) => {
 
   return (
     <tr key={customer?.id} className="border-b border-gray-200 hover:bg-gray-100">
+      <td className="text-end">{data?.id}</td>
       <td className={twMerge(commonCellClasses, "whitespace-nowrap")}>{customer?.name}</td>
       <td className={twMerge(commonCellClasses)}>
         {customer?.phone && <Link to={`tel:${customer.phone}`} className="hover:underline">{customer.phone}</Link>}
       </td>
       <td className={twMerge(commonCellClasses)} width="20%">{customer?.address}</td>
-      <td className={twMerge(commonCellClasses)} width="40%">{customer?.problem}</td>
-      <td className={twMerge(commonCellClasses)}>{customer?.duration}</td>
+      <td className={twMerge(commonCellClasses)} width="30%">{customer?.problem}</td>
+      <td className={twMerge(commonCellClasses)} width={"14%"}>{customer?.duration}</td>
       <td className={twMerge(commonCellClasses, "whitespace-nowrap")}>{formatDate(customer?.created_at)}</td>
-      <td className={twMerge(commonCellClasses)} width="10%">{customer?.status}</td>
+      <td className={twMerge(commonCellClasses)} width="6%">{customer?.status}</td>
       <td className={twMerge(commonCellClasses)}>
         <div className="flex flex-col gap-2">
           <ActionButton className="bg-green-600 hover:bg-green-800" onClick={async () => {
@@ -252,11 +253,10 @@ const AllergyjomCustomers = () => {
             <table className="min-w-[1200px] lg:min-w-full bg-white border">
               <thead>
                 <tr className="bg-gray-50">
-                  {["Name", "Phone", "Address", "Problem", "Duration", "Created At", 'Status', "Action"].map((header, i) => (
-                    <th
-                      key={i}
-                      className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap"
-                    >{header}</th>
+                  {["ID", "Name", "Phone", "Address", "Problem", "Duration", "Created At", 'Status', "Action"].map((header, i) => (
+                    <th key={i} className="px-4 md:px-6 py-3 border-b text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                      {header}
+                    </th>
                   ))}
                 </tr>
               </thead>
