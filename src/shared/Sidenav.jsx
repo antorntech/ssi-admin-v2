@@ -83,6 +83,11 @@ const menuItems = [
     link: "/allergyjom-customers",
     icon: "/img/icons/banner",
   },
+  {
+    title: "Dream Sale",
+    link: "/dream-sale",
+    icon: "/img/icons/gift",
+  },
 ];
 
 const Sidenav = () => {
