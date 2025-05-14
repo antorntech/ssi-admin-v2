@@ -30,6 +30,7 @@ import AddGiftPage from "../pages/gifts/add/AddGift";
 import EditGiftPage from "../pages/gifts/edit/AddGift";
 import AllergyjomCutomers from "../pages/allergyjom/Customers";
 import DreamSale from "../pages/dream-sale/Customers";
+import TestSales from "../pages/test-sales/Customers";
 
 const AppRoutes = () => {
   return (
@@ -334,6 +335,14 @@ const AppRoutes = () => {
           element={
             <Protected>
               <DreamSale />
+            </Protected>
+          }
+        />
+        <Route
+          path="test-sales"
+          element={
+            <Protected>
+              <TestSales />
             </Protected>
           }
         />

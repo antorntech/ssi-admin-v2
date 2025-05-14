@@ -88,6 +88,11 @@ const menuItems = [
     link: "/dream-sale",
     icon: "/img/icons/gift",
   },
+  {
+    title: "Test Sales",
+    link: "/test-sales",
+    icon: "/img/icons/gift",
+  },
 ];
 
 const Sidenav = () => {
@@ -116,7 +121,7 @@ const Sidenav = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full transform transition-transform z-50 bg-white w-[250px] ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed top-0 left-0 h-full transform transition-transform z-50 bg-white w-[250px] overflow-y-auto ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0`}
       >
         <div className="bg-white px-3 min-h-[70px] flex items-center justify-center">
