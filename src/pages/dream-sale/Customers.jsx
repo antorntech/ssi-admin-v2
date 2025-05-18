@@ -72,7 +72,8 @@ const CustomerRow = ({ data }) => {
 
   if (!order) return null;
 
-  const totalPrice = (order?.quantity * 990) + order?.shipping_cost
+  // const totalPrice = (order?.quantity * 990) + order?.shipping_cost
+  const totalPrice = order.price + order?.shipping_cost
 
   return (
     <tr key={order?.id} className="border-b border-gray-200 hover:bg-gray-100">
